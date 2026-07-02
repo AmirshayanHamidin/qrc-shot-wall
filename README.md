@@ -10,7 +10,8 @@ A small, fully reproducible benchmark study of **quantum reservoir computing (QR
 
 1. **New to this?** Read the two-page story: [`results/RESULTS.md`](results/RESULTS.md) (benchmark 1: QRC vs classical baselines, and why shot noise — not expressivity — is the bottleneck).
 2. **Then the main result:** [`results/RESULTS_GAP.md`](results/RESULTS_GAP.md) (benchmark 2: eight gap-closing strategies, the plateau, and what it means).
-3. **Want to run it?** See below — everything runs on a laptop CPU in under a minute. No quantum hardware or account needed.
+3. **Then the twist:** [`results/RESULTS_TASKSHAPE.md`](results/RESULTS_TASKSHAPE.md) (benchmark 3: the wall is task-shaped — classification retains ~86% of the quantum benefit at budgets where regression retains ~4%).
+4. **Want to run it?** See below — everything runs on a laptop CPU in under a minute. No quantum hardware or account needed.
 
 ## Quickstart
 
@@ -40,7 +41,9 @@ python qrc_gap_eval.py 40000     # benchmark 2: gap-closing strategies @ 40k sho
 
 ## The redirected question
 
-Post-processing can't fix this; the loss happens at measurement. The live question is **information-per-shot as a design criterion**: can reservoir dynamics and data encodings be designed so task-relevant signal concentrates in a few high-magnitude observables? (Secondary: tasks with coarse outputs — classification — may sit below the wall.)
+Post-processing can't fix this; the loss happens at measurement. The live question is **information-per-shot as a design criterion**: can reservoir dynamics and data encodings be designed so task-relevant signal concentrates in a few high-magnitude observables?
+
+**Benchmark 3 answered the secondary question** (`src/qrc_design.py`, [`results/RESULTS_TASKSHAPE.md`](results/RESULTS_TASKSHAPE.md)): the wall is a property of output precision, not of the quantum device. On temporal parity — where a linear model on inputs is provably at chance — the same reservoir at the same 40k-shot budget keeps 93% accuracy (86% of its exact-readout benefit), crossing the tuned classical ESN near 12k shots/step. Shot noise destroys precision, not information class: coarse-output tasks sit below the wall.
 
 ## Honest limitations
 
