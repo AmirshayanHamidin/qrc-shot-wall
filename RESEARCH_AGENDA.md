@@ -52,10 +52,25 @@ to gate noise.
       the reservoir OFF the noiseless curve. B6's scalar factor is near-optimal
       among effective-shot corrections. `RESULTS_PERNODE.md` (done 2026-07-03).
 
+- [x] **B8** Beyond depolarizing (coherent / amplitude-damping / dephasing gate
+      errors). **Pre-registered H0 FALSIFIED (honest negative):** B6's scalar
+      device-fidelity factor is depolarizing-SPECIFIC. Collapse R2 dephasing 0.836,
+      coherent 0.796, amp_damping 0.660 — all below depolarizing's 0.927, none
+      clears the R2>0.9 bar. Three distinct failure modes, separated by the new
+      direction diagnostic cos(eta): (a) coherent errors are UNITARY — they rotate
+      the readout direction (cos->0.94) but destroy no info, so a retrained readout
+      recovers it and the scalar factor OVER-penalizes (bias +1.9pp, factor gives
+      -1.5% MAE, i.e. no help); (b) amplitude damping is NON-UNITAL — strong
+      contraction (c->0.65) + population bias + hardest rotation (cos->0.67) leave a
+      -2.9pp shot-irreducible negative bias (worst case); (c) dephasing is unital &
+      direction-preserving (cos>=0.98), closest to depolarizing. Answer to "do
+      coherent errors rotate the readout direction?": YES (coherent AND damping do;
+      dephasing doesn't). `RESULTS_BEYONDNOISE.md` (done 2026-07-03).
+
 ## Work queue (reconstructed 2026-07-03 — original B6..B11 list was lost with the
 ## non-persisted outputs folder; these are the natural next steps from the B5/B6
 ## write-ups, reprioritized)
-- [ ] **B8** **Beyond depolarizing:** coherent / amplitude-damping / correlated
+- [x] **B8** DONE (see completed list above) — **Beyond depolarizing:** coherent / amplitude-damping / correlated
       gate errors. Do they still contract margins multiplicatively, or do coherent
       errors *rotate* the readout direction (breaking the scalar-fidelity picture)?
       This is the honest stress-test of B6's single-noise-model caveat.
@@ -72,8 +87,7 @@ to gate noise.
       observables, and verify via the law that the required shot budget drops.
 
 ## Pending push
-(none — all B7 files pushed to GitHub on 2026-07-03 run 2 across 4 verified
-commits: results [1c3ce8e], src code [c98d735], figure [05026f1], agenda [d9719d6].)
+(B8 push status recorded in the Log entry below — see 2026-07-03 run 3.)
 
 ## Log
 - 2026-07-03 — **Run recovered from empty outputs folder.** Cloned repo from
@@ -110,3 +124,26 @@ commits: results [1c3ce8e], src code [c98d735], figure [05026f1], agenda [d9719d
   — coherent / amplitude-damping / correlated errors; do coherent errors *rotate*
   the readout direction, matching B7's off-curve bias diagnosis?). Remember to
   clone first and `pip install qiskit qiskit-aer scikit-learn --break-system-packages`.
+
+- 2026-07-03 (run 3) — **Recovered from empty outputs again; cloned repo to
+  restore state.** Executed **B8** (beyond-depolarizing gate noise). Added
+  `src/qrc_beyondnoise.py` + `qrc_beyondnoise_fig.py`, `results/RESULTS_BEYONDNOISE.md`,
+  `results/beyond_noise_law.json` (+ `bn_coherent/amp_damping/dephasing.json`),
+  `figures/qrc_beyondnoise.png`. Same arch0 + 5 clf tasks + retrained-readout
+  protocol as B6; three channels (coherent unitary, amplitude damping non-unital,
+  dephasing unital) at eta in {0,.02,.05,.10,.15}, budgets {500,2k,8k,32k}, 300
+  predicted cells. **Pre-registered H0 (scalar B6 factor collapses all three as
+  well as depolarizing) FALSIFIED:** collapse R2 = 0.836 (dephasing) / 0.796
+  (coherent) / 0.660 (amp_damping) vs depolarizing 0.927; none clears R2>0.9. New
+  direction diagnostic cos(eta) cleanly separates the mechanisms: coherent &
+  amplitude-damping ROTATE the readout direction (cos down to 0.94 / 0.67),
+  dephasing does not (cos>=0.98). Coherent is the sharp result — unitary error
+  destroys no info, a retrained linear readout recovers the rotated margin, so the
+  scalar factor OVER-penalizes (+1.9pp positive bias, -1.5% MAE = no help).
+  Amplitude damping (non-unital) is the worst case: -2.9pp shot-irreducible
+  negative bias. Conclusion: B6's factor is depolarizing-specific; direction (not
+  magnitude) is the missing coordinate, and for hardware QRC relaxation (T1) hurts
+  classification more than coherent/calibration error. **Next run: start B9**
+  (harder classification tasks with non-trivial classical baselines, to check the
+  task-shaped wall isn't a parity artifact). Remember to clone first and
+  `pip install qiskit qiskit-aer scikit-learn --break-system-packages`.
