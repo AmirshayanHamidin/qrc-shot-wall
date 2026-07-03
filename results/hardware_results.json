@@ -1,0 +1,31 @@
+{
+  "stages": [
+    "Generic deep\n(depth ~2000)",
+    "Shallow, ring\n(routing blowup)",
+    "Topology-native\n(arbitrary qubits)",
+    "+ calibrated chain\n+ readout mitigation",
+    "Shot noise only\n(no gate error)",
+    "Perfect readout"
+  ],
+  "acc": [
+    0.5,
+    0.455,
+    0.636,
+    0.864,
+    0.886,
+    1.0
+  ],
+  "task": "parity-3",
+  "shots_per_node": 12000,
+  "nodes": 3,
+  "T": 150,
+  "noise": "FakeTorino calibration",
+  "chain": [
+    8,
+    17,
+    27,
+    28,
+    29,
+    36
+  ]
+}
