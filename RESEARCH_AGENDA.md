@@ -1,61 +1,50 @@
-# RESEARCH_AGENDA.md — qrc-shot-wall overnight program
+# Standing Research Agenda — qrc-shot-wall autonomous program
 
-> **NOTE:** the canonical agenda lives BOTH in the session outputs folder (cleared between
-> scheduled runs) and in the repo root (durable). Always trust the repo copy on `main`;
-> the outputs copy is scratch. **Re-numbering note (2026-07-03):** benchmark numbers now
-> follow the repo's actual write-up sequence B1..B9, which had drifted from an older queue
-> that labelled the margin-estimator study "B7". They have been reconciled below.
+## AUTHORITATIVE STATE (2026-07-03 ~13:40 — supersedes any older copy)
 
-Local repo copy: `outputs/qrc-shot-wall/` · Remote: github.com/AmirshayanHamidin/qrc-shot-wall
+**READ THE LIVE REPO README FIRST. It is ground truth.** This agenda was once out of date
+and caused near-duplicate work; if this file disagrees with the README, trust the README
+and push a corrected agenda.
+
+Completed and pushed (see README + results/ for details):
+- B1-B4: shot wall, gap strategies, task-shaped wall, hardware run (0.886 on ibm_marrakesh).
+- B5: parameter-free measurement-wall law (R2=0.991, 150 cells) - RESULTS_LAW.md
+- B6: gate noise as effective-shot reduction S_eff=S*c(gamma)^2 (420 cells, R2=0.927) - RESULTS_GATENOISE.md
+- B7: per-node/covariance refinement - HONEST NEGATIVE (residual is shot-irreducible) - RESULTS_PERNODE.md
+- B8: beyond depolarizing - scalar factor insufficient; T1 damping is the shot-irreducible case - RESULTS_BEYONDNOISE.md
+- B9: margin estimation at scale - plug-in bias +41% trap; parameter-free debias to <=0.8% - RESULTS_MARGINEST.md
+- B10: the law is a retrained-readout law; retraining recovers mean 24.5pp - RESULTS_RETRAIN.md
+- B11: external validity on Mackey-Glass family - wall harsher, law calibrated (MAE 2.2pp),
+  pre-registered R2>0.9 bar FAILED at 0.79 and reported honestly - RESULTS_TASKFAM.md
 
 ## HARD GUARDRAILS (never violate)
-- **Simulation only.** numpy + qiskit-aer (or numpy density matrix + qiskit unitary). NEVER submit to real IBM quantum hardware. NEVER read or use `ibm_token.txt`. Do not use qiskit-ibm-runtime's live service.
-- **No other accounts/services.** The only external write allowed is pushing files to the GitHub repo above via the logged-in-Chrome web upload flow. Touch nothing else.
-- **45-second shell limit.** Chunk long runs, save partial `.npy`/`.json`, aggregate in a later call. Never launch a computation that can't finish (or checkpoint) within one call.
-- **Honesty.** Every benchmark states a hypothesis before running and reports negative results / residuals plainly. No result inflation.
-- **Env note (2026-07-03):** the sandbox python did NOT have qiskit/sklearn preinstalled this run; installed via `pip install qiskit scikit-learn matplotlib --break-system-packages`. Budget ~1 call for this if the env is fresh again.
 
-## METHOD RULES
-- Each benchmark: pre-stated falsifiable hypothesis → rigorous eval (multi-seed, error bars, holdout where relevant) → `RESULTS_<NAME>.md` + JSON + figure → update this Log + checkboxes → push.
-- Reusable code: `src/qrc_law.py` (density-matrix engine + tasks + architectures + `zdiags`, `feats_from_P`, `perf`, `build`), `src/qrc_gatenoise.py` (c(γ) collapse), `src/qrc_pernode.py`, `src/qrc_beyondnoise.py`, `src/qrc_marginest.py`, `qrc_hw*.py`.
+1. NEVER submit to real IBM hardware; never read/use any token file. Simulation only.
+2. Touch nothing but this GitHub repo and your own session workspace.
+3. Pre-registered hypotheses; failures reported as failures; honesty section in every writeup.
+4. All bash calls <=45s (chunk + partial .npy).
+5. If push impossible, log under Pending push.
+6. ALWAYS push the updated agenda in the same commit batch as results.
 
-## STATUS — completed benchmarks
-- [x] **B1 — QRC vs tuned classical baselines** (`RESULTS.md`). ESN ties QRC once tuned.
-- [x] **B2 — Eight gap-closing strategies / the shot wall** (`RESULTS_GAP.md`). All readout-side fixes plateau at the no-quantum classical baseline.
-- [x] **B3 — The task-shaped wall** (`RESULTS_TASKSHAPE.md`). Classification retains ~86% of quantum benefit where regression retains ~4%.
-- [x] **B4 — Hardware noise benchmark + live QPU** (`RESULTS_HARDWARE.md`). (Historical live ibm_marrakesh 0.886 predates this agenda; **guardrails now forbid any new hardware runs — simulation only.**)
-- [x] **B5 — Parameter-free measurement-wall law** (`RESULTS_LAW.md`). R²=0.991, MAE 1.3pp, 150 cells, zero fitted params.
-- [x] **B6 — Device-fidelity factor (gate noise)** (`RESULTS_GATENOISE.md`). Global depolarizing → margin contraction c(γ); S_eff=S·c² collapses curves, R²=0.927 vs 0.851 naive, 420 cells.
-- [x] **B7 — Per-node + covariance refinement** (`RESULTS_PERNODE.md`, *honest negative*). Pre-registered >30% MAE cut; delivered 2.5% (2.89→2.82 pp). B6's residual is a shot-irreducible *off-curve* bias, not per-node/covariance error.
-- [x] **B8 — Beyond depolarizing** (`RESULTS_BEYONDNOISE.md`). Scalar c(η) is depolarizing-specific: fails R²>0.9 bar on coherent/amp-damping/dephasing. Coherent errors *rotate* the readout (recoverable by retraining); non-unital amplitude damping (T₁) is the shot-irreducible case.
-- [x] **B9 — Cheap margin/separation estimation at scale** (`RESULTS_MARGINEST.md`). *This run.* Naive plug-in `‖μ̂₁−μ̂₀‖` optimistically biased (up to +41% on hardest task @250-shot pilot); parameter-free pilot-only variance-subtraction correction removes it to ≤0.8% bias, ~3% RMSE @1k pilot shots (≈6% budget error). The margin-based law survives estimation, not just computation. 60 configs × 40 seeds.
-- [x] **B10 — Readout retraining under noise** (`RESULTS_RETRAIN.md`). *This run.* The B5/B6 probit is an almost-exact model of the **fixed** noiseless-design readout (R²=0.948, MAE 0.74pp / 0.14pp on gate-noisy cells) but that readout collapses ~24.5pp below the **retrained**-on-noisy reachable accuracy. 99.5% of the law-vs-reachable residual is the retraining gain (corr −0.9997). Retraining is load-bearing; the law is really a retrained-readout law. Caveat: perfect-exact-separation regime (arch0/1). 160 cells.
-- [x] **B11 — Second task family (external validity)** (`RESULTS_TASKFAM.md`). *This run.* Swapped the entire family: continuous chaotic **Mackey-Glass** input + 3 balanced non-parity memory-classification tasks + one-step-ahead chaotic regression; nothing else changed. 60 clf + 20 reg cells, 4 archs. **H1 (wall) confirmed & harsher**: fixed design-time readout collapses to 0.56 @64k shots, *below* the inputs-only floor 0.62 (exact 0.94–0.98 but razor-thin margins). **H2 (law external validity): split** — MAE 2.2pp / near-zero bias (B5-class, tracks both the collapse and arch4's recovery) but pre-registered R²>0.9 bar **fails at 0.79** (accuracies cluster near chance, 3× less variance than parity; signal-bearing tasks updown/prodmed R²≈0.87–0.89, accel near-unlearnable drags pooled R²). Failure kept on record, bar not moved. **H3 (task-shape) confirmed**: MG regression retention −1.06 @250 → 0.86 @64k. Independently reproduces **B10** on the new family (retrain 0.56→0.86 @64k). Lands in B10's flagged small-margin regime.
+## Queue (top-down)
 
-- [x] **B12 — Reservoir topology sweep** (`RESULTS_TOPOLOGY.md`). *This run.* Swept coupling graph (chain/ring/star/all-to-all) × depth (1,2) on the 5 clf tasks, 200 cells, exact=1.00 for all 40 reservoirs (clean matched-accuracy setting). **H1 confirmed:** information-per-shot IPS=Σ Δμ²/σ² varies **14–56×** across topologies and predicts shot-limited accuracy at ρ=+0.90 @250 shots (p=3e-15), fading to +0.37 @64k as it saturates — info-per-shot is a real, designable lever. **Star (hub) reservoir wins** (acc@250 0.924, IPS 0.63) *via* IPS, not connectivity (all-to-all has most edges, lowest IPS 0.33, worst-tied). **H2 falsified (honest negative):** participation ratio / concentration is uncorrelated with accuracy (ρ=−0.18, p=0.28) and with IPS (ρ=−0.25) — the README's "concentrate into a few high-magnitude observables" is the wrong target; **total SNR²-per-shot** is the knob, not its concentration.
+- [ ] B12 - Encoding-gain sweep (queued by B10's caveat). How does the fixed-vs-retrained
+      readout gap close as exact separation degrades? Sweep encoding gain (and/or feature
+      dropout) to move exact accuracy from 1.00 toward the floor; measure fixed-readout
+      accuracy, retrained accuracy, and law prediction at each point. Pre-register thresholds:
+      hypothesis is that retraining gain shrinks monotonically with exact margin and the law
+      tracks the retrained readout within ~3pp outside the perfect-separation regime.
+- [ ] B13 - Consolidate: PREPRINT.md. Full arXiv skeleton: abstract, B1-B12 narrative
+      (wall -> law -> gate-noise extension -> limits (B7/B8) -> usability at scale (B9/B10) ->
+      external validity (B11) -> design guidance), derivation sketch, limitations, future work.
+- [ ] B14 - Related-work pass. Web-search the QRC/QML literature (exponential concentration,
+      shot-budget analyses, QRC hardware demos); write RELATED_WORK.md mapping which findings
+      are known, adjacent, or novel, with specific citations. This decides the preprint's claims.
 
-## QUEUE — next work (B13 onward)
-- [ ] **B13 — Topology sweep on the small-margin family.** B12's parity tasks all saturate to exact=1.00 (maximal-headroom regime); repeat the IPS-vs-retention test on B11's razor-thin-margin Mackey-Glass tasks, where exact separation is imperfect and the IPS ranking may reshuffle. Natural merge of B11+B12.
-- [ ] **Optimise couplings, not just select graphs.** B12 showed `Σ Δμ²/σ²` is a noiselessly-computable design objective; run a search/gradient over coupling angles to maximise it and test whether the optimum beats the star.
-- [ ] *(open sub-question from B9)* cheap estimation of the full **per-sample margin distribution** (not just D₀), where the same bias-correction logic applies but is noisier per sample.
-- [ ] *(follow-up from B10)* **encoding-gain sweep**: vary encoding strength from perfect exact separation down to the wall, mapping retraining gain vs exact-margin headroom — does the fixed/retrained readout gap close smoothly as exact separation degrades (reconciling B10's 25pp with B5's tiny residual)?
+## Log
 
-## INFRASTRUCTURE
-- [x] **B-INFRA — agenda pushed to repo root** so state survives outputs-folder clears. Keep updating the repo copy each run.
+- 07-03 03:00 agenda created; 04:15-11:15 runs delivered B6-B11 (see above).
+- 07-03 12:30 stale agenda pushed by main session (its error), corrected 13:40. Rule 6 added.
 
-## LOG
-- 2026-07-03 (run A): Recovered state from GitHub (outputs empty). Discovered B6 gate-noise compute existed unpushed with no write-up. Authored `RESULTS_GATENOISE.md`, reconstructed agenda, pushed B6 + agenda. (Later runs then added B7 pernode + B8 beyondnoise, pushed, but did NOT update README/agenda.)
-- 2026-07-03 (run B, this run): Found outputs empty again; a *stale* local clone made B6 look unfinished, but a fresh clone showed the remote is at B8 (B6/B7/B8 all pushed). Verified B6 data independently (reproduced collapse R²=0.927/naive 0.851 exactly). Picked the genuinely-undone, B5-flagged "cheap margin estimator" open question as **B9**. Built it on `qrc_law.py`: 60 configs (3 arch × 5 clf tasks × 4 pilot budgets) × 40 seeds. Pre-registered H_bias + H_fix both **confirmed** (naive optimistically biased, pilot-only correction removes it). Wrote `RESULTS_MARGINEST.md` + `results/marginest_law.json` + `figures/qrc_marginest.png` + `src/qrc_marginest{,_fig}.py`; updated README with a benchmarks 7–9 section (README had been stuck at 5–6) and this agenda. Next run: **B10 (readout retraining under noise)**.
-- 2026-07-03 (run C, this run): Outputs empty again; a stale `/tmp` clone (B5-era) again made B6 look unpushed — **caught before pushing** by checking the live remote, which is at **B9** (40 commits). Discarded the stale reconstruction (did NOT push it — would have regressed the repo). Fresh-cloned, executed the queued **B10**. Pre-registered H0/H1; **H0 confirmed decisively**: closed-form probit predicts the fixed noiseless-design readout to 0.14pp on gate-noisy cells (R²=0.948 overall), but the fixed readout collapses ~24.5pp below retrained reachable accuracy; 99.5% of the B6-style residual is the retraining gain (corr −0.9997). Wrote `RESULTS_RETRAIN.md` + `results/retrain_law.json` + `figures/qrc_retrain.png` + `src/qrc_retrain{,_fig}.py`; updated README (benchmark-10 line) and this agenda. Honest caveat recorded: perfect-exact-separation regime; encoding-gain sweep queued to reconcile with B5. Next run: **B11 (second task family)**.
-- 2026-07-03 (run D, this run): Outputs empty again; recovered canonical state from the **live remote** (which was ahead of every stale `/tmp` clone — remote HEAD had B10 pushed & verified, next=B11). Executed queued **B11**. Built `src/qrc_taskfam.py` (+`_fig.py`) reusing the density-matrix engine and the exact B5/B6 `law_predict` probit; drove the reservoir with a continuous Mackey-Glass series and 3 balanced non-parity memory tasks + chaotic 1-step regression. Pre-registered H1/H2/H3: **H1 confirmed (wall harsher — fixed readout below classical floor), H3 confirmed (regression retention negative at low shots), H2 split (law MAE 2.2pp passes but pre-registered R²>0.9 fails at 0.79 on low-dynamic-range tasks — reported honestly, bar not moved).** Bonus: independently reproduced B10's fixed-vs-retrained collapse on the new family. Wrote `RESULTS_TASKFAM.md` + `results/taskfam_law.json` + `figures/qrc_taskfam.png`; updated README (benchmark-11 section, limitations line) and this agenda. Next run: **B12 (reservoir topology sweep)**, or the queued encoding-gain sweep to populate the mid-margin band where the law's R² bar is a fair test.
-
-- 2026-07-03 (run E, this run): Outputs empty again. A stale `/tmp` clone (B6-era HEAD) whose `git pull` had silently failed on filesystem permissions made the repo look like it was at B6 with B6 "unfinished" — I got as far as **rebuilding an external-validity / Mackey-Glass benchmark before catching, via the live remote, that it exactly duplicates the already-pushed B11 (`RESULTS_TASKFAM.md`).** Discarded that duplicate (did NOT push it — would have muddled B11). Fresh-cloned the live remote (at B11, verified) and executed the genuinely-queued **B12 (topology sweep)**. Built `src/qrc_topology.py` (+`_fig.py`) reusing the density-matrix engine; swept chain/ring/star/all-to-all × depth on the 5 clf tasks. Pre-registered H1/H2: **H1 confirmed (IPS varies 14–56×, predicts retention ρ=0.90 @250 shots; star reservoir wins via IPS not connectivity), H2 falsified (concentration/participation-ratio uncorrelated with accuracy — total SNR²-per-shot is the lever, not concentration).** All 200-cell numbers cross-checked vs `topology_law.json`. Wrote `RESULTS_TOPOLOGY.md` + `results/topology_law.json` + `figures/qrc_topology.png`; updated README (benchmark-12 section) and this agenda. **Lesson for future runs: always confirm the live remote HEAD before trusting a `/tmp` clone — `git pull` can fail silently on the sandbox mount, leaving a stale snapshot that invites duplicate work.** Next run: **B13 (topology sweep on B11's small-margin Mackey-Glass family)**.
-
-## PENDING PUSH
-- **B12 bundle — to push this run** (via logged-in Chrome, folder-scoped web upload):
-  - `src/qrc_topology.py`, `src/qrc_topology_fig.py`
-  - `results/RESULTS_TOPOLOGY.md`, `results/topology_law.json`
-  - `figures/qrc_topology.png`
-  - `README.md` (benchmark-12 section), `RESEARCH_AGENDA.md` (this file)
-  - If push succeeds, replace this block with "None — verified on `main`." If no logged-in Chrome, these stay pending (they live in the local outputs/work copy but that is cleared between runs, so an unpushed B12 is effectively lost — pushing is what makes it durable).
-  - **Do NOT push** the discarded `qrc_extval*`/`RESULTS_EXTVAL.md` duplicate-of-B11 files if they linger in the working copy.
+## Pending push
+(none)
