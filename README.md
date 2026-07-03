@@ -45,6 +45,12 @@ Post-processing can't fix this; the loss happens at measurement. The live questi
 
 **Benchmark 3 answered the secondary question** (`src/qrc_design.py`, [`results/RESULTS_TASKSHAPE.md`](results/RESULTS_TASKSHAPE.md)): the wall is a property of output precision, not of the quantum device. On temporal parity — where a linear model on inputs is provably at chance — the same reservoir at the same 40k-shot budget keeps 93% accuracy (86% of its exact-readout benefit), crossing the tuned classical ESN near 12k shots/step. Shot noise destroys precision, not information class: coarse-output tasks sit below the wall.
 
+## Latest: benchmarks 5–6 (a predictive law, and its hardware extension)
+
+**Benchmark 5 — a parameter-free measurement-wall law** (`results/RESULTS_LAW.md`). Across 150 cells (5 tasks × 6 architectures × 5 shot budgets), a shot-noise-limited QRC classifier's accuracy is predicted *before any noisy run* from three noiseless quantities — readout direction, per-sample decision margins, and the exact multinomial shot-noise covariance projected onto the readout — at R² = 0.991, MAE 1.3 pp, with zero fitted parameters.
+
+**Benchmark 6 — a device-fidelity factor** (`results/RESULTS_GATENOISE.md`). The law is extended from shot noise to *gate* noise. A global depolarizing channel contracts every decision margin by a noiselessly-computable factor `c(γ)`, so gate noise acts, to leading order, as a pure effective-shot reduction: rescaling the shot axis by `c(γ)²` collapses every gate-noisy accuracy curve back onto the noiseless one (420 cells, collapse R² = 0.927 vs 0.851 for ignoring gate noise, advantage growing with noise strength). A QRC practitioner can now estimate the hardware shot budget a classification task needs — accounting for both sampling and gate fidelity — before spending any quantum time. Honest residual: the collapse is ~3 pp, not exact, so gate noise is *approximately* but not perfectly "just fewer shots." ![Gate-noise collapse](figures/qrc_gate_noise.png)
+
 ## Honest limitations
 
 Single task family (NARMA), one reservoir topology, sampling noise only — real hardware adds gate errors, so the wall here is *optimistic*. Feature-count-matched (not wall-clock-matched) classical comparisons. Details and seeds in the write-ups.
