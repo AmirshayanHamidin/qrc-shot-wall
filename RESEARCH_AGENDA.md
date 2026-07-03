@@ -1,73 +1,73 @@
-# Standing Research Agenda — qrc-shot-wall autonomous program
+# Standing Research Agenda — qrc-shot-wall overnight program
 
-## AUTHORITATIVE STATE (2026-07-03 ~13:55 — supersedes any older copy)
+## State (updated 2026-07-03, scheduled run)
 
-**READ THE LIVE REPO README FIRST. It is ground truth.** This agenda was once out of date
-and caused near-duplicate work; if this file disagrees with the README, trust the README
-and push a corrected agenda.
+Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth** for
+what is done; this file is the forward queue. Benchmarks 1–13 complete and pushed.
+Note: the benchmark numbering in older versions of this file (B6–B11 as planned items)
+is obsolete — the program evolved differently; trust the README's numbering.
 
-Completed and pushed (see README + results/ for details):
-- B1-B4: shot wall, gap strategies, task-shaped wall, hardware run (0.886 on ibm_marrakesh).
-- B5: parameter-free measurement-wall law (R2=0.991, 150 cells) - RESULTS_LAW.md
-- B6: gate noise as effective-shot reduction S_eff=S*c(gamma)^2 (420 cells, R2=0.927) - RESULTS_GATENOISE.md
-- B7: per-node/covariance refinement - HONEST NEGATIVE (residual is shot-irreducible) - RESULTS_PERNODE.md
-- B8: beyond depolarizing - scalar factor insufficient; T1 damping is the shot-irreducible case - RESULTS_BEYONDNOISE.md
-- B9: margin estimation at scale - plug-in bias +41% trap; parameter-free debias to <=0.8% - RESULTS_MARGINEST.md
-- B10: the law is a retrained-readout law; retraining recovers mean 24.5pp - RESULTS_RETRAIN.md
-- B11: external validity on Mackey-Glass family - wall harsher, law calibrated (MAE 2.2pp),
-  pre-registered R2>0.9 bar FAILED at 0.79 and reported honestly - RESULTS_TASKFAM.md
-- SUPPLEMENTARY (13:10 run, executed off a STALE agenda copy — see Log): self-calibrated
-  budget prediction from a single noisy pilot. H refuted (split-pilot+debias 5.7pt MAE);
-  post-hoc smoothing predictor Phi(g_hat/sqrt(sigma_S^2+v_pilot)) reaches 3.8pt MAE /
-  R2=0.915 at S_pilot=8000; downward budget extrapolation ~solved (<=2.2pt), upward
-  (S>>S_pilot) open. Files: results/RESULTS_SELFCAL.md, results/b6_selfcal.json,
-  figures/b6_selfcal.png, src/b6_selfcal.py (+aggregate/fig). NOTE: overlaps B9 (margin
-  debiasing) and B10 (fixed-vs-retrained readout); needs a reconciliation pass — its
-  "B6" label refers to the stale numbering, not RESULTS_GATENOISE B6.
+Current state of the science: shot wall established (B1–B2), task-shape (B3), live QPU
+validation done historically (0.886 on ibm_marrakesh — budget now nearly spent, hence
+guardrail 1), measurement-wall law (B5) + gate-noise extension (B6) + its limits
+(B7–B8) + usability at scale (B9) + retraining caveat (B10), external validity on
+Mackey-Glass (B11), topology/IPS design rule (B12), and B13 (this run): the IPS rule
+is **within-task only** — pre-registered pooled bar failed honestly (ρ=+0.07 vs B12's
++0.90); star advantage shrinks to n.s.; "avoid all-to-all" transfers.
 
 ## HARD GUARDRAILS (never violate)
 
-1. NEVER submit to real IBM hardware; never read/use any token file. Simulation only.
-2. Touch nothing but this GitHub repo and your own session workspace.
-3. Pre-registered hypotheses; failures reported as failures; honesty section in every writeup.
-4. All bash calls <=45s (chunk + partial .npy).
-5. If push impossible, log under Pending push.
-6. ALWAYS push the updated agenda in the same commit batch as results.
-7. raw.githubusercontent.com can serve STALE content (CDN cache, observed 2x on 07-03).
-   Before acting, cross-check freshness: fetch https://github.com/AmirshayanHamidin/qrc-shot-wall/commits/main
-   (or the README) and confirm this agenda's latest Log entry matches the newest
-   agenda-touching commit. If mismatch, fetch the file at the exact commit SHA instead.
+1. **NEVER submit jobs to real IBM hardware** — the free QPU budget is nearly spent
+   (484/600s). Do not read or use `ibm_token.txt`. Simulation only (numpy engine +
+   qiskit-aer).
+2. Only work inside the session outputs folder and the qrc-shot-wall GitHub repo. No
+   other accounts, sites, purchases, emails, or messages.
+3. Every claim gets an honesty section. Failed hypotheses are reported as failures.
+4. Keep runs within the 45s bash-call limit (chunk long computations; partial .npy/.json).
+5. If GitHub push isn't possible in this session, save everything locally and log it
+   under "Pending push" below; do not retry endlessly.
 
-## Queue (top-down)
+## Method rules
 
-- [ ] B12 - Encoding-gain sweep (queued by B10's caveat). How does the fixed-vs-retrained
-      readout gap close as exact separation degrades? Sweep encoding gain (and/or feature
-      dropout) to move exact accuracy from 1.00 toward the floor; measure fixed-readout
-      accuracy, retrained accuracy, and law prediction at each point. Pre-register thresholds:
-      hypothesis is that retraining gain shrinks monotonically with exact margin and the law
-      tracks the retrained readout within ~3pp outside the perfect-separation regime.
-      (Note: RESULTS_SELFCAL's frozen-pilot-readout data may be reusable here.)
-- [ ] B12b - Reconciliation pass: compare RESULTS_SELFCAL vs RESULTS_MARGINEST (B9) and
-      RESULTS_RETRAIN (B10); fold any genuinely novel piece (pilot->budget accuracy
-      prediction, the gauss smoothing identity) into the preprint narrative; mark the rest
-      as duplicate. Small, do together with or right after B12.
-- [ ] B13 - Consolidate: PREPRINT.md. Full arXiv skeleton: abstract, B1-B12 narrative
-      (wall -> law -> gate-noise extension -> limits (B7/B8) -> usability at scale (B9/B10) ->
-      external validity (B11) -> design guidance), derivation sketch, limitations, future work.
-- [ ] B14 - Related-work pass. Web-search the QRC/QML literature (exponential concentration,
-      shot-budget analyses, QRC hardware demos); write RELATED_WORK.md mapping which findings
-      are known, adjacent, or novel, with specific citations. This decides the preprint's claims.
+- One pre-stated falsifiable hypothesis per benchmark, written down (script header
+  and/or writeup) BEFORE running; fit/holdout splits where fitting occurs.
+- Verify any re-transcribed pipeline against published repo numbers before trusting it
+  (B13 pattern: reproduce a B12 IPS value to machine precision first).
+- Post-hoc analyses are allowed but must be labeled post-hoc everywhere they appear.
+- Write results as `results/RESULTS_<NAME>.md` + raw JSON + figure PNG; update README
+  (new benchmark section + limitations) and this agenda in the same push batch.
+
+## Queue (work top-down; mark DONE with date)
+
+- [x] **Small-margin regime sweep (B13).** DONE 2026-07-03. B12's topology sweep re-run
+      on the Mackey-Glass family. H1 pooled bar FAILED (honest negative); within-task
+      IPS effect strong (post-hoc); star edge n.s.; all-to-all robustly worst.
+      → results/RESULTS_SMALLMARGIN.md, results/smallmargin_law.json,
+      figures/qrc_smallmargin.png, src/qrc_smallmargin.py.
+- [ ] **PREPRINT.md consolidation.** Draft `PREPRINT.md` at repo root: abstract, the
+      13-benchmark narrative arc (wall → law → limits → design), law derivation sketch,
+      honest-negative ledger (B7, B8-partial, B11-H2-partial, B12-H2, B13-H1),
+      limitations, future work. This is the arXiv skeleton. Confirmatory items to flag
+      as open: within-task IPS rule on a third task family; reseeded topology sweep.
+- [ ] **RELATED_WORK.md literature pass.** Position against published QRC/shot-noise
+      literature (web search allowed; cite properly; no paywalled quoting). Candidate
+      anchors: QRC reviews, finite-sampling noise analyses, quantum-advantage-under-
+      measurement papers. Map each of our 13 benchmarks to nearest prior art and state
+      what is new. Feed directly into PREPRINT.md's related-work section.
+- [ ] (then) **AUDIT MODE** per the standing task instructions: least-recently-audited
+      benchmark first, re-run key numbers from repo code, push AUDITS.md entries.
 
 ## Log
 
-- 07-03 03:00 agenda created; 04:15-11:15 runs delivered B6-B11 (see above).
-- 07-03 12:30 stale agenda pushed by main session (its error), corrected 13:40. Rule 6 added.
-- 07-03 13:10-13:55 scheduled run: STEP-1 raw fetch returned the stale 12:30 agenda (CDN
-  cache), so the run executed the outdated "B6 self-calibration" item and briefly overwrote
-  the 13:40 authoritative agenda. Detected via commit history during verification; this
-  commit restores the authoritative state, files the self-cal work as SUPPLEMENTARY, adds
-  guardrail 7 (freshness check), and queues B12b (reconciliation). The self-cal science
-  itself is sound and fully pushed (4 commits, 1e98b50..52bd507).
+- 2026-07-03 03:00 — Agenda created. B6 (old numbering) started in the live session.
+- 2026-07-03 12:30 — Agenda moved into repo root so scheduled runs can fetch it.
+- 2026-07-03 (scheduled run) — **B13 small-margin sweep completed and pushed.** Pipeline
+  verified against B12's published star-L1/parity3 IPS (exact match). 120 cells.
+  Pre-registered H1 falsified as registered (pooled ρ=+0.07, p=0.75 @250 shots);
+  within-task-standardized pooled ρ=+0.82 (post-hoc, labeled); H2 literal pass but
+  star-vs-chain/ring n.s. (Wilcoxon p≈0.1–0.2), star-vs-all2all significant (p=0.002).
+  README B13 section added; limitations updated. Next queue item: PREPRINT.md.
 
 ## Pending push
+
 (none)
