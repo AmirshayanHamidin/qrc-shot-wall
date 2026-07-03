@@ -1,79 +1,73 @@
-# Standing Research Agenda — qrc-shot-wall overnight program
+# Standing Research Agenda — qrc-shot-wall autonomous program
 
-## State (updated 2026-07-03 ~13:10, scheduled run)
+## AUTHORITATIVE STATE (2026-07-03 ~13:55 — supersedes any older copy)
 
-Repo: github.com/AmirshayanHamidin/qrc-shot-wall (local copy: `qrc-shot-wall/` in this folder).
-Benchmarks 1–6 complete and pushed. Benchmark 5 established the **measurement-wall law**:
-noisy classifier accuracy = mean Φ(margin_i / σ_i), with σ computed from the exact multinomial
-shot-noise covariance projected on the readout direction. R²=0.991, MAE=1.3pts over 150 cells
-(see results/RESULTS_LAW.md, src/qrc_law.py). Live QPU validation done (0.886 on ibm_marrakesh).
-Benchmark 6 (self-calibration from a single noisy pilot): H-B6v3 REFUTED (split-pilot +
-debiasing tops out at 5.7pt MAE); post-hoc v4 "gauss_full" predictor
-acc = mean Φ(ĝ/√(σ_S²+v_pilot)) reaches MAE 3.8pts / R²=0.915 at S_pilot=8000
-(see results/RESULTS_SELFCAL.md). Downward budget extrapolation is ~solved (≤2.2pts);
-upward extrapolation S≫S_pilot is the open problem.
+**READ THE LIVE REPO README FIRST. It is ground truth.** This agenda was once out of date
+and caused near-duplicate work; if this file disagrees with the README, trust the README
+and push a corrected agenda.
+
+Completed and pushed (see README + results/ for details):
+- B1-B4: shot wall, gap strategies, task-shaped wall, hardware run (0.886 on ibm_marrakesh).
+- B5: parameter-free measurement-wall law (R2=0.991, 150 cells) - RESULTS_LAW.md
+- B6: gate noise as effective-shot reduction S_eff=S*c(gamma)^2 (420 cells, R2=0.927) - RESULTS_GATENOISE.md
+- B7: per-node/covariance refinement - HONEST NEGATIVE (residual is shot-irreducible) - RESULTS_PERNODE.md
+- B8: beyond depolarizing - scalar factor insufficient; T1 damping is the shot-irreducible case - RESULTS_BEYONDNOISE.md
+- B9: margin estimation at scale - plug-in bias +41% trap; parameter-free debias to <=0.8% - RESULTS_MARGINEST.md
+- B10: the law is a retrained-readout law; retraining recovers mean 24.5pp - RESULTS_RETRAIN.md
+- B11: external validity on Mackey-Glass family - wall harsher, law calibrated (MAE 2.2pp),
+  pre-registered R2>0.9 bar FAILED at 0.79 and reported honestly - RESULTS_TASKFAM.md
+- SUPPLEMENTARY (13:10 run, executed off a STALE agenda copy — see Log): self-calibrated
+  budget prediction from a single noisy pilot. H refuted (split-pilot+debias 5.7pt MAE);
+  post-hoc smoothing predictor Phi(g_hat/sqrt(sigma_S^2+v_pilot)) reaches 3.8pt MAE /
+  R2=0.915 at S_pilot=8000; downward budget extrapolation ~solved (<=2.2pt), upward
+  (S>>S_pilot) open. Files: results/RESULTS_SELFCAL.md, results/b6_selfcal.json,
+  figures/b6_selfcal.png, src/b6_selfcal.py (+aggregate/fig). NOTE: overlaps B9 (margin
+  debiasing) and B10 (fixed-vs-retrained readout); needs a reconciliation pass — its
+  "B6" label refers to the stale numbering, not RESULTS_GATENOISE B6.
 
 ## HARD GUARDRAILS (never violate)
 
-1. **NEVER submit jobs to real IBM hardware** — the free QPU budget is nearly spent (484/600s).
-   Do not read or use `ibm_token.txt`. Simulation only (numpy engine + qiskit-aer).
-2. Only work inside this outputs folder and the qrc-shot-wall GitHub repo. No other accounts,
-   sites, purchases, emails, or messages.
-3. Every claim gets an honesty section. Failed hypotheses are reported as failures.
-4. Keep runs within the 45s bash-call limit (chunk long computations; see qrc_hw2.py pattern).
-5. If GitHub push isn't possible in this session, save everything locally in
-   `qrc-shot-wall/` subfolders and log it under "Pending push" below; do not retry endlessly.
+1. NEVER submit to real IBM hardware; never read/use any token file. Simulation only.
+2. Touch nothing but this GitHub repo and your own session workspace.
+3. Pre-registered hypotheses; failures reported as failures; honesty section in every writeup.
+4. All bash calls <=45s (chunk + partial .npy).
+5. If push impossible, log under Pending push.
+6. ALWAYS push the updated agenda in the same commit batch as results.
+7. raw.githubusercontent.com can serve STALE content (CDN cache, observed 2x on 07-03).
+   Before acting, cross-check freshness: fetch https://github.com/AmirshayanHamidin/qrc-shot-wall/commits/main
+   (or the README) and confirm this agenda's latest Log entry matches the newest
+   agenda-touching commit. If mismatch, fetch the file at the exact commit SHA instead.
 
-## Method rules
+## Queue (top-down)
 
-- One pre-stated falsifiable hypothesis per benchmark; fit/holdout splits where fitting occurs.
-- Reuse the engine: `qrc_law.py` (build/eval phases), density-matrix numpy for speed.
-- Write results as `qrc-shot-wall/results/RESULTS_<NAME>.md` + raw JSON + figure PNG.
-- Update the "Log" section of this file after each work session.
-
-## Queue (work top-down; mark DONE with date; go deeper on whatever the results point to)
-
-- [x] **B6 — Self-calibrating law. DONE 2026-07-03.** v1 (naive plug-in, C=1000) FAILED
-      R²=−1.74. v2 (C=1 + squared-margin debiasing) R²≈0.48 on 2 archs. v3 full run (all 6
-      archs, 5 tasks, S_pilot∈{500,2000,8000}, 150 cells/config): H-B6v3 refuted — splitting
-      the pilot HURTS (5.7pt MAE vs 4.2 nosplit at S_pilot=8000); bagging ≈ no effect.
-      Post-hoc v4 smoothing identity Φ(ĝ/√(σ_S²+v_pilot)) is the best self-calibrated
-      predictor: 3.8pt MAE / R²=0.915 at S_pilot=8000; ≤2.2pt for S ≤ S_pilot/2 (downward
-      extrapolation ~solved). Open: upward extrapolation S≫S_pilot saturates at pilot
-      uncertainty. Files: results/RESULTS_SELFCAL.md, results/b6_selfcal.json,
-      figures/b6_selfcal.png, src/b6_selfcal.py.
-- [ ] **B6b — Confirmatory v4 (quick, do first).** Freeze gauss_full; fresh pilot seeds;
-      pre-state: MAE ≤ 4pts AND R² ≥ 0.90 at S_pilot=8000 over 150 cells. Also try empirical-
-      Bayes shrinkage prior on margins to attack the S≫S_pilot regime, and report interval
-      predictions [Φ(ĝ/√(σ²+v)), Φ(ĝ/σ)] coverage. (~10 min of compute.)
-- [ ] **B7 — Law + gate noise.** Hypothesis: device noise enters as a margin-shrinkage factor.
-      Fit a single per-device scalar λ (or per-depth λ^d) on a few FakeTorino cells, predict the
-      rest. Uses qiskit-aer FakeTorino (simulation only).
-- [ ] **B8 — Regression law.** Closed form: NMSE_noisy ≈ NMSE_exact + wᵀΣw/var(y). Test across
-      the grid (30 regression cells exist; extend budgets). If it holds, both task regimes are
-      predicted by one framework.
-- [ ] **B9 — Scaling.** How do margin distributions scale with qubit count (4–8 qubits, T reduced
-      for 8q feasibility)? Does margin×√S improve, worsen, or stay flat with size at fixed task?
-- [ ] **B10 — Margin-aware training.** Intervention: choose readout regularization/objective to
-      maximize predicted noisy accuracy (from the law) instead of clean accuracy. Measure gain.
-- [ ] **B11 — Consolidate.** Draft `qrc-shot-wall/PREPRINT.md`: abstract, 5-benchmark narrative,
-      law derivation sketch, limitations, future work. This is the arXiv skeleton.
+- [ ] B12 - Encoding-gain sweep (queued by B10's caveat). How does the fixed-vs-retrained
+      readout gap close as exact separation degrades? Sweep encoding gain (and/or feature
+      dropout) to move exact accuracy from 1.00 toward the floor; measure fixed-readout
+      accuracy, retrained accuracy, and law prediction at each point. Pre-register thresholds:
+      hypothesis is that retraining gain shrinks monotonically with exact margin and the law
+      tracks the retrained readout within ~3pp outside the perfect-separation regime.
+      (Note: RESULTS_SELFCAL's frozen-pilot-readout data may be reusable here.)
+- [ ] B12b - Reconciliation pass: compare RESULTS_SELFCAL vs RESULTS_MARGINEST (B9) and
+      RESULTS_RETRAIN (B10); fold any genuinely novel piece (pilot->budget accuracy
+      prediction, the gauss smoothing identity) into the preprint narrative; mark the rest
+      as duplicate. Small, do together with or right after B12.
+- [ ] B13 - Consolidate: PREPRINT.md. Full arXiv skeleton: abstract, B1-B12 narrative
+      (wall -> law -> gate-noise extension -> limits (B7/B8) -> usability at scale (B9/B10) ->
+      external validity (B11) -> design guidance), derivation sketch, limitations, future work.
+- [ ] B14 - Related-work pass. Web-search the QRC/QML literature (exponential concentration,
+      shot-budget analyses, QRC hardware demos); write RELATED_WORK.md mapping which findings
+      are known, adjacent, or novel, with specific citations. This decides the preprint's claims.
 
 ## Log
 
-- 2026-07-03 03:00 — Agenda created. B6 started in the live session.
-- 2026-07-03 12:30 — Overnight runs did not execute (app closed + agenda was not reachable
-  from fresh scheduled sessions). Fixed: this file now lives in the repo root; scheduled runs
-  fetch it from raw.githubusercontent.com and push updates back. B6 remains the top item;
-  b6_part1/2 JSONs live in the original live session and their numbers are summarized in the
-  B6 queue entry — re-derive locally if needed (code: src/qrc_law.py).
-- 2026-07-03 13:10 — Scheduled run completed B6. Rebuilt all 6 arch tensors from scratch;
-  ran v3 (nosplit/split/split_bag × S_pilot {500,2000,8000} × 6 archs × 5 tasks × 5 budgets)
-  plus post-hoc v4 gauss variants; 2250 measurements total. H-B6v3 refuted (splitting hurts);
-  v4 gauss_full best at 3.8pt MAE / R²=0.915 (S_pilot=8000). Wrote RESULTS_SELFCAL.md +
-  b6_selfcal.json + b6_selfcal.png; queued B6b confirmatory run as next item. Note: v1/v2
-  numbers quoted from the 03:00 live session log were not re-derived this run.
+- 07-03 03:00 agenda created; 04:15-11:15 runs delivered B6-B11 (see above).
+- 07-03 12:30 stale agenda pushed by main session (its error), corrected 13:40. Rule 6 added.
+- 07-03 13:10-13:55 scheduled run: STEP-1 raw fetch returned the stale 12:30 agenda (CDN
+  cache), so the run executed the outdated "B6 self-calibration" item and briefly overwrote
+  the 13:40 authoritative agenda. Detected via commit history during verification; this
+  commit restores the authoritative state, files the self-cal work as SUPPLEMENTARY, adds
+  guardrail 7 (freshness check), and queues B12b (reconciliation). The self-cal science
+  itself is sound and fully pushed (4 commits, 1e98b50..52bd507).
 
 ## Pending push
-
 (none)
