@@ -1,0 +1,23 @@
+{
+  "backend": "ibm_marrakesh",
+  "accuracy": 0.8864,
+  "nodes": 2,
+  "features": 42,
+  "shots_per_node": 6000,
+  "T": 150,
+  "chain": [
+    14,
+    15,
+    19,
+    35,
+    34,
+    33
+  ],
+  "quantum_seconds_used": 484,
+  "test_points": 44,
+  "references": {
+    "ideal_sim": 0.886,
+    "device_model": 0.864,
+    "chance": 0.5
+  }
+}

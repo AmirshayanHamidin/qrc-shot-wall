@@ -31,6 +31,12 @@ Final architecture: 4-input window, 1-layer chain-coupled reservoir, 3 readout n
 
 Benchmark 3 showed coarse-output tasks survive *measurement* noise. This benchmark shows they can also survive *device* noise — but only if the reservoir is co-designed with the machine: its topology, its calibration data, and its readout errors. A device-agnostic design at the same logical size produced exactly chance. The design principle from benchmark 3 (information-per-shot) generalizes to information-per-shot-*on-this-device*.
 
+## Live QPU run: ibm_marrakesh
+
+The identical experiment executed on **real hardware** (IBM Heron, 156 qubits, `ibm_marrakesh`, 2026-07-03): 2 readout nodes × 148 circuits × 6,000 shots on the live-calibration-selected chain [14, 15, 19, 35, 34, 33], with mid-circuit resets and per-job readout mitigation. Total quantum time: 484 seconds, inside the free Open Plan budget.
+
+**Result: 0.8864 parity accuracy (39/44)** — matching the noiseless-simulation ceiling at this shot budget (0.886) and *above* the FakeTorino device-model prediction (0.864). The topology-native design left so little room for gate error that the real device performed at the shot-noise limit. Raw numbers: `results/qpu_final.json`; runner scripts: `src/qpu_submit.py`-style flow in `src/run_qpu.py`.
+
 ## Honest boundaries
 
-This is a **device-noise-model** result (FakeTorino: real IBM calibration snapshots driving Aer), not yet a live-QPU run — `src/run_qpu.py` is ready and runs the identical experiment on real hardware with a free IBM account (results section will be updated when queue time is available). Parity remains classically easy (poly-3 solves it); the claim is about what survives the hardware interface, not quantum advantage. Single device model, single task, 44-point test set (0.864 = 38/44; above chance at p < 10⁻⁶). Error rates drift between calibration snapshots, so live-hardware numbers will differ.
+Parity remains classically easy (poly-3 solves it); the claim is about what survives the hardware interface, not quantum advantage. Single device, single task, 44-point test set (above chance at p < 10⁻⁶); the live run used 2 of 3 readout nodes to stay inside the free quantum-time budget. Error rates drift between calibration snapshots, so exact numbers will vary run to run.
