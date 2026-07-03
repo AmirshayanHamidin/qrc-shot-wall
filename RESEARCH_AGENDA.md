@@ -1,50 +1,64 @@
-# RESEARCH_AGENDA.md — qrc-shot-wall overnight program
+# Standing Research Agenda — qrc-shot-wall overnight program
 
-> **NOTE:** the canonical agenda lives BOTH in the session outputs folder (cleared between
-> scheduled runs) and in the repo root (durable). Always trust the repo copy on `main`;
-> the outputs copy is scratch. **Re-numbering note (2026-07-03):** benchmark numbers now
-> follow the repo's actual write-up sequence B1..B9, which had drifted from an older queue
-> that labelled the margin-estimator study "B7". They have been reconciled below.
+## State (updated 2026-07-03 ~03:00)
 
-Local repo copy: `outputs/qrc-shot-wall/` · Remote: github.com/AmirshayanHamidin/qrc-shot-wall
+Repo: github.com/AmirshayanHamidin/qrc-shot-wall (local copy: `qrc-shot-wall/` in this folder).
+Benchmarks 1–5 complete and pushed. Benchmark 5 established the **measurement-wall law**:
+noisy classifier accuracy = mean Φ(margin_i / σ_i), with σ computed from the exact multinomial
+shot-noise covariance projected on the readout direction. R²=0.991, MAE=1.3pts over 150 cells
+(see results/RESULTS_LAW.md, src/qrc_law.py). Live QPU validation done (0.886 on ibm_marrakesh).
 
 ## HARD GUARDRAILS (never violate)
-- **Simulation only.** numpy + qiskit-aer (or numpy density matrix + qiskit unitary). NEVER submit to real IBM quantum hardware. NEVER read or use `ibm_token.txt`. Do not use qiskit-ibm-runtime's live service.
-- **No other accounts/services.** The only external write allowed is pushing files to the GitHub repo above via the logged-in-Chrome web upload flow. Touch nothing else.
-- **45-second shell limit.** Chunk long runs, save partial `.npy`/`.json`, aggregate in a later call. Never launch a computation that can't finish (or checkpoint) within one call.
-- **Honesty.** Every benchmark states a hypothesis before running and reports negative results / residuals plainly. No result inflation.
-- **Env note (2026-07-03):** the sandbox python did NOT have qiskit/sklearn preinstalled this run; installed via `pip install qiskit scikit-learn matplotlib --break-system-packages`. Budget ~1 call for this if the env is fresh again.
 
-## METHOD RULES
-- Each benchmark: pre-stated falsifiable hypothesis → rigorous eval (multi-seed, error bars, holdout where relevant) → `RESULTS_<NAME>.md` + JSON + figure → update this Log + checkboxes → push.
-- Reusable code: `src/qrc_law.py` (density-matrix engine + tasks + architectures + `zdiags`, `feats_from_P`, `perf`, `build`), `src/qrc_gatenoise.py` (c(γ) collapse), `src/qrc_pernode.py`, `src/qrc_beyondnoise.py`, `src/qrc_marginest.py`, `qrc_hw*.py`.
+1. **NEVER submit jobs to real IBM hardware** — the free QPU budget is nearly spent (484/600s).
+   Do not read or use `ibm_token.txt`. Simulation only (numpy engine + qiskit-aer).
+2. Only work inside this outputs folder and the qrc-shot-wall GitHub repo. No other accounts,
+   sites, purchases, emails, or messages.
+3. Every claim gets an honesty section. Failed hypotheses are reported as failures.
+4. Keep runs within the 45s bash-call limit (chunk long computations; see qrc_hw2.py pattern).
+5. If GitHub push isn't possible in this session, save everything locally in
+   `qrc-shot-wall/` subfolders and log it under "Pending push" below; do not retry endlessly.
 
-## STATUS — completed benchmarks
-- [x] **B1 — QRC vs tuned classical baselines** (`RESULTS.md`). ESN ties QRC once tuned.
-- [x] **B2 — Eight gap-closing strategies / the shot wall** (`RESULTS_GAP.md`). All readout-side fixes plateau at the no-quantum classical baseline.
-- [x] **B3 — The task-shaped wall** (`RESULTS_TASKSHAPE.md`). Classification retains ~86% of quantum benefit where regression retains ~4%.
-- [x] **B4 — Hardware noise benchmark + live QPU** (`RESULTS_HARDWARE.md`). (Historical live ibm_marrakesh 0.886 predates this agenda; **guardrails now forbid any new hardware runs — simulation only.**)
-- [x] **B5 — Parameter-free measurement-wall law** (`RESULTS_LAW.md`). R²=0.991, MAE 1.3pp, 150 cells, zero fitted params.
-- [x] **B6 — Device-fidelity factor (gate noise)** (`RESULTS_GATENOISE.md`). Global depolarizing → margin contraction c(γ); S_eff=S·c² collapses curves, R²=0.927 vs 0.851 naive, 420 cells.
-- [x] **B7 — Per-node + covariance refinement** (`RESULTS_PERNODE.md`, *honest negative*). Pre-registered >30% MAE cut; delivered 2.5% (2.89→2.82 pp). B6's residual is a shot-irreducible *off-curve* bias, not per-node/covariance error.
-- [x] **B8 — Beyond depolarizing** (`RESULTS_BEYONDNOISE.md`). Scalar c(η) is depolarizing-specific: fails R²>0.9 bar on coherent/amp-damping/dephasing. Coherent errors *rotate* the readout (recoverable by retraining); non-unital amplitude damping (T₁) is the shot-irreducible case.
-- [x] **B9 — Cheap margin/separation estimation at scale** (`RESULTS_MARGINEST.md`). *This run.* Naive plug-in `‖μ̂₁−μ̂₀‖` optimistically biased (up to +41% on hardest task @250-shot pilot); parameter-free pilot-only variance-subtraction correction removes it to ≤0.8% bias, ~3% RMSE @1k pilot shots (≈6% budget error). The margin-based law survives estimation, not just computation. 60 configs × 40 seeds.
-- [x] **B10 — Readout retraining under noise** (`RESULTS_RETRAIN.md`). *This run.* The B5/B6 probit is an almost-exact model of the **fixed** noiseless-design readout (R²=0.948, MAE 0.74pp / 0.14pp on gate-noisy cells) but that readout collapses ~24.5pp below the **retrained**-on-noisy reachable accuracy. 99.5% of the law-vs-reachable residual is the retraining gain (corr −0.9997). Retraining is load-bearing; the law is really a retrained-readout law. Caveat: perfect-exact-separation regime (arch0/1). 160 cells.
-- [x] **B11 — Second task family (external validity)** (`RESULTS_TASKFAM.md`). *This run.* Swapped the entire family: continuous chaotic **Mackey-Glass** input + 3 balanced non-parity memory-classification tasks + one-step-ahead chaotic regression; nothing else changed. 60 clf + 20 reg cells, 4 archs. **H1 (wall) confirmed & harsher**: fixed design-time readout collapses to 0.56 @64k shots, *below* the inputs-only floor 0.62 (exact 0.94–0.98 but razor-thin margins). **H2 (law external validity): split** — MAE 2.2pp / near-zero bias (B5-class, tracks both the collapse and arch4's recovery) but pre-registered R²>0.9 bar **fails at 0.79** (accuracies cluster near chance, 3× less variance than parity; signal-bearing tasks updown/prodmed R²≈0.87–0.89, accel near-unlearnable drags pooled R²). Failure kept on record, bar not moved. **H3 (task-shape) confirmed**: MG regression retention −1.06 @250 → 0.86 @64k. Independently reproduces **B10** on the new family (retrain 0.56→0.86 @64k). Lands in B10's flagged small-margin regime.
+## Method rules
 
-## QUEUE — next work (B12 onward)
-- [ ] **B12 — Reservoir topology sweep.** One topology throughout. Sweep connectivity/depth to see whether "information-per-shot" can be designed to concentrate task signal in few high-magnitude observables (the README's redirected question).
-- [ ] *(open sub-question from B9)* cheap estimation of the full **per-sample margin distribution** (not just D₀), where the same bias-correction logic applies but is noisier per sample.
-- [ ] *(follow-up from B10)* **encoding-gain sweep**: vary encoding strength from perfect exact separation down to the wall, mapping retraining gain vs exact-margin headroom — does the fixed/retrained readout gap close smoothly as exact separation degrades (reconciling B10's 25pp with B5's tiny residual)?
+- One pre-stated falsifiable hypothesis per benchmark; fit/holdout splits where fitting occurs.
+- Reuse the engine: `qrc_law.py` (build/eval phases), density-matrix numpy for speed.
+- Write results as `qrc-shot-wall/results/RESULTS_<NAME>.md` + raw JSON + figure PNG.
+- Update the "Log" section of this file after each work session.
 
-## INFRASTRUCTURE
-- [x] **B-INFRA — agenda pushed to repo root** so state survives outputs-folder clears. Keep updating the repo copy each run.
+## Queue (work top-down; mark DONE with date; go deeper on whatever the results point to)
 
-## LOG
-- 2026-07-03 (run A): Recovered state from GitHub (outputs empty). Discovered B6 gate-noise compute existed unpushed with no write-up. Authored `RESULTS_GATENOISE.md`, reconstructed agenda, pushed B6 + agenda. (Later runs then added B7 pernode + B8 beyondnoise, pushed, but did NOT update README/agenda.)
-- 2026-07-03 (run B, this run): Found outputs empty again; a *stale* local clone made B6 look unfinished, but a fresh clone showed the remote is at B8 (B6/B7/B8 all pushed). Verified B6 data independently (reproduced collapse R²=0.927/naive 0.851 exactly). Picked the genuinely-undone, B5-flagged "cheap margin estimator" open question as **B9**. Built it on `qrc_law.py`: 60 configs (3 arch × 5 clf tasks × 4 pilot budgets) × 40 seeds. Pre-registered H_bias + H_fix both **confirmed** (naive optimistically biased, pilot-only correction removes it). Wrote `RESULTS_MARGINEST.md` + `results/marginest_law.json` + `figures/qrc_marginest.png` + `src/qrc_marginest{,_fig}.py`; updated README with a benchmarks 7–9 section (README had been stuck at 5–6) and this agenda. Next run: **B10 (readout retraining under noise)**.
-- 2026-07-03 (run C, this run): Outputs empty again; a stale `/tmp` clone (B5-era) again made B6 look unpushed — **caught before pushing** by checking the live remote, which is at **B9** (40 commits). Discarded the stale reconstruction (did NOT push it — would have regressed the repo). Fresh-cloned, executed the queued **B10**. Pre-registered H0/H1; **H0 confirmed decisively**: closed-form probit predicts the fixed noiseless-design readout to 0.14pp on gate-noisy cells (R²=0.948 overall), but the fixed readout collapses ~24.5pp below retrained reachable accuracy; 99.5% of the B6-style residual is the retraining gain (corr −0.9997). Wrote `RESULTS_RETRAIN.md` + `results/retrain_law.json` + `figures/qrc_retrain.png` + `src/qrc_retrain{,_fig}.py`; updated README (benchmark-10 line) and this agenda. Honest caveat recorded: perfect-exact-separation regime; encoding-gain sweep queued to reconcile with B5. Next run: **B11 (second task family)**.
-- 2026-07-03 (run D, this run): Outputs empty again; recovered canonical state from the **live remote** (which was ahead of every stale `/tmp` clone — remote HEAD had B10 pushed & verified, next=B11). Executed queued **B11**. Built `src/qrc_taskfam.py` (+`_fig.py`) reusing the density-matrix engine and the exact B5/B6 `law_predict` probit; drove the reservoir with a continuous Mackey-Glass series and 3 balanced non-parity memory tasks + chaotic 1-step regression. Pre-registered H1/H2/H3: **H1 confirmed (wall harsher — fixed readout below classical floor), H3 confirmed (regression retention negative at low shots), H2 split (law MAE 2.2pp passes but pre-registered R²>0.9 fails at 0.79 on low-dynamic-range tasks — reported honestly, bar not moved).** Bonus: independently reproduced B10's fixed-vs-retrained collapse on the new family. Wrote `RESULTS_TASKFAM.md` + `results/taskfam_law.json` + `figures/qrc_taskfam.png`; updated README (benchmark-11 section, limitations line) and this agenda. Next run: **B12 (reservoir topology sweep)**, or the queued encoding-gain sweep to populate the mid-margin band where the law's R² bar is a fair test.
+- [~] **B6 — Self-calibrating law. IN PROGRESS (live session 03:00).** v1 (naive plug-in,
+      C=1000 SVM) FAILED: R²=−1.74. v2 (C=1 SVM + squared-margin debiasing f²−v/S_pilot):
+      R²=0.48, MAE=6.4pts on archs {0,4} — see b6_part1.json / b6_part2.json in outputs root.
+      KEY DIAGNOSIS: the limiting factor is estimating the readout direction w from noisy pilot
+      features, not the margins. Next steps for scheduled runs: (a) split pilot into w-estimation
+      and margin-estimation halves, (b) try shrinkage/averaged readouts (bagging over pilot
+      resamples), (c) sweep S_pilot in {500, 2000, 8000} to find the pilot budget where
+      prediction reaches ~3pt MAE, (d) run remaining archs {1,2,3,5}, then write
+      results/RESULTS_SELFCAL.md + figure + push. Report the failure arc honestly (v1 → v2).
+- [ ] **B7 — Law + gate noise.** Hypothesis: device noise enters as a margin-shrinkage factor.
+      Fit a single per-device scalar λ (or per-depth λ^d) on a few FakeTorino cells, predict the
+      rest. Uses qiskit-aer FakeTorino (simulation only).
+- [ ] **B8 — Regression law.** Closed form: NMSE_noisy ≈ NMSE_exact + wᵀΣw/var(y). Test across
+      the grid (30 regression cells exist; extend budgets). If it holds, both task regimes are
+      predicted by one framework.
+- [ ] **B9 — Scaling.** How do margin distributions scale with qubit count (4–8 qubits, T reduced
+      for 8q feasibility)? Does margin×√S improve, worsen, or stay flat with size at fixed task?
+- [ ] **B10 — Margin-aware training.** Intervention: choose readout regularization/objective to
+      maximize predicted noisy accuracy (from the law) instead of clean accuracy. Measure gain.
+- [ ] **B11 — Consolidate.** Draft `qrc-shot-wall/PREPRINT.md`: abstract, 5-benchmark narrative,
+      law derivation sketch, limitations, future work. This is the arXiv skeleton.
 
-## PENDING PUSH
-- None. The B11 bundle (`results/RESULTS_TASKFAM.md`, `results/taskfam_law.json`, `src/qrc_taskfam.py`, `src/qrc_taskfam_fig.py`, `figures/qrc_taskfam.png`, `README.md`, `RESEARCH_AGENDA.md`) was pushed and **verified on `main`** this run (commits 939422c, 41fd69d, fa1cdae, 4329c10). Next run starts clean at **B12**.
+## Log
+
+- 2026-07-03 03:00 — Agenda created. B6 started in the live session.
+- 2026-07-03 12:30 — Overnight runs did not execute (app closed + agenda was not reachable
+  from fresh scheduled sessions). Fixed: this file now lives in the repo root; scheduled runs
+  fetch it from raw.githubusercontent.com and push updates back. B6 remains the top item;
+  b6_part1/2 JSONs live in the original live session and their numbers are summarized in the
+  B6 queue entry — re-derive locally if needed (code: src/qrc_law.py).
+
+## Pending push
+
+(none)
