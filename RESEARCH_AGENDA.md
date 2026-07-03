@@ -44,14 +44,17 @@ to gate noise.
 - [x] **B6** Device-fidelity factor: gate noise ≈ effective-shot reduction c(γ)².
       Collapse R²=0.927 vs naive 0.851 over 420 cells; advantage grows with γ;
       honest ~3pp residual. `RESULTS_GATENOISE.md` (done 2026-07-03).
+- [x] **B7** Per-node + shot-noise-covariance fidelity factor — **pre-registered
+      hypothesis FALSIFIED (honest negative)**: correction cuts collapse MAE only
+      2.5% vs the 30% bar (2.89→2.82pp over 350 cells). Per-node contraction is
+      real (spread 0.04→0.17) and σ² does rise with γ, but the residual is a
+      shot-budget-IRREDUCIBLE negative bias (−3.9pp at γ=0.20): gate noise moves
+      the reservoir OFF the noiseless curve. B6's scalar factor is near-optimal
+      among effective-shot corrections. `RESULTS_PERNODE.md` (done 2026-07-03).
 
 ## Work queue (reconstructed 2026-07-03 — original B6..B11 list was lost with the
 ## non-persisted outputs folder; these are the natural next steps from the B5/B6
 ## write-ups, reprioritized)
-- [ ] **B7** Close B6's residual: replace the scalar c(γ) with a **per-node**
-      contraction (each virtual node sees a different number of noisy steps) and/or
-      a shot-noise-covariance correction. Test whether the collapse tightens toward
-      the shot-noise floor. Pre-state: per-node factor cuts collapse MAE by >30%.
 - [ ] **B8** **Beyond depolarizing:** coherent / amplitude-damping / correlated
       gate errors. Do they still contract margins multiplicatively, or do coherent
       errors *rotate* the readout direction (breaking the scalar-fidelity picture)?
@@ -69,7 +72,11 @@ to gate noise.
       observables, and verify via the law that the required shot budget drops.
 
 ## Pending push
-(none — B6 files + README pushed to GitHub on 2026-07-03; this agenda pushed too)
+- B7 files awaiting push (2026-07-03 run): `src/qrc_pernode.py`,
+  `src/qrc_pernode_fig.py`, `results/RESULTS_PERNODE.md`, `results/pernode_law.json`,
+  `results/pn_part0.json`, `results/pn_part1.json`, `figures/qrc_pernode.png`,
+  and this updated `RESEARCH_AGENDA.md`. Push if a logged-in GitHub Chrome
+  session is available; otherwise they persist in the local clone only.
 
 ## Log
 - 2026-07-03 — **Run recovered from empty outputs folder.** Cloned repo from
@@ -86,3 +93,23 @@ to gate noise.
   GitHub (4 verified commits). **Next run: start B7** (per-node / covariance-
   corrected fidelity factor to close the residual). Remember to clone first and
   `pip install qiskit scikit-learn --break-system-packages`.
+
+- 2026-07-03 (run 2) — **Recovered from empty outputs again; cloned repo to
+  restore state.** Executed **B7** (per-node + shot-noise-covariance fidelity
+  factor). Reused B6's 350 held-out achievable accuracies so only the design-time
+  predictor changed (exact apples-to-apples). Added `src/qrc_pernode.py` +
+  `qrc_pernode_fig.py`, `results/RESULTS_PERNODE.md`, `results/pernode_law.json`
+  (+ `pn_part0/1.json`), `figures/qrc_pernode.png`. **Pre-registered hypothesis
+  (per-node/covariance factor cuts collapse MAE by >30%) was FALSIFIED:** MAE fell
+  only 2.89→2.82pp (2.5%). Diagnosis (the real finding): per-node contraction is
+  genuinely heterogeneous (node spread 0.04→0.17 over γ) and σ² rises with γ, yet
+  both corrections barely help because the dominant residual is a shot-budget-
+  IRREDUCIBLE systematic negative bias (mean obs−pred = −3.9pp at γ=0.20) — gate
+  noise degrades the achievable readout geometry, moving the reservoir OFF its
+  noiseless curve rather than along it. Conclusion: B6's scalar c(γ) is near-
+  optimal among effective-shot corrections; its high-γ predictions are a mild
+  over-estimate. Files pushed to GitHub if a logged-in Chrome session was
+  available (see Pending push). **Next run: start B8** (beyond-depolarizing noise
+  — coherent / amplitude-damping / correlated errors; do coherent errors *rotate*
+  the readout direction, matching B7's off-curve bias diagnosis?). Remember to
+  clone first and `pip install qiskit qiskit-aer scikit-learn --break-system-packages`.
