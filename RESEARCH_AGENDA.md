@@ -29,12 +29,13 @@ Local repo copy: `outputs/qrc-shot-wall/` · Remote: github.com/AmirshayanHamidi
 - [x] **B7 — Per-node + covariance refinement** (`RESULTS_PERNODE.md`, *honest negative*). Pre-registered >30% MAE cut; delivered 2.5% (2.89→2.82 pp). B6's residual is a shot-irreducible *off-curve* bias, not per-node/covariance error.
 - [x] **B8 — Beyond depolarizing** (`RESULTS_BEYONDNOISE.md`). Scalar c(η) is depolarizing-specific: fails R²>0.9 bar on coherent/amp-damping/dephasing. Coherent errors *rotate* the readout (recoverable by retraining); non-unital amplitude damping (T₁) is the shot-irreducible case.
 - [x] **B9 — Cheap margin/separation estimation at scale** (`RESULTS_MARGINEST.md`). *This run.* Naive plug-in `‖μ̂₁−μ̂₀‖` optimistically biased (up to +41% on hardest task @250-shot pilot); parameter-free pilot-only variance-subtraction correction removes it to ≤0.8% bias, ~3% RMSE @1k pilot shots (≈6% budget error). The margin-based law survives estimation, not just computation. 60 configs × 40 seeds.
+- [x] **B10 — Readout retraining under noise** (`RESULTS_RETRAIN.md`). *This run.* The B5/B6 probit is an almost-exact model of the **fixed** noiseless-design readout (R²=0.948, MAE 0.74pp / 0.14pp on gate-noisy cells) but that readout collapses ~24.5pp below the **retrained**-on-noisy reachable accuracy. 99.5% of the law-vs-reachable residual is the retraining gain (corr −0.9997). Retraining is load-bearing; the law is really a retrained-readout law. Caveat: perfect-exact-separation regime (arch0/1). 160 cells.
 
-## QUEUE — next work (B10 onward)
-- [ ] **B10 — Readout retraining under noise (dedicated study).** B5/B6 fix the noiseless readout; B8 retrains per-channel as a side effect. Quantify systematically how much retraining the linear readout on noisy features recovers the law's residual, and whether the residual is mostly a suboptimal-readout artifact. **Recommended next.**
+## QUEUE — next work (B11 onward)
 - [ ] **B11 — Second task family beyond NARMA/parity.** Whole program is one task family. Add an independent family (e.g. Mackey-Glass regression + a non-parity classification, e.g. sign-of-correlation) to test external validity of the wall and the law.
 - [ ] **B12 — Reservoir topology sweep.** One topology throughout. Sweep connectivity/depth to see whether "information-per-shot" can be designed to concentrate task signal in few high-magnitude observables (the README's redirected question).
 - [ ] *(open sub-question from B9)* cheap estimation of the full **per-sample margin distribution** (not just D₀), where the same bias-correction logic applies but is noisier per sample.
+- [ ] *(follow-up from B10)* **encoding-gain sweep**: vary encoding strength from perfect exact separation down to the wall, mapping retraining gain vs exact-margin headroom — does the fixed/retrained readout gap close smoothly as exact separation degrades (reconciling B10's 25pp with B5's tiny residual)?
 
 ## INFRASTRUCTURE
 - [x] **B-INFRA — agenda pushed to repo root** so state survives outputs-folder clears. Keep updating the repo copy each run.
@@ -42,11 +43,12 @@ Local repo copy: `outputs/qrc-shot-wall/` · Remote: github.com/AmirshayanHamidi
 ## LOG
 - 2026-07-03 (run A): Recovered state from GitHub (outputs empty). Discovered B6 gate-noise compute existed unpushed with no write-up. Authored `RESULTS_GATENOISE.md`, reconstructed agenda, pushed B6 + agenda. (Later runs then added B7 pernode + B8 beyondnoise, pushed, but did NOT update README/agenda.)
 - 2026-07-03 (run B, this run): Found outputs empty again; a *stale* local clone made B6 look unfinished, but a fresh clone showed the remote is at B8 (B6/B7/B8 all pushed). Verified B6 data independently (reproduced collapse R²=0.927/naive 0.851 exactly). Picked the genuinely-undone, B5-flagged "cheap margin estimator" open question as **B9**. Built it on `qrc_law.py`: 60 configs (3 arch × 5 clf tasks × 4 pilot budgets) × 40 seeds. Pre-registered H_bias + H_fix both **confirmed** (naive optimistically biased, pilot-only correction removes it). Wrote `RESULTS_MARGINEST.md` + `results/marginest_law.json` + `figures/qrc_marginest.png` + `src/qrc_marginest{,_fig}.py`; updated README with a benchmarks 7–9 section (README had been stuck at 5–6) and this agenda. Next run: **B10 (readout retraining under noise)**.
+- 2026-07-03 (run C, this run): Outputs empty again; a stale `/tmp` clone (B5-era) again made B6 look unpushed — **caught before pushing** by checking the live remote, which is at **B9** (40 commits). Discarded the stale reconstruction (did NOT push it — would have regressed the repo). Fresh-cloned, executed the queued **B10**. Pre-registered H0/H1; **H0 confirmed decisively**: closed-form probit predicts the fixed noiseless-design readout to 0.14pp on gate-noisy cells (R²=0.948 overall), but the fixed readout collapses ~24.5pp below retrained reachable accuracy; 99.5% of the B6-style residual is the retraining gain (corr −0.9997). Wrote `RESULTS_RETRAIN.md` + `results/retrain_law.json` + `figures/qrc_retrain.png` + `src/qrc_retrain{,_fig}.py`; updated README (benchmark-10 line) and this agenda. Honest caveat recorded: perfect-exact-separation regime; encoding-gain sweep queued to reconcile with B5. Next run: **B11 (second task family)**.
 
 ## PENDING PUSH
-- Files staged in `outputs/b9_push/` this run, to push to github.com/AmirshayanHamidin/qrc-shot-wall via logged-in Chrome web-upload flow:
-  - `results/RESULTS_MARGINEST.md`, `results/marginest_law.json`
-  - `figures/qrc_marginest.png`
-  - `src/qrc_marginest.py`, `src/qrc_marginest_fig.py`
-  - `README.md` (adds benchmarks 7–9 section), `RESEARCH_AGENDA.md` (this file)
+- B10 bundle, to push to github.com/AmirshayanHamidin/qrc-shot-wall via logged-in Chrome web-upload flow:
+  - `results/RESULTS_RETRAIN.md`, `results/retrain_law.json`
+  - `figures/qrc_retrain.png`
+  - `src/qrc_retrain.py`, `src/qrc_retrain_fig.py`
+  - `README.md` (adds benchmark-10 line), `RESEARCH_AGENDA.md` (this file)
 - Push method: logged-in Chrome → folder-scoped GitHub "Add file → Upload files" page per target folder → commit. Verify each file appears on `main` after commit.
