@@ -1,149 +1,49 @@
-# QRC "Shot Wall" — Overnight Research Agenda
+# RESEARCH_AGENDA.md — qrc-shot-wall overnight program
 
-Persistent state for the `qrc-overnight-research` scheduled task. **This file is
-committed to the repo root** (github.com/AmirshayanHamidin/qrc-shot-wall) so it
-survives sandbox resets — the session `outputs/` folder does NOT reliably persist
-between runs (it was empty at the start of the 2026-07-03 run). **Every run:
-`git clone` the repo first and read this file from there.**
+> **NOTE (reconstructed 2026-07-03):** the original agenda lived only in the session
+> outputs folder, which is cleared between scheduled runs, so it was lost. This file was
+> rebuilt from the GitHub remote (git log + README + results/) during the 2026-07-03 run.
+> **To survive future clears, this agenda should itself be pushed to the repo** (see B-INFRA below).
 
-## Program in one paragraph
-A reproducible benchmark study of quantum reservoir computing (QRC) under
-realistic measurement budgets. Established the "measurement wall": with exact
-readout a 6-qubit reservoir is excellent, but shot noise erases the quantum
-benefit for precise-output (regression) tasks while coarse-output
-(classification) tasks survive. Culminated in a parameter-free *law* predicting
-shot-noise-limited classifier accuracy from noiseless quantities, now extended
-to gate noise.
+Local repo copy: `outputs/qrc-shot-wall/` · Remote: github.com/AmirshayanHamidin/qrc-shot-wall
 
 ## HARD GUARDRAILS (never violate)
-1. **Simulation only** — numpy + qiskit-aer / density-matrix. NEVER submit to
-   real IBM quantum hardware. NEVER read or use `ibm_token.txt`.
-2. Touch **no account or service** other than pushing to this GitHub repo.
-3. Every shell computation must fit **45-second** calls — chunk long runs, save
-   partial `.npy`/JSON, aggregate separately.
-4. **Report negative results honestly.** Pre-state a hypothesis; include failures.
-5. Land a **complete** increment each run (never leave a benchmark half-written);
-   then update this file and stop with a 3-sentence summary.
+- **Simulation only.** numpy + qiskit-aer. NEVER submit to real IBM quantum hardware. NEVER read or use `ibm_token.txt`. Do not use qiskit-ibm-runtime's live service.
+- **No other accounts/services.** The only external write allowed is pushing files to the GitHub repo above via the logged-in-Chrome web upload flow. Touch nothing else.
+- **45-second shell limit.** Chunk long runs, save partial `.npy`/`.json`, aggregate in a later call. Never launch a computation that can't finish (or checkpoint) within one call.
+- **Honesty.** Every benchmark states a hypothesis before running and reports negative results / residuals plainly. No result inflation.
 
-## Method rules
-- Reuse `src/qrc_law.py` (density-matrix engine, tasks, architectures),
-  `law_eval_arch.py`, and the `qrc_gatenoise.py` pattern.
-- Each benchmark: `RESULTS_<NAME>.md` + raw JSON + one figure, into
-  `results/` and `figures/`. Add code to `src/`.
-- Push via the GitHub web-upload flow (folder-scoped `/upload/main/<folder>`
-  pages, then Commit) if a logged-in Chrome session is available.
-- Sandbox note: `pip install qiskit scikit-learn --break-system-packages` may be
-  needed at the start of a run (the base image did not have them on 2026-07-03).
+## METHOD RULES
+- Each benchmark: pre-stated falsifiable hypothesis → rigorous eval (multi-seed, error bars, holdout where relevant) → `RESULTS_<NAME>.md` + JSON + figure → update this Log + checkboxes → push.
+- Reusable code: `src/qrc_law.py` (density-matrix engine + tasks + architectures), `src/law_eval_arch.py`, `src/qrc_gatenoise.py`, `qrc_hw*.py` patterns.
+- Env has qiskit, qiskit-aer, scikit-learn, matplotlib preinstalled.
 
-## Completed benchmarks
-- [x] **B1** QRC vs tuned classical baselines; shot noise is the bottleneck. `RESULTS.md`
-- [x] **B2** Eight gap-closing strategies all plateau at the classical floor. `RESULTS_GAP.md`
-- [x] **B3** The wall is task-shaped: classification survives, regression doesn't. `RESULTS_TASKSHAPE.md`
-- [x] **B4** Hardware-noise benchmark + one live QPU point (0.886, ibm_marrakesh, historical). `RESULTS_HARDWARE.md`
-- [x] **B5** Parameter-free measurement-wall law, R²=0.991 / MAE 1.3pp, 150 cells. `RESULTS_LAW.md`
-- [x] **B6** Device-fidelity factor: gate noise ≈ effective-shot reduction c(γ)².
-      Collapse R²=0.927 vs naive 0.851 over 420 cells; advantage grows with γ;
-      honest ~3pp residual. `RESULTS_GATENOISE.md` (done 2026-07-03).
-- [x] **B7** Per-node + shot-noise-covariance fidelity factor — **pre-registered
-      hypothesis FALSIFIED (honest negative)**: correction cuts collapse MAE only
-      2.5% vs the 30% bar (2.89→2.82pp over 350 cells). Per-node contraction is
-      real (spread 0.04→0.17) and σ² does rise with γ, but the residual is a
-      shot-budget-IRREDUCIBLE negative bias (−3.9pp at γ=0.20): gate noise moves
-      the reservoir OFF the noiseless curve. B6's scalar factor is near-optimal
-      among effective-shot corrections. `RESULTS_PERNODE.md` (done 2026-07-03).
+## STATUS — completed benchmarks
+- [x] **B1 — QRC vs tuned classical baselines** (`RESULTS.md`). Fair-baseline hardening; ESN ties QRC once tuned.
+- [x] **B2 — Eight gap-closing strategies / the shot wall** (`RESULTS_GAP.md`). All readout-side fixes plateau at the no-quantum classical baseline.
+- [x] **B3 — The task-shaped wall** (`RESULTS_TASKSHAPE.md`). Classification retains ~86% of quantum benefit where regression retains ~4%.
+- [x] **B4 — Hardware noise benchmark + live QPU** (`RESULTS_HARDWARE.md`). (Historical live ibm_marrakesh result 0.886 predates this agenda; **guardrails now forbid any new hardware runs — simulation only.**)
+- [x] **B5 — Parameter-free measurement-wall law** (`RESULTS_LAW.md`). R²=0.991, MAE 1.3pp, 150 cells, zero fitted params.
+- [x] **B6 — Device-fidelity factor (gate noise)** (`RESULTS_GATENOISE.md`). Global depolarizing → margin contraction c(γ); S_eff=S·c² collapses curves, R²=0.927 vs 0.851 naive, 420 cells. **Results write-up authored 2026-07-03 this run; compute + figure + JSON were from a prior run.**
 
-- [x] **B8** Beyond depolarizing (coherent / amplitude-damping / dephasing gate
-      errors). **Pre-registered H0 FALSIFIED (honest negative):** B6's scalar
-      device-fidelity factor is depolarizing-SPECIFIC. Collapse R2 dephasing 0.836,
-      coherent 0.796, amp_damping 0.660 — all below depolarizing's 0.927, none
-      clears the R2>0.9 bar. Three distinct failure modes, separated by the new
-      direction diagnostic cos(eta): (a) coherent errors are UNITARY — they rotate
-      the readout direction (cos->0.94) but destroy no info, so a retrained readout
-      recovers it and the scalar factor OVER-penalizes (bias +1.9pp, factor gives
-      -1.5% MAE, i.e. no help); (b) amplitude damping is NON-UNITAL — strong
-      contraction (c->0.65) + population bias + hardest rotation (cos->0.67) leave a
-      -2.9pp shot-irreducible negative bias (worst case); (c) dephasing is unital &
-      direction-preserving (cos>=0.98), closest to depolarizing. Answer to "do
-      coherent errors rotate the readout direction?": YES (coherent AND damping do;
-      dephasing doesn't). `RESULTS_BEYONDNOISE.md` (done 2026-07-03).
+## QUEUE — next work (B7 onward)
+- [ ] **B7 — Cheap margin estimator at scale.** B5's open question: at classically-unsimulable sizes the decision margins must be *estimated*, not computed. Test whether a cheap estimator (few-shot margin probing, or a low-rank/stabilizer surrogate) predicts the shot budget well enough to keep the law useful. Pre-hypothesis: a small pilot shot budget spent on margin estimation pays for itself. **Recommended next.**
+- [ ] **B8 — Gate-local / coherent noise vs the global depolarizing idealization.** B6 used a global depolarizing channel; does the c(γ) collapse survive gate-local depolarizing or coherent (over/under-rotation) noise, or does coherent error break the "just fewer shots" picture?
+- [ ] **B9 — Readout retraining under noise.** B5/B6 fix the noiseless readout. Quantify how much retraining the linear readout on noisy features recovers, and whether the law's residual is mostly a suboptimal-readout artifact.
+- [ ] **B10 — Second task family beyond NARMA/parity.** Whole program is one task family. Add an independent family (e.g. Mackey-Glass regression + a non-parity classification) to test external validity of the wall and the law.
+- [ ] **B11 — Reservoir topology sweep.** One topology throughout. Sweep connectivity/depth to see whether "information-per-shot" can be designed to concentrate task signal in few high-magnitude observables (the README's redirected question).
 
-## Work queue (reconstructed 2026-07-03 — original B6..B11 list was lost with the
-## non-persisted outputs folder; these are the natural next steps from the B5/B6
-## write-ups, reprioritized)
-- [x] **B8** DONE (see completed list above) — **Beyond depolarizing:** coherent / amplitude-damping / correlated
-      gate errors. Do they still contract margins multiplicatively, or do coherent
-      errors *rotate* the readout direction (breaking the scalar-fidelity picture)?
-      This is the honest stress-test of B6's single-noise-model caveat.
-- [ ] **B9** **Harder classification tasks** where classical polynomial expansion
-      is not trivially available (e.g. temporal tasks over larger alphabets,
-      non-polynomial nonlinear memory), to check the task-shaped wall isn't an
-      artifact of parity's easy classical baseline.
-- [ ] **B10** **Cheap margin estimators at scale** (B5's flagged "most interesting
-      open question"): at classically-hard sizes the margins can't be computed
-      exactly — do inexpensive stochastic margin estimators preserve the law's
-      predictive power?
-- [ ] **B11** **Information-per-shot as a design objective:** optimize encoding /
-      reservoir dynamics to concentrate task signal into a few high-magnitude
-      observables, and verify via the law that the required shot budget drops.
+## INFRASTRUCTURE
+- [ ] **B-INFRA — Push this agenda to the repo** (e.g. `RESEARCH_AGENDA.md` at repo root or in `docs/`) so state survives outputs-folder clears. Currently the agenda is the single point of failure.
 
-## Pending push
-(B8 push status recorded in the Log entry below — see 2026-07-03 run 3.)
+## LOG
+- 2026-07-03 (this run): Recovered program state from GitHub after outputs folder was found empty (agenda + local repo lost to session clear). Re-cloned repo. Discovered B6 (gate noise) compute/figure/JSON existed as **uncommitted, unpushed** working-tree files with **no results write-up**. Authored `results/RESULTS_GATENOISE.md` from `results/gate_noise_law.json` (all numbers cross-checked against the JSON). Reconstructed this agenda. Next run: push the B6 files + this agenda, then start B7.
 
-## Log
-- 2026-07-03 — **Run recovered from empty outputs folder.** Cloned repo from
-  GitHub to restore state (RESEARCH_AGENDA.md had not persisted). Installed
-  qiskit + scikit-learn in sandbox. Executed **B6** (device-fidelity factor for
-  the measurement-wall law): added `src/qrc_gatenoise.py` + `qrc_gatenoise_fig.py`,
-  `results/gate_noise_law.json`, `results/RESULTS_GATENOISE.md`,
-  `figures/qrc_gate_noise.png`. Hypothesis (gate noise enters the law only via a
-  noiseless contraction factor c(γ), so acc(γ,S)=acc(0,S·c(γ)²)) was **largely
-  confirmed**: 420 cells, collapse R²=0.927 vs 0.851 for ignoring gate noise, the
-  fidelity factor's advantage growing monotonically with γ (at γ=0.20 it nearly
-  halves prediction error, 7.2→4.6 pp). Honest residual ~3pp shows the contraction
-  is approximately, not exactly, scalar. Committed all files + README update to
-  GitHub (4 verified commits). **Next run: start B7** (per-node / covariance-
-  corrected fidelity factor to close the residual). Remember to clone first and
-  `pip install qiskit scikit-learn --break-system-packages`.
-
-- 2026-07-03 (run 2) — **Recovered from empty outputs again; cloned repo to
-  restore state.** Executed **B7** (per-node + shot-noise-covariance fidelity
-  factor). Reused B6's 350 held-out achievable accuracies so only the design-time
-  predictor changed (exact apples-to-apples). Added `src/qrc_pernode.py` +
-  `qrc_pernode_fig.py`, `results/RESULTS_PERNODE.md`, `results/pernode_law.json`
-  (+ `pn_part0/1.json`), `figures/qrc_pernode.png`. **Pre-registered hypothesis
-  (per-node/covariance factor cuts collapse MAE by >30%) was FALSIFIED:** MAE fell
-  only 2.89→2.82pp (2.5%). Diagnosis (the real finding): per-node contraction is
-  genuinely heterogeneous (node spread 0.04→0.17 over γ) and σ² rises with γ, yet
-  both corrections barely help because the dominant residual is a shot-budget-
-  IRREDUCIBLE systematic negative bias (mean obs−pred = −3.9pp at γ=0.20) — gate
-  noise degrades the achievable readout geometry, moving the reservoir OFF its
-  noiseless curve rather than along it. Conclusion: B6's scalar c(γ) is near-
-  optimal among effective-shot corrections; its high-γ predictions are a mild
-  over-estimate. Files pushed to GitHub if a logged-in Chrome session was
-  available (see Pending push). **Next run: start B8** (beyond-depolarizing noise
-  — coherent / amplitude-damping / correlated errors; do coherent errors *rotate*
-  the readout direction, matching B7's off-curve bias diagnosis?). Remember to
-  clone first and `pip install qiskit qiskit-aer scikit-learn --break-system-packages`.
-
-- 2026-07-03 (run 3) — **Recovered from empty outputs again; cloned repo to
-  restore state.** Executed **B8** (beyond-depolarizing gate noise). Added
-  `src/qrc_beyondnoise.py` + `qrc_beyondnoise_fig.py`, `results/RESULTS_BEYONDNOISE.md`,
-  `results/beyond_noise_law.json` (+ `bn_coherent/amp_damping/dephasing.json`),
-  `figures/qrc_beyondnoise.png`. Same arch0 + 5 clf tasks + retrained-readout
-  protocol as B6; three channels (coherent unitary, amplitude damping non-unital,
-  dephasing unital) at eta in {0,.02,.05,.10,.15}, budgets {500,2k,8k,32k}, 300
-  predicted cells. **Pre-registered H0 (scalar B6 factor collapses all three as
-  well as depolarizing) FALSIFIED:** collapse R2 = 0.836 (dephasing) / 0.796
-  (coherent) / 0.660 (amp_damping) vs depolarizing 0.927; none clears R2>0.9. New
-  direction diagnostic cos(eta) cleanly separates the mechanisms: coherent &
-  amplitude-damping ROTATE the readout direction (cos down to 0.94 / 0.67),
-  dephasing does not (cos>=0.98). Coherent is the sharp result — unitary error
-  destroys no info, a retrained linear readout recovers the rotated margin, so the
-  scalar factor OVER-penalizes (+1.9pp positive bias, -1.5% MAE = no help).
-  Amplitude damping (non-unital) is the worst case: -2.9pp shot-irreducible
-  negative bias. Conclusion: B6's factor is depolarizing-specific; direction (not
-  magnitude) is the missing coordinate, and for hardware QRC relaxation (T1) hurts
-  classification more than coherent/calibration error. **Next run: start B9**
-  (harder classification tasks with non-trivial classical baselines, to check the
-  task-shaped wall isn't a parity artifact). Remember to clone first and
-  `pip install qiskit qiskit-aer scikit-learn --break-system-packages`.
+## PENDING PUSH (files created/modified locally, not yet on GitHub as of 2026-07-03)
+- `results/RESULTS_GATENOISE.md` — NEW (this run)
+- `results/gate_noise_law.json` — untracked (prior run)
+- `figures/qrc_gate_noise.png` — untracked (prior run)
+- `src/qrc_gatenoise.py`, `src/qrc_gatenoise_fig.py` — untracked (prior run)
+- `README.md` — modified (benchmark-6 section, prior run)
+- `RESEARCH_AGENDA.md` — NEW, recommend adding to repo (this run)
+- Push method: logged-in Chrome → github.com/AmirshayanHamidin/qrc-shot-wall folder-scoped "Add file → Upload files" pages + commit. Could not confirm a logged-in Chrome session this run; left pending.
