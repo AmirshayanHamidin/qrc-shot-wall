@@ -37,13 +37,12 @@ Local repo copy: `outputs/qrc-shot-wall/` · Remote: github.com/AmirshayanHamidi
 - [ ] **B-INFRA — Push this agenda to the repo** (e.g. `RESEARCH_AGENDA.md` at repo root or in `docs/`) so state survives outputs-folder clears. Currently the agenda is the single point of failure.
 
 ## LOG
-- 2026-07-03 (this run): Recovered program state from GitHub after outputs folder was found empty (agenda + local repo lost to session clear). Re-cloned repo. Discovered B6 (gate noise) compute/figure/JSON existed as **uncommitted, unpushed** working-tree files with **no results write-up**. Authored `results/RESULTS_GATENOISE.md` from `results/gate_noise_law.json` (all numbers cross-checked against the JSON). Reconstructed this agenda. Next run: push the B6 files + this agenda, then start B7.
+- 2026-07-03 (this run): Recovered program state from GitHub after outputs folder was found empty (agenda + local repo lost to session clear). Re-cloned repo. Discovered B6 (gate noise) compute/figure/JSON existed as **uncommitted, unpushed** working-tree files with **no results write-up**. Authored `results/RESULTS_GATENOISE.md` from `results/gate_noise_law.json` (all 25 numbers cross-checked against the JSON). Reconstructed this agenda. **Pushed everything to GitHub via logged-in Chrome web-upload flow in 4 commits** (results, figures, src, root README+agenda) — all verified live on `main`. B6 is now fully complete and pushed. Next run: start **B7 (cheap margin estimator at scale)**.
 
-## PENDING PUSH (files created/modified locally, not yet on GitHub as of 2026-07-03)
-- `results/RESULTS_GATENOISE.md` — NEW (this run)
-- `results/gate_noise_law.json` — untracked (prior run)
-- `figures/qrc_gate_noise.png` — untracked (prior run)
-- `src/qrc_gatenoise.py`, `src/qrc_gatenoise_fig.py` — untracked (prior run)
-- `README.md` — modified (benchmark-6 section, prior run)
-- `RESEARCH_AGENDA.md` — NEW, recommend adding to repo (this run)
-- Push method: logged-in Chrome → github.com/AmirshayanHamidin/qrc-shot-wall folder-scoped "Add file → Upload files" pages + commit. Could not confirm a logged-in Chrome session this run; left pending.
+## PENDING PUSH
+- **NONE.** All benchmark-6 files + this agenda were pushed to github.com/AmirshayanHamidin/qrc-shot-wall on 2026-07-03 and confirmed present on `main`:
+  - `results/RESULTS_GATENOISE.md`, `results/gate_noise_law.json` ✅
+  - `figures/qrc_gate_noise.png` ✅
+  - `src/qrc_gatenoise.py`, `src/qrc_gatenoise_fig.py` ✅
+  - `README.md` (benchmark-6 section), `RESEARCH_AGENDA.md` ✅
+- Push method for future runs: logged-in Chrome → folder-scoped `
