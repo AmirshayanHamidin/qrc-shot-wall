@@ -72,11 +72,8 @@ to gate noise.
       observables, and verify via the law that the required shot budget drops.
 
 ## Pending push
-- B7 files awaiting push (2026-07-03 run): `src/qrc_pernode.py`,
-  `src/qrc_pernode_fig.py`, `results/RESULTS_PERNODE.md`, `results/pernode_law.json`,
-  `results/pn_part0.json`, `results/pn_part1.json`, `figures/qrc_pernode.png`,
-  and this updated `RESEARCH_AGENDA.md`. Push if a logged-in GitHub Chrome
-  session is available; otherwise they persist in the local clone only.
+(none — all B7 files pushed to GitHub on 2026-07-03 run 2 across 4 verified
+commits: results [1c3ce8e], src code [c98d735], figure [05026f1], agenda [d9719d6].)
 
 ## Log
 - 2026-07-03 — **Run recovered from empty outputs folder.** Cloned repo from
