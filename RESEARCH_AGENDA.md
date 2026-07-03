@@ -46,9 +46,4 @@ Local repo copy: `outputs/qrc-shot-wall/` · Remote: github.com/AmirshayanHamidi
 - 2026-07-03 (run C, this run): Outputs empty again; a stale `/tmp` clone (B5-era) again made B6 look unpushed — **caught before pushing** by checking the live remote, which is at **B9** (40 commits). Discarded the stale reconstruction (did NOT push it — would have regressed the repo). Fresh-cloned, executed the queued **B10**. Pre-registered H0/H1; **H0 confirmed decisively**: closed-form probit predicts the fixed noiseless-design readout to 0.14pp on gate-noisy cells (R²=0.948 overall), but the fixed readout collapses ~24.5pp below retrained reachable accuracy; 99.5% of the B6-style residual is the retraining gain (corr −0.9997). Wrote `RESULTS_RETRAIN.md` + `results/retrain_law.json` + `figures/qrc_retrain.png` + `src/qrc_retrain{,_fig}.py`; updated README (benchmark-10 line) and this agenda. Honest caveat recorded: perfect-exact-separation regime; encoding-gain sweep queued to reconcile with B5. Next run: **B11 (second task family)**.
 
 ## PENDING PUSH
-- B10 bundle, to push to github.com/AmirshayanHamidin/qrc-shot-wall via logged-in Chrome web-upload flow:
-  - `results/RESULTS_RETRAIN.md`, `results/retrain_law.json`
-  - `figures/qrc_retrain.png`
-  - `src/qrc_retrain.py`, `src/qrc_retrain_fig.py`
-  - `README.md` (adds benchmark-10 line), `RESEARCH_AGENDA.md` (this file)
-- Push method: logged-in Chrome → folder-scoped GitHub "Add file → Upload files" page per target folder → commit. Verify each file appears on `main` after commit.
+- None. The B10 bundle (`results/RESULTS_RETRAIN.md`, `results/retrain_law.json`, `figures/qrc_retrain.png`, `src/qrc_retrain.py`, `src/qrc_retrain_fig.py`, `README.md`, `RESEARCH_AGENDA.md`) was pushed and **verified on `main`** this run (commits 0bea572, d8b1ffa, 6ce911d, a1c2fc8). Next run starts clean at B11.
