@@ -1,6 +1,6 @@
 # The Shot Wall: Measurement Budgets, a Predictive Law, and Design Rules for Quantum Reservoir Computing
 
-*Amirshayan Hamidin — preprint skeleton (v0.1, consolidated 2026-07-03). Repository: github.com/AmirshayanHamidin/qrc-shot-wall. All numbers below are reproduced from the per-benchmark write-ups in `results/`; each has raw JSON, seeds, and an honesty section.*
+*Amirshayan Hamidin — preprint skeleton (v0.2, related work added 2026-07-03; consolidated 2026-07-03). Repository: github.com/AmirshayanHamidin/qrc-shot-wall. All numbers below are reproduced from the per-benchmark write-ups in `results/`; each has raw JSON, seeds, and an honesty section.*
 
 ## Abstract
 
@@ -68,7 +68,13 @@ Confirmatory pre-registered test of the within-task IPS rule on a third task fam
 
 ## Related work
 
-*Placeholder — a dedicated literature pass (`RELATED_WORK.md`) is the next queue item; it will position each benchmark against prior QRC, finite-sampling, and quantum-advantage-under-measurement literature and populate this section with citations.*
+*Full literature pass with per-benchmark positioning and citation details: [`RELATED_WORK.md`](RELATED_WORK.md). Condensed:*
+
+QRC descends from classical reservoir computing (Jaeger & Haas, *Science* 2004; Maass et al. 2002; delay-based virtual nodes, Appeltant et al., *Nat. Commun.* 2011) via Fujii & Nakajima (*Phys. Rev. Applied* 2017), surveyed in Mujal et al. (*Adv. Quantum Technol.* 2021). Our architecture is deliberately standard; the claims concern its measurement interface.
+
+Measurement as QRC's bottleneck has three prior faces. Protocol/backaction: Mujal et al. (*npj Quantum Inf.* 2023) show projective measurement destroys online reservoir memory and design weak-measurement/rewind protocols — our restart-style evaluation isolates the statistical cost that remains after their problem is solved. Capacity: Hu et al. (*Phys. Rev. X* 2023) bound the resolvable expressive capacity of finitely-sampled systems and extract minimal-noise "eigentasks"; our law differs by being task-conditional (per-cell accuracy from margins, zero parameters), and our IPS design objective is plausibly a task-projected relative of their capacity — a correspondence not yet formalized (see RELATED_WORK.md, Honesty). Asymptotics: exponential concentration (Thanasilp et al., *Nat. Commun.* 2024) makes polynomial shot budgets insufficient in principle at scale; our results map the pre-asymptotic regime where the interesting structure (task shape, margins, topology) lives. Recent finite-sampling mitigation (SVD/filter denoising, arXiv:2409.01394; measurement-record reorganization, arXiv:2604.28160) improves on noisy-QRC baselines; B2 shows that on small-margin regression such readout-side gains plateau at the *classical* baseline, which is the bar that matters.
+
+On gate noise, our margin-contraction factor is the fixed-readout analogue of noise-induced landscape flattening (Wang et al., *Nat. Commun.* 2021; Stilck França & García-Patrón, *Nat. Phys.* 2021), while the noise-as-resource line (Kubota et al.; Suzuki et al., *Sci. Rep.* 2022) exploits dissipation in the dynamics and still pays the sampling cost at readout. Retraining on measured records is standard practice (cf. the trainable postprocessor of Khan et al., *PRX Quantum* 2024); B10 quantifies what it is worth. Reservoir-design criteria in the literature are chiefly dynamical/representational (thermal-phase transitions, Martínez-Peña et al., *PRL* 2021; Krylov observability; entanglement structure); B12–B13 argue the binding constraint at realistic budgets is instead statistical — information per shot — and give a noiselessly computable, honestly scoped objective for it. We found no prior parameter-free, per-cell accuracy law at ~1 pp calibration, no prior quantitative classification-vs-regression retention comparison, and no prior treatment of the pilot-estimation bias (B9) in shot budgeting.
 
 ---
 *Reproducibility: every figure and number regenerates from `src/` on a laptop CPU; see per-benchmark usage lines. Simulation only; no tokens or hardware access required.*

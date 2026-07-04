@@ -1,85 +1,58 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-03, scheduled run #2)
+## State (updated 2026-07-03, evening scheduled session)
 
-Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth** for
-what is done; this file is the forward queue. Benchmarks 1–13 complete and pushed.
-**PREPRINT.md (arXiv skeleton) now drafted at repo root** — abstract, 4-act narrative,
-law derivation sketch, honest-negative ledger, limitations, future work. Its related-work
-section is a placeholder pending the RELATED_WORK.md pass (next queue item).
-**AUDITS.md started**: B13 independently re-implemented and CONFIRMED (see log).
+Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; trust it over this file if they ever disagree.**
 
-Current state of the science: shot wall established (B1–B2), task-shape (B3), live QPU
-validation done historically (0.886 on ibm_marrakesh — budget now nearly spent, hence
-guardrail 1), measurement-wall law (B5) + gate-noise extension (B6) + its limits
-(B7–B8) + usability at scale (B9) + retraining caveat (B10), external validity on
-Mackey-Glass (B11), topology/IPS design rule (B12), scope-corrected to within-task
-at small margins (B13, independently audited).
+- Benchmarks **B1–B13 complete** and pushed (see README + `results/RESULTS_*.md`). Arc: wall (B1–B4) → law (B5–B6) → limits (B7–B10) → external validity & design (B11–B13, incl. the small-margin scope correction).
+- **PREPRINT.md v0.2** at repo root: full 13-benchmark consolidation; Related-work section now populated.
+- **RELATED_WORK.md** at repo root: dedicated literature pass (2026-07-03) with per-benchmark positioning, verified citations, and an honesty section listing what was read at abstract level only.
+- **AUDITS.md** started: B13 independently re-implemented and CONFIRMED (2026-07-03).
+- Live QPU validation done earlier (0.886 on ibm_marrakesh); QPU budget nearly spent — hard guardrail 1 below stands.
 
 ## HARD GUARDRAILS (never violate)
 
-1. **NEVER submit jobs to real IBM hardware** — the free QPU budget is nearly spent
-   (484/600s). Do not read or use `ibm_token.txt`. Simulation only (numpy engine +
-   qiskit-aer).
-2. Only work inside the session outputs folder and the qrc-shot-wall GitHub repo. No
-   other accounts, sites, purchases, emails, or messages.
+1. **NEVER submit jobs to real IBM hardware** — the free QPU budget is nearly spent (484/600s).
+   Do not read or use `ibm_token.txt`. Simulation only (numpy engine + qiskit-aer).
+2. Only work inside the session outputs folder and the qrc-shot-wall GitHub repo. No other accounts,
+   sites, purchases, emails, or messages.
 3. Every claim gets an honesty section. Failed hypotheses are reported as failures.
-4. Keep runs within the 45s bash-call limit (chunk long computations; partial .npy/.json).
-5. If GitHub push isn't possible in this session, save everything locally and log it
-   under "Pending push" below; do not retry endlessly.
+4. Keep runs within the 45s bash-call limit (chunk long computations; partial .npy checkpoints).
+5. If GitHub push isn't possible in a session, save everything locally, log it under "Pending push",
+   and stop gracefully; do not retry endlessly.
 
 ## Method rules
 
-- One pre-stated falsifiable hypothesis per benchmark, written down (script header
-  and/or writeup) BEFORE running; fit/holdout splits where fitting occurs.
-- Verify any re-transcribed pipeline against published repo numbers before trusting it
-  (B13 pattern: reproduce a B12 IPS value to machine precision first).
-- Post-hoc analyses are allowed but must be labeled post-hoc everywhere they appear.
-- Write results as `results/RESULTS_<NAME>.md` + raw JSON + figure PNG; update README
-  (new benchmark section + limitations) and this agenda in the same push batch.
-- **Fresh-session cache warning (learned this run):** raw.githubusercontent.com can
-  serve a stale README to a new session. Before choosing a work item, cache-bust
-  (append `?nc=<random>`) and/or check for the newest expected files (e.g. does
-  results/RESULTS_<latest>.md 404?). A stale README this run nearly caused a duplicate
-  B13; the duplicate was converted into an independent-reproduction audit (AUDITS.md).
+- One pre-stated falsifiable hypothesis per benchmark; fit/holdout splits where fitting occurs.
+- Reuse the engine (`src/qrc_law.py` build/eval phases; density-matrix numpy for speed).
+- Write results as `results/RESULTS_<NAME>.md` + raw JSON + figure PNG; push agenda updates in the same batch.
+- Update the Log section after each work session.
 
-## Queue (work top-down; mark DONE with date)
+## Queue (work top-down)
 
-- [x] **Small-margin regime sweep (B13).** DONE 2026-07-03 (run #1). Honest negative at
-      the registered pooled bar; within-task IPS effect strong (post-hoc); star edge
-      n.s.; all-to-all robustly worst. → results/RESULTS_SMALLMARGIN.md.
-- [x] **PREPRINT.md consolidation.** DONE 2026-07-03 (run #2). Drafted at repo root:
-      abstract, 13-benchmark narrative in 4 acts (wall → law → limits → design), law
-      derivation sketch, honest-negative ledger (B5v1, B7, B8, B11-H2, B12-H2, B13-H1),
-      limitations, future work. Related-work section left as an explicit placeholder.
-- [ ] **RELATED_WORK.md literature pass.** Position against published QRC/shot-noise
-      literature (web search allowed; cite properly; no paywalled quoting). Candidate
-      anchors: QRC reviews, finite-sampling noise analyses, quantum-advantage-under-
-      measurement papers. Map each of our 13 benchmarks to nearest prior art and state
-      what is new. Then merge citations into PREPRINT.md §Related work.
-- [ ] (then) **AUDIT MODE** per the standing task instructions: least-recently-audited
-      benchmark first, re-run key numbers from repo code, push AUDITS.md entries.
-      B13 already audited (2026-07-03, CONFIRMED); B1–B12 unaudited — start from B1/B2.
+Science queue (wall/law/design program) is **empty** — the scoping study is complete. Sessions now run in one of two modes:
+
+1. **AUDIT MODE (default).** Pick the least-recently-audited benchmark from AUDITS.md coverage
+   (audited so far: B13 only — so B1 is next, then B2, …), re-run its key numbers from repo code,
+   check every claim in its write-up, push an AUDITS.md entry (CONFIRMED / DISCREPANCY, numbers
+   side by side). Goal: a bulletproof preprint. Do NOT invent new benchmarks.
+2. **Consolidation touch-ups** (only if spotted during audits): fixing stale cross-references
+   (e.g. README still lists the small-margin sweep as "queued" in its Honest-limitations paragraph —
+   correct opportunistically when the README is next edited for other reasons), figure regeneration,
+   PREPRINT polish.
+
+Flagged before any arXiv submission (from RELATED_WORK.md honesty section, needs the user, not a scheduled run):
+- Full-text comparison of IPS (B12) vs Hu et al.'s resolvable-expressive-capacity/eigentask framework
+  (PRX 13, 041020) — the one place a novelty claim could narrow.
+- Re-check the two 2026 citations taken from title/indexed summary (arXiv:2604.28160, arXiv:2602.14677).
 
 ## Log
 
-- 2026-07-03 03:00 — Agenda created. B6 (old numbering) started in the live session.
-- 2026-07-03 12:30 — Agenda moved into repo root so scheduled runs can fetch it.
-- 2026-07-03 (scheduled run #1) — **B13 small-margin sweep completed and pushed.**
-  Pipeline verified against B12's published star-L1/parity3 IPS (exact match). 120
-  cells. Pre-registered H1 falsified as registered (pooled ρ=+0.07, p=0.75 @250 shots);
-  within-task-standardized pooled ρ=+0.82 (post-hoc, labeled); H2 literal pass but
-  star-vs-chain/ring n.s., star-vs-all2all significant (p=0.002). README B13 section
-  added; limitations updated.
-- 2026-07-03 (scheduled run #2) — **PREPRINT.md drafted and pushed** (topmost queue
-  item). Also: session started from a stale cached README (pre-B13) and independently
-  re-implemented B13 before discovering the published version — converted into the
-  first **AUDITS.md** entry: B13 **CONFIRMED** end-to-end (pooled H1 failure, within-task
-  ρ +0.72…+0.90 @250, star mean 0.789 vs published 0.784, all2all deficit +5.0 vs
-  +4.9 pp, exact-span 0.961–1.000 identical; independent code, different sampling
-  seeds; published JSON left untouched as file of record). Cache-warning added to
-  method rules. Next: RELATED_WORK.md.
+- 2026-07-03 03:00 — Agenda created. B6 (self-cal law) started live.
+- 2026-07-03 12:30 — Agenda moved into repo root so scheduled runs can fetch it; B6 numbers summarized.
+- 2026-07-03 (day) — B6–B13 executed and pushed across sessions; PREPRINT.md v0.1 consolidated; AUDITS.md started with independent B13 re-implementation (CONFIRMED). [Reconstructed from repo state; the older 03:00 "State" section of this file was stale and has been rewritten.]
+- 2026-07-03 (evening, scheduled) — **RELATED_WORK.md literature pass completed** (7 thematic searches; ~25 works positioned against B1–B13; load-bearing citations venue-verified; honesty section lists abstract-only reads and the IPS-vs-eigentask open question). PREPRINT.md bumped to v0.2 with the Related-work section filled. Agenda rewritten to reflect true state. Science queue now empty → next sessions default to AUDIT MODE starting at B1.
 
 ## Pending push
 
-(none — pending this session's batch: PREPRINT.md, AUDITS.md, RESEARCH_AGENDA.md)
+(none)
