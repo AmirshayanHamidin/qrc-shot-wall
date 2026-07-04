@@ -1,13 +1,13 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-03, evening scheduled session)
+## State (updated 2026-07-04, scheduled audit session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; trust it over this file if they ever disagree.**
 
 - Benchmarks **B1–B13 complete** and pushed (see README + `results/RESULTS_*.md`). Arc: wall (B1–B4) → law (B5–B6) → limits (B7–B10) → external validity & design (B11–B13, incl. the small-margin scope correction).
 - **PREPRINT.md v0.2** at repo root: full 13-benchmark consolidation; Related-work section now populated.
 - **RELATED_WORK.md** at repo root: dedicated literature pass (2026-07-03) with per-benchmark positioning, verified citations, and an honesty section listing what was read at abstract level only.
-- **AUDITS.md** started: B13 independently re-implemented and CONFIRMED (2026-07-03).
+- **AUDITS.md**: B13 independently re-implemented and CONFIRMED (2026-07-03). **B5 audited 2026-07-04 — DISCREPANCY FOUND**: the headline R²=0.991 / MAE 1.3 pp is not reproducible from committed code (full 150-cell re-run gives R²=0.922, MAE 3.64 pp, noise-corrected R²≈0.94 — law survives qualitatively); published obs not regenerable on ≥12 cells (worst 17.6 pp off, outside an 8-seed range); pred-generator script missing from `src/`. See AUDITS.md for the full entry. **Until re-baselined, treat 0.991/1.3pp as unaudited wherever quoted (README TL;DR §Benchmark 5, PREPRINT abstract & §4, B6/B10/B11 texts).**
 - Live QPU validation done earlier (0.886 on ibm_marrakesh); QPU budget nearly spent — hard guardrail 1 below stands.
 
 ## HARD GUARDRAILS (never violate)
@@ -32,10 +32,17 @@ Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth f
 
 Science queue (wall/law/design program) is **empty** — the scoping study is complete. Sessions now run in one of two modes:
 
+0. **PRIORITY — B5 re-baseline (consequence of the 07-04 audit; consolidation, not a new
+   benchmark).** Re-run the 150-cell law grid with ≥8 documented sampling seeds and a single
+   committed generator script (build → obs → pred in one reproducible path, replacing the
+   missing original), publish `results/law_rebaseline.json`, then update README/PREPRINT
+   headline numbers to the audited values (expect R²≈0.92–0.95, MAE≈2–3.6 pp — still a strong
+   zero-parameter law, honestly stated). Keep `law_theory.json` untouched as historical record.
 1. **AUDIT MODE (default).** Pick the least-recently-audited benchmark from AUDITS.md coverage
-   (audited so far: B13 only — so B1 is next, then B2, …), re-run its key numbers from repo code,
-   check every claim in its write-up, push an AUDITS.md entry (CONFIRMED / DISCREPANCY, numbers
-   side by side). Goal: a bulletproof preprint. Do NOT invent new benchmarks.
+   (audited so far: B13, B5 — suggested next: B6, which quotes B5's machinery; then B2, B1, …),
+   re-run its key numbers from repo code, check every claim in its write-up, push an AUDITS.md
+   entry (CONFIRMED / DISCREPANCY, numbers side by side). Goal: a bulletproof preprint.
+   Do NOT invent new benchmarks.
 2. **Consolidation touch-ups** (only if spotted during audits): fixing stale cross-references
    (e.g. README still lists the small-margin sweep as "queued" in its Honest-limitations paragraph —
    correct opportunistically when the README is next edited for other reasons), figure regeneration,
@@ -52,6 +59,7 @@ Flagged before any arXiv submission (from RELATED_WORK.md honesty section, needs
 - 2026-07-03 12:30 — Agenda moved into repo root so scheduled runs can fetch it; B6 numbers summarized.
 - 2026-07-03 (day) — B6–B13 executed and pushed across sessions; PREPRINT.md v0.1 consolidated; AUDITS.md started with independent B13 re-implementation (CONFIRMED). [Reconstructed from repo state; the older 03:00 "State" section of this file was stale and has been rewritten.]
 - 2026-07-03 (evening, scheduled) — **RELATED_WORK.md literature pass completed** (7 thematic searches; ~25 works positioned against B1–B13; load-bearing citations venue-verified; honesty section lists abstract-only reads and the IPS-vs-eigentask open question). PREPRINT.md bumped to v0.2 with the Related-work section filled. Agenda rewritten to reflect true state. Science queue now empty → next sessions default to AUDIT MODE starting at B1.
+- 2026-07-04 (scheduled) — **AUDIT MODE: B5 audited — DISCREPANCY.** Deviated from the "B1 first" suggestion (all of B1–B12 tied at never-audited) to audit the most load-bearing claim first. Full 150-cell re-run from committed code (all 6 archs rebuilt, `law_eval_arch.py` seeds (1,2), plus 8-seed worst-cell check, 4 alternative protocol conventions, a noise-floor analysis, and a pred reconstruction matching published pred to 1.2–1.4 pp). Law confirmed qualitatively (R²=0.922 / MAE 3.64 pp; noise-corrected R²≈0.94); headline 0.991/1.3 pp not reproducible; published obs provenance unclear; pred generator missing. Pushed: AUDITS.md entry, `results/audit_b5_repro.json`, `src/audit_law_theory.py`, this agenda. Queue re-pointed at B5 re-baseline (item 0), then B6 audit.
 
 ## Pending push
 
