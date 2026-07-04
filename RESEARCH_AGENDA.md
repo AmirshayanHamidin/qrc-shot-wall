@@ -11,6 +11,9 @@ shots with mapped limits (B6–B8), pilot-run margin estimation (B9), retraining
 correction (B13). **PREPRINT.md consolidated (v0.2). RELATED_WORK.md literature pass done
 (2026-07-04)** — preprint Related-work section populated with verified citations.
 **AUDITS.md started** — B13 independently re-implemented and CONFIRMED (2026-07-03).
+**B5 audit (2026-07-04, earlier session): DISCREPANCY** — headline R²=0.991/1.3 pp not
+reproducible from committed code; law survives at R²≈0.92–0.94 / MAE 3.6 pp; prediction-
+generator script missing from `src/`. README/PREPRINT/RELATED_WORK now quote audited numbers.
 
 Note: older entries below the log used a different B6–B11 numbering (pre-consolidation);
 the README's B1–B13 numbering is canonical.
@@ -42,11 +45,16 @@ the README's B1–B13 numbering is canonical.
       Key takeaway logged: B2's strategy set *includes* the literature's main mitigation
       proposal (SVD truncation), strengthening the wall claim. No contradicting or
       anticipating prior art found within the stated search limits (see honesty section).
-- [ ] **AUDIT MODE (standing default).** Science queue is empty — do not invent new benchmarks.
+- [ ] **B5 restoration (top priority, from the 2026-07-04 audit).** Consolidation, not a new
+      benchmark: commit a prediction-generator script that produces `law_theory.json`-style
+      pred from the documented formula; re-run the 150-cell grid with ≥8 documented sampling
+      seeds; update RESULTS_LAW.md's headline to the re-run numbers; note the provenance issue
+      in its honesty section. Until then, audited numbers (R²≈0.92–0.94, 3.6 pp) are canonical.
+- [ ] **AUDIT MODE (standing default).** Do not invent new benchmarks.
       Pick the least-recently-audited benchmark, re-run its key numbers from repo code, check
       every claim in its write-up, append an AUDITS.md entry (confirmed/discrepancy, numbers
-      side by side). Audited so far: B13 (2026-07-03). Suggested order: B5 (law, most
-      load-bearing), then B2 (wall), B6, B10–B12, rest.
+      side by side). Audited so far: B13 (2026-07-03, CONFIRMED), B5 (2026-07-04, DISCREPANCY).
+      Suggested order: B6 and B11 next (they quote/build on B5's figures), then B2, B10, B12.
 - [ ] (Deferred, needs Amirshayan's sign-off: third task family for the within-task IPS
       confirmation; injection-scheme sweep; anything requiring hardware.)
 
@@ -59,7 +67,10 @@ the README's B1–B13 numbering is canonical.
 - 2026-07-04 — Scheduled session: RELATED_WORK.md literature pass (~8 targeted searches,
   verified citations only; unverified author lists omitted). PREPRINT.md Related-work
   placeholder replaced (v0.2). Agenda brought back in sync with README (it had gone stale
-  at the B6-era numbering). Next run: audit mode, start with B5.
+  at the B6-era numbering). Post-push, discovered the same-day B5 audit (DISCREPANCY) via the
+  repo page — first push had propagated the 0.991 headline; second push same session corrected
+  PREPRINT (v0.3), RELATED_WORK, README (B5 paragraph + Start-here) to audited numbers.
+  Next run: B5 restoration item above, or audit B6/B11.
 
 ## Pending push
 
