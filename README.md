@@ -12,6 +12,7 @@ A small, fully reproducible benchmark study of **quantum reservoir computing (QR
 2. **Then the main result:** [`results/RESULTS_GAP.md`](results/RESULTS_GAP.md) (benchmark 2: eight gap-closing strategies, the plateau, and what it means).
 3. **Then the twist:** [`results/RESULTS_TASKSHAPE.md`](results/RESULTS_TASKSHAPE.md) (benchmark 3: the wall is task-shaped — classification retains ~86% of the quantum benefit at budgets where regression retains ~4%).
 4. **Want to run it?** See below — everything runs on a laptop CPU in under a minute. No quantum hardware or account needed.
+5. **Want the whole arc in one document?** [`PREPRINT.md`](PREPRINT.md) — the consolidated arXiv skeleton: abstract, 13-benchmark narrative, law derivation sketch, honest-negative ledger, limitations. (Related-work section pending a literature pass.) Independent verification entries live in [`AUDITS.md`](AUDITS.md) — B13 has been reproduced end-to-end from independent code.
 
 ## Quickstart
 
