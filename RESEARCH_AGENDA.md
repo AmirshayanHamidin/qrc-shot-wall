@@ -86,6 +86,16 @@ Run #1's compliance was checked retroactively: rules 1, 2, 5, 6 held; rule 4 N/A
 audits; rule 3 (code lives in the repo) was initially violated — the reproduction script sat in
 ephemeral session storage — and was corrected the same session (`audits/audit_run.py`).
 
+### Program 2 method rules
+
+- **Two-commit pre-registration (MANDATORY from audit #2, adopted 2026-07-05 after human review
+  of audit #1):** commit the audit file with the pre-registration section and an EMPTY results
+  section BEFORE any experiment runs; commit results in a separate later commit. The ordering
+  must be provable from commit history alone, with nobody's testimony required. Audit #1 landed
+  both in one commit (`d19a3e9`) — order was verified by A.H. against the session transcript and
+  signed off (see the audit's Rule 6 sign-off section), but that required a witness; this rule
+  removes the need for one.
+
 ### Completed audits
 
 - [x] **2026-07-05 — Fashion-MNIST paper benchmark, Table 3 (arXiv:1708.07747)**
