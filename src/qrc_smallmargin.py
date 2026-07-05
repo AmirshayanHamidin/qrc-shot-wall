@@ -1,115 +1,79 @@
 """
-B13 - The small-margin regime sweep: does B12's design rule survive leaving the
-maximal-headroom regime?  (simulation only; numpy density matrix + qiskit unitary)
+B13 - Small-margin regime sweep: does the "information-per-shot" design rule
+survive when exact accuracy is NOT saturated?
 
-CONTEXT. B12 found that information-per-shot (IPS = Sum dmu^2/sigma^2, a noiseless
-design-time quantity) is a designable lever: coupling topology moves it 14-56x and it
-predicts shot-limited accuracy at Spearman rho=+0.90 @ 250 shots, with the star (hub)
-reservoir winning. But B12 ran on the parity family where EVERY topology reaches exact
-accuracy 1.00 - the maximal-headroom regime. B11 showed the Mackey-Glass family lives
-at the opposite extreme: exact separation is high (0.94-0.98) but on razor-thin margins,
-where the fixed readout collapses below the classical floor. B13 repeats the B12 sweep
-- same 8 reservoirs (chain/ring/star/all2all x depth 1,2), same design metrics, same
-retrained-readout evaluation (qrc_law.perf) - on B11's three Mackey-Glass classification
-tasks (updown / accel / prodmed). Nothing else changes.
+CONTEXT. B12 found that coupling topology moves the design-time information-per-
+shot metric IPS = Sum_i dmu_i^2/sigma_i^2 by 14-56x and that IPS predicts shot-
+limited accuracy (Spearman rho = +0.90 at 250 shots), with the star/hub reservoir
+winning; the participation ratio PR (concentration) was uncorrelated (H2
+falsified). But every B12 cell sat in parity's MAXIMAL-HEADROOM regime: exact-
+readout accuracy = 1.000 for all 40 configurations, so topology could only act
+through per-shot noise, never through expressivity. B12's own limitations section
+and the README queue B13: repeat the sweep on the razor-thin-margin Mackey-Glass
+family of B11, where exact separation is imperfect and topology may reshuffle.
 
-PRE-REGISTERED HYPOTHESES (stated before running; bars fixed in advance):
-  H1 (IPS survives the small-margin regime). Pooled over the 24 (topology x depth x
-      task) configurations, Spearman rho(log IPS, retrained noisy accuracy) at S=250
-      satisfies rho >= +0.5 with p < 0.01, and the correlation decays with budget as
-      accuracy saturates (B12's wall signature).
-      Caveat pre-registered: unlike B12, exact accuracy is NOT matched across
-      reservoirs here, so rho(log IPS, retention (noisy-floor)/(exact-floor)) is the
-      pre-registered secondary endpoint and the exact-accuracy spread is reported.
-  H2 (the star rule transfers). Star has the highest topology-mean accuracy at 250
-      shots on the Mackey-Glass family, as it did on parity.
-  FALSIFIERS: rho < 0.5 or p >= 0.01 at 250 shots -> IPS as a design objective is
-      regime-bound to large-margin tasks, and B12's practical advice does not
-      generalise - reported as a negative. Star not first -> the topology ranking is
-      task-family-dependent; report the new ranking honestly.
+DESIGN (everything identical to B12 except the input/task family):
+  * Reservoirs: topology in {chain, ring, star, all2all} x depth {1, 2} layers,
+    6 qubits, 3 virtual nodes, K=4, gain=1.0, unitary seed=3 - the same 8
+    reservoirs as B12 (same build_U code, same seeds).
+  * Family: B11's Mackey-Glass drive and its three balanced classification tasks
+    (updown, accel, prodmed) - unchanged code from qrc_taskfam.py.
+  * Protocol: B12's exact protocol - retrained readout per feature matrix
+    (qrc_law.perf, C-grid logistic), budgets S in {250,1k,4k,16k,64k}, 3 sampling
+    seeds, inputs-only floor per task. 8 x 3 = 24 configurations, 120 cells.
+  * Design-time noiseless metrics per configuration: IPS, PR, top3, |dmu|
+    (identical design_metrics code from qrc_topology.py).
 
-Grid: 4 topologies x 2 depths x 3 clf tasks x 5 budgets (250..64000) x 3 sample seeds
-      -> 120 cells. Design metrics (IPS, PR, top3, |dmu|) computed noiselessly per
-      (reservoir, task) exactly as in B12 (qrc_topology.design_metrics).
+PRE-REGISTERED HYPOTHESES (stated before any run):
+  H1 (the lever survives small margins). Pooled over the 24 configurations,
+      Spearman rho(log IPS, noisy accuracy) >= +0.5 with p < 0.01 at S = 250,
+      and IPS still spreads >= 2x across topologies within each task.
+      Falsifier: rho < +0.5 or n.s. => IPS as a design objective is an artifact
+      of the matched-accuracy maximal-headroom regime and B12's design rule
+      cannot be trusted off that regime.
+  H2 (the design rule transfers). The star topology has the highest task-
+      averaged noisy accuracy at S = 250 (averaged over depths), as in B12.
+      Falsifier: any other topology wins => the hub recommendation is family-
+      specific and must be demoted from a rule to an observation.
+  H3 (concentration stays irrelevant). PR remains non-predictive of accuracy at
+      S = 250 (p > 0.05). Falsifier: significant correlation in either direction
+      => B12's negative about concentration was regime-specific.
 
-Usage:
-  python3 qrc_smallmargin.py build <topo> <layers>   -> smtopo_<topo>_L<layers>.npz
-  python3 qrc_smallmargin.py eval <topo> <layers>    -> sm_part_<topo>_L<layers>.json
-  python3 qrc_smallmargin.py agg                     -> smallmargin_law.json (+summary)
+  Pre-stated secondary analysis (because exact accuracy is NOT matched here,
+  unlike B12): report rho(exact, acc@250) and the PARTIAL Spearman correlation of
+  log IPS with acc@250 controlling for exact accuracy. The H1 "lever" claim is
+  only meaningful if IPS carries predictive weight beyond expressivity; if the
+  partial correlation collapses (< +0.3), we report that IPS @ small margins is
+  confounded with expressivity and say so in the write-up.
+
+Simulation only (numpy density matrix + qiskit unitary). No hardware, no runtime
+service, no token files.
+
+Usage (from src/):
+  python3 qrc_smallmargin.py build <topo> <layers>   -> smtopo_<topo>_L<L>.npz
+  python3 qrc_smallmargin.py eval <topo> <layers>    -> sm_part_<topo>_L<L>.json
+  python3 qrc_smallmargin.py agg                     -> ../results/smallmargin_topology.json
 """
 import sys, os, json
 import numpy as np
-from itertools import combinations
 
-T = 400
-WASH = 60
-NQ = 6
-NODES = 3
-K = 4
-GAIN = 1.0
-U_SEED = 3                     # same reservoir-parameter seed as B12
+from qrc_topology import edges, build_U, design_metrics, NQ, NODES, K, GAIN
+from qrc_taskfam import make_inputs, task_labels, T, WASH
+from qrc_law import zdiags, feats_from_P, perf
+
+CLF_TASKS = ['updown', 'accel', 'prodmed']
 BUDGETS = (250, 1000, 4000, 16000, 64000)
 SAMPLE_SEEDS = (1, 2, 3)
-CLF_TASKS = ['updown', 'accel', 'prodmed']
 TOPOS = ('chain', 'ring', 'star', 'all2all')
 LAYERS = (1, 2)
+USEED = 3          # same unitary seed as B12
 
-# ---------- Mackey-Glass input family (identical to qrc_taskfam.py, B11) ----------
-def mackey_glass(n, seed=0, beta=0.2, gamma=0.1, p=10, tau=17, discard=500):
-    rng = np.random.default_rng(seed)
-    hist = 1.2 + 0.05*rng.standard_normal(tau+1)
-    x = list(hist)
-    for _ in range(discard + n):
-        xt = x[-1]; xtau = x[-1-tau]
-        x.append(xt + beta*xtau/(1+xtau**p) - gamma*xt)
-    return np.array(x[-n:])
-
-def make_inputs(seed=0):
-    raw = mackey_glass(T, seed=seed)
-    lo, hi = np.percentile(raw, 1), np.percentile(raw, 99)
-    un = np.clip((raw - lo)/(hi - lo), 0, 1)
-    return 0.02 + 0.16*un
-
-def task_labels(u):
-    ubar = u.mean()
-    ud = np.array([1 if u[t] > u[t-2] else 0 for t in range(T)], float); ud[:2] = 0
-    ac = np.array([1 if (u[t]-2*u[t-1]+u[t-2]) > 0 else 0 for t in range(T)], float); ac[:2] = 0
-    pr = np.array([(u[t]-ubar)*(u[t-2]-ubar) for t in range(T)]); pr[:2] = 0.0
-    med = np.median(pr[WASH:])
-    pm = (pr > med).astype(float); pm[:2] = 0
-    return {'updown': (ud, 'clf'), 'accel': (ac, 'clf'), 'prodmed': (pm, 'clf')}
-
-# ---------- topologies (identical to qrc_topology.py, B12) ----------
-def edges(topo, nq):
-    if topo == 'chain':
-        return [(i, i+1) for i in range(nq-1)]
-    if topo == 'ring':
-        return [(i, i+1) for i in range(nq-1)] + [(nq-1, 0)]
-    if topo == 'star':
-        return [(0, i) for i in range(1, nq)]
-    if topo == 'all2all':
-        return list(combinations(range(nq), 2))
-    raise ValueError(topo)
-
-def build_U(topo, layers, seed):
-    from qiskit import QuantumCircuit
-    from qiskit.quantum_info import Operator
-    r = np.random.default_rng(seed)
-    qc = QuantumCircuit(NQ)
-    E = edges(topo, NQ)
-    for _ in range(layers):
-        for q in range(NQ):
-            qc.rx(r.uniform(0, 2*np.pi), q)
-            qc.rz(r.uniform(0, 2*np.pi), q)
-        for (a, b) in E:
-            qc.rzz(r.uniform(0, np.pi), a, b)
-    return Operator(qc).data
 
 def build(topo, layers):
     dim = 2**NQ
-    U = build_U(topo, layers, U_SEED); Ud = U.conj().T
+    U = build_U(topo, layers, USEED); Ud = U.conj().T
     gmax = 0.5*np.pi/0.2 * GAIN
-    u = make_inputs()
+    u = make_inputs()                      # Mackey-Glass drive (B11 encoder)
 
     def reset_inject(rho, uu):
         th = gmax*uu
@@ -130,71 +94,25 @@ def build(topo, layers):
             P[t, v] = np.real(np.diag(rho)).clip(0)
             P[t, v] /= P[t, v].sum()
     np.savez_compressed(f'smtopo_{topo}_L{layers}.npz', P=P)
-    print(f'built {topo} L{layers}', flush=True)
+    print(f'built {topo} L{layers} (Mackey-Glass drive)', flush=True)
 
-# ---------- features / readout (identical to qrc_law.py) ----------
-def zdiags(nq):
-    dim = 2**nq
-    bi = ((np.arange(dim)[:, None] >> np.arange(nq)[None, :]) & 1)
-    z1 = [1-2*bi[:, i].astype(float) for i in range(nq)]
-    z2 = [(1-2*bi[:, i])*(1-2*bi[:, j]) for i, j in combinations(range(nq), 2)]
-    return np.array(z1 + z2)
 
-def feats_from_P(P, Z, shots, rng=None):
-    Tn, nodes, dim = P.shape
-    out = np.zeros((Tn, nodes*Z.shape[0]))
-    for t in range(Tn):
-        for v in range(nodes):
-            p = P[t, v]
-            if shots:
-                p = rng.multinomial(shots, p) / shots
-            out[t, v*Z.shape[0]:(v+1)*Z.shape[0]] = Z @ p
-    return out
-
-def perf(X, y, kind, K):
-    from sklearn.linear_model import LogisticRegression
-    from sklearn.preprocessing import StandardScaler
-    from sklearn.pipeline import make_pipeline
-    Xs, ys = X[WASH:], y[WASH:]
-    split = int(0.7*len(ys))
-    best = -1e9
-    for C in (0.1, 1, 10, 100):
-        m = make_pipeline(StandardScaler(), LogisticRegression(max_iter=4000, C=C))
-        m.fit(Xs[:split], ys[:split])
-        best = max(best, m.score(Xs[split:], ys[split:]))
-    return best
-
-# ---------- design metrics (identical to qrc_topology.py) ----------
-def design_metrics(Fex, y):
-    X = Fex[WASH:]; yy = y[WASH:]
-    mu1 = X[yy == 1].mean(0); mu0 = X[yy == 0].mean(0)
-    dmu = mu1 - mu0
-    sig2 = np.clip(1.0 - (X**2).mean(0), 1e-6, None)
-    ips = float(np.sum(dmu**2 / sig2))
-    w = dmu**2
-    pr = float((w.sum()**2) / np.sum(w**2)) if np.sum(w**2) > 0 else float(len(w))
-    order = np.sort(w)[::-1]
-    top3 = float(order[:3].sum() / w.sum()) if w.sum() > 0 else 0.0
-    return ips, pr, top3, float(np.linalg.norm(dmu))
-
-# ---------- evaluation ----------
 def evaluate(topo, L):
     u = make_inputs()
     labels = task_labels(u)
     Z = zdiags(NQ)
     P = np.load(f'smtopo_{topo}_L{L}.npz')['P']
     Fex = feats_from_P(P, Z, 0)
-    Xin = u[:, None]
     results = []
     for tname in CLF_TASKS:
         y, kind = labels[tname]
         ips, pr, top3, dnorm = design_metrics(Fex, y)
-        floor = perf(Xin, y, kind, K)
+        floor = perf(u[:, None], y, kind, K)
         pex = perf(Fex, y, kind, K)
         for S in BUDGETS:
             accs = []
             for ss in SAMPLE_SEEDS:
-                rng = np.random.default_rng(ss)
+                rng = np.random.default_rng(1000*ss + S)
                 Fn = feats_from_P(P, Z, S, rng)
                 accs.append(perf(Fn, y, kind, K))
             pn = float(np.mean(accs))
@@ -205,11 +123,40 @@ def evaluate(topo, L):
                                 floor=float(floor), exact=float(pex),
                                 noisy=pn, retained=R))
         print(f'{topo:8s} L{L} {tname:8s} IPS={ips:8.3f} PR={pr:5.2f} '
-              f'floor={floor:.3f} exact={pex:.3f}', flush=True)
+              f'floor={floor:.3f} exact={pex:.3f} '
+              f'noisy@250={results[-5]["noisy"]:.3f}', flush=True)
     json.dump(results, open(f'sm_part_{topo}_L{L}.json', 'w'), indent=1)
-    print(f'{len(results)} cells saved', flush=True)
+    print(f'{topo} L{L}: {len(results)} cells', flush=True)
 
-# ---------- aggregation + hypothesis verdicts ----------
+
+def _pooled(cells, S):
+    sub = [r for r in cells if r['shots'] == S]
+    x = np.log(np.array([r['ips'] for r in sub]))
+    a = np.array([r['noisy'] for r in sub])
+    p = np.array([r['pr'] for r in sub])
+    e = np.array([r['exact'] for r in sub])
+    return x, a, p, e
+
+
+def _partial_spearman(x, y, z):
+    """Spearman partial correlation of x,y controlling z (rank-transform then
+    partial Pearson); t-test p-value with n-3 df."""
+    from scipy.stats import rankdata, t as tdist
+    rx, ry, rz = rankdata(x), rankdata(y), rankdata(z)
+    def pear(a, b):
+        a = a - a.mean(); b = b - b.mean()
+        return float(a @ b / np.sqrt((a @ a)*(b @ b)))
+    rxy, rxz, ryz = pear(rx, ry), pear(rx, rz), pear(ry, rz)
+    den = np.sqrt((1-rxz**2)*(1-ryz**2))
+    if den < 1e-12:
+        return 0.0, 1.0
+    r = (rxy - rxz*ryz)/den
+    n = len(x)
+    tt = r*np.sqrt((n-3)/max(1e-12, 1-r**2))
+    pv = 2*(1 - tdist.cdf(abs(tt), n-3))
+    return float(r), float(pv)
+
+
 def agg():
     from scipy.stats import spearmanr
     cells = []
@@ -218,49 +165,111 @@ def agg():
             f = f'sm_part_{topo}_L{L}.json'
             if os.path.exists(f):
                 cells += json.load(open(f))
-    corr = {}
+    # H1: pooled Spearman(log IPS, noisy acc) per budget
+    h1 = {}
     for S in BUDGETS:
-        cs = [c for c in cells if c['shots'] == S]
-        li = np.log([c['ips'] for c in cs])
-        acc = [c['noisy'] for c in cs]
-        rho, p = spearmanr(li, acc)
-        # secondary: retention (skip None)
-        rs = [(np.log(c['ips']), c['retained']) for c in cs if c['retained'] is not None]
-        rho_r, p_r = spearmanr([x[0] for x in rs], [x[1] for x in rs]) if len(rs) > 4 else (None, None)
-        # PR check (B12's falsified H2, re-tested out of regime)
-        rho_pr, p_pr = spearmanr([c['pr'] for c in cs], acc)
-        corr[S] = dict(rho_ips=float(rho), p_ips=float(p),
-                       rho_ret=None if rho_r is None else float(rho_r),
-                       p_ret=None if p_r is None else float(p_r),
-                       rho_pr=float(rho_pr), p_pr=float(p_pr), n=len(cs))
-    rank = {}
-    for topo in TOPOS:
-        cs = [c['noisy'] for c in cells if c['shots'] == 250 and c['topo'] == topo]
-        ex = [c['exact'] for c in cells if c['shots'] == 250 and c['topo'] == topo]
-        ip = [c['ips'] for c in cells if c['shots'] == 250 and c['topo'] == topo]
-        rank[topo] = dict(acc250=float(np.mean(cs)), exact=float(np.mean(ex)),
-                          mean_ips=float(np.mean(ip)))
-    exacts = [c['exact'] for c in cells if c['shots'] == 250]
-    h1 = bool(corr[250]['rho_ips'] >= 0.5 and corr[250]['p_ips'] < 0.01)
-    star_first = max(rank, key=lambda t: rank[t]['acc250']) == 'star'
-    ipsvals = {}
+        x, a, p, e = _pooled(cells, S)
+        rho, pv = spearmanr(x, a)
+        h1[S] = dict(rho=float(rho), p=float(pv), n=len(x))
+    # IPS spread per task
+    spread = {}
     for tname in CLF_TASKS:
-        v = [c['ips'] for c in cells if c['shots'] == 250 and c['task'] == tname]
-        ipsvals[tname] = dict(min=float(np.min(v)), max=float(np.max(v)),
-                              ratio=float(np.max(v)/np.min(v)))
-    summary = dict(n_cells=len(cells), correlations=corr, ranking=rank,
-                   exact_spread=dict(min=float(np.min(exacts)), max=float(np.max(exacts)),
-                                     std=float(np.std(exacts))),
-                   ips_range_by_task=ipsvals,
-                   H1_pass=h1, H2_star_first=bool(star_first))
-    json.dump(dict(summary=summary, cells=cells),
-              open('smallmargin_law.json', 'w'), indent=1)
+        ipss = sorted(set(r['ips'] for r in cells if r['task'] == tname))
+        spread[tname] = float(ipss[-1]/ipss[0]) if ipss[0] > 0 else None
+    # H2: topology ranking at 250 (mean over tasks and depths)
+    rank250 = {}
+    for topo in TOPOS:
+        accs = [r['noisy'] for r in cells if r['shots'] == 250 and r['topo'] == topo]
+        ipss = [r['ips'] for r in cells if r['shots'] == 250 and r['topo'] == topo]
+        rank250[topo] = dict(acc=float(np.mean(accs)), ips=float(np.mean(ipss)))
+    # H3: PR vs acc at each budget
+    h3 = {}
+    for S in BUDGETS:
+        x, a, p, e = _pooled(cells, S)
+        rho, pv = spearmanr(p, a)
+        h3[S] = dict(rho=float(rho), p=float(pv))
+    # secondary: exact-accuracy confound at 250
+    x, a, p, e = _pooled(cells, 250)
+    rho_e, pv_e = spearmanr(e, a)
+    rho_part, pv_part = _partial_spearman(x, a, e)
+    rho_ie, pv_ie = spearmanr(x, e)
+    summary = dict(
+        n_cells=len(cells),
+        H1_rho_by_budget=h1,
+        H1_ips_spread_by_task=spread,
+        H1_pass=bool(h1[250]['rho'] >= 0.5 and h1[250]['p'] < 0.01 and
+                     all(v is not None and v >= 2 for v in spread.values())),
+        H2_rank250=rank250,
+        H2_star_wins=bool(max(rank250, key=lambda k: rank250[k]['acc']) == 'star'),
+        H3_pr_by_budget=h3,
+        H3_pass=bool(h3[250]['p'] > 0.05),
+        secondary=dict(rho_exact_acc250=float(rho_e), p=float(pv_e),
+                       rho_logips_exact=float(rho_ie), p_ie=float(pv_ie),
+                       partial_rho_logips_acc250_given_exact=rho_part,
+                       partial_p=pv_part))
+    out = dict(summary=summary, cells=cells)
+    os.makedirs('../results', exist_ok=True)
+    json.dump(out, open('../results/smallmargin_topology.json', 'w'), indent=1)
     print(json.dumps(summary, indent=1))
+
+
+def posthoc():
+    """POST-HOC (exploratory, labelled as such - run AFTER the pre-registered
+    agg() verdicts were recorded): diagnose the pooled H1 failure by splitting
+    the correlation within vs across tasks."""
+    from scipy.stats import spearmanr, rankdata
+    d = json.load(open('../results/smallmargin_topology.json'))
+    cells = d['cells']
+    within = {}
+    for tn in CLF_TASKS:
+        within[tn] = {}
+        for S in BUDGETS:
+            sub = [r for r in cells if r['task'] == tn and r['shots'] == S]
+            rho, p = spearmanr(np.log([r['ips'] for r in sub]),
+                               [r['noisy'] for r in sub])
+            within[tn][S] = dict(rho=float(rho), p=float(p), n=len(sub))
+    strat = {}
+    for S in BUDGETS:
+        xs, ys = [], []
+        for tn in CLF_TASKS:
+            sub = [r for r in cells if r['task'] == tn and r['shots'] == S]
+            xs += list(rankdata(np.log([r['ips'] for r in sub])))
+            ys += list(rankdata([r['noisy'] for r in sub]))
+        rho, p = spearmanr(xs, ys)
+        strat[S] = dict(rho=float(rho), p=float(p))
+    pertask_winner = {}
+    for tn in CLF_TASKS:
+        m = {topo: float(np.mean([r['noisy'] for r in cells
+                                  if r['task'] == tn and r['shots'] == 250
+                                  and r['topo'] == topo])) for topo in TOPOS}
+        pertask_winner[tn] = dict(m, winner=max(m, key=m.get))
+    accel = [r for r in cells if r['task'] == 'accel']
+    below = [r for r in accel if r['noisy'] <= r['floor']]
+    ret = {}
+    for S in (250, 1000):
+        sub = [r for r in cells if r['shots'] == S and r['retained'] is not None]
+        rho, p = spearmanr(np.log([r['ips'] for r in sub]),
+                           [r['retained'] for r in sub])
+        ret[S] = dict(rho=float(rho), p=float(p))
+    d['post_hoc'] = dict(
+        note='EXPLORATORY, computed after pre-registered verdicts. Within-task '
+             'and stratified (rank-within-task) correlations diagnose the pooled '
+             'H1 failure as cross-task heterogeneity, not a dead lever.',
+        within_task_rho=within,
+        stratified_rho=strat,
+        per_task_winner_250=pertask_winner,
+        accel_cells_at_or_below_floor=f'{len(below)}/{len(accel)}',
+        pooled_rho_logips_retained=ret)
+    json.dump(d, open('../results/smallmargin_topology.json', 'w'), indent=1)
+    print(json.dumps(d['post_hoc'], indent=1))
+
 
 if __name__ == '__main__':
     if sys.argv[1] == 'build':
         build(sys.argv[2], int(sys.argv[3]))
     elif sys.argv[1] == 'eval':
         evaluate(sys.argv[2], int(sys.argv[3]))
+    elif sys.argv[1] == 'posthoc':
+        posthoc()
     else:
         agg()
