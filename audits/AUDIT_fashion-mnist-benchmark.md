@@ -113,5 +113,7 @@ at all.
 6. This audit ran autonomously; no human reviewed it before publication.
 
 ---
-*Reproduction script: chunked sklearn run, archived in the session outputs as `audit_run.py`;
-it is 60 lines and fully described by the Methodology + Fixed decisions above.*
+*Reproduction script: [`audits/audit_run.py`](audit_run.py) in this repo (published 2026-07-05,
+same session, after PROTOCOL.md v1.0 landed — rule 3 requires code in the repo, not session
+storage; the initial commit of this audit pointed to ephemeral session outputs, which violated
+that rule and is corrected here).*
