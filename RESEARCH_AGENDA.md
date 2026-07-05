@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-04, evening scheduled session)
+## State (updated 2026-07-05, Program 2 run #2 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -106,12 +106,22 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       4 pp swing across var_smoothing 1e-11…1e-5 — while the discretion-free k-NN row reproduces
       to 0.15 pp after nine years of sklearn releases). Takeaway: within one published table,
       reproducibility tracks how much numerical discretion the algorithm leaves the library.
+- [x] **2026-07-05 — Fashion-MNIST paper Table 3, LogisticRegression row (run #2)**
+      (`audits/AUDIT_fashion-mnist-logreg.md`). First audit under the two-commit rule:
+      pre-registration commit `788f890` provably precedes the results commit. C=1 ovr l1:
+      published 0.842, reproduced **0.8395 — CONFIRMED** (drift −0.25 pp, bar ±0.005); the
+      pre-registered secondary prediction (drift strictly between k-NN's 0.15 pp and
+      GaussianNB's 5.9 pp) **held**. Two infra-forced, labelled amendments (45 s per-process
+      cap): tol=1e-2 instead of the registered 1e-4 default (quantified: 0.02 pp movement
+      1e-2→1e-3 on the full pipeline) and per-class ovr assembly (validated against the
+      internal multiclass path: 98.9% prediction agreement, no sign flips). "Discretion
+      predicts drift" is now 3/3 across rows: k-NN 0.15 pp < LogReg 0.25 pp < GaussianNB 5.9 pp.
 
 ### Queue (candidate targets for future runs)
 
-- [ ] Another Table 3 row from the same paper with a different discretion profile
-      (e.g. LogisticRegression C=1 ovr → 0.842, or DecisionTree entropy/depth-10 → 0.798 with
-      seed variance) — tests the "discretion predicts drift" reading of audit #1.
+- [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
+      run #2 (LogisticRegression C=1 ovr l1, see Completed audits). Still open from this bullet:
+      DecisionTree entropy/depth-10 → 0.798 (adds *seed* discretion, a profile not yet tested).
 - [ ] scikit-learn's own documented example numbers (digits SVC report, LFW eigenfaces table).
 - [ ] A published UCI-scale ablation row from a widely cited repo README.
 
@@ -156,6 +166,17 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
   written before any run. Also discovered and flagged: the Program 2 task file's PROTOCOL.md does
   not exist in the repo. Program 1 (B1–B13) untouched this session; its audit queue (B6/B11 next,
   qrc_law.png regeneration, B5 regression cells) remains as listed above.
+- 2026-07-05 (scheduled session, Program 2 run #2) — Second replication audit landed:
+  LogisticRegression row of Fashion-MNIST Table 3 (see Completed audits and
+  `audits/AUDIT_fashion-mnist-logreg.md` + `audits/audit_logreg_run.py`). First use of the
+  two-commit pre-registration rule — ordering provable from git history alone, no witness
+  needed. Sandbox constraint discovered and documented for future runs: **hard 45 s
+  per-process execution cap; background processes are SIGKILLed between shell calls**
+  (signal-masking tested, does not survive), so liblinear (no warm start) ran as per-class
+  ovr fits at tol=1e-2 — both reported as labelled amendments with sensitivity checks in the
+  audit file. Freshness verified against the commits page per HARD GUARDRAIL 6 (HEAD
+  `ff1575b` at session start). Program 1 untouched; its audit queue (B6/B11 next,
+  qrc_law.png regeneration, B5 regression cells) unchanged.
 
 ## Pending push
 
