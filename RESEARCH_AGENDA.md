@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-04, scheduled session)
+## State (updated 2026-07-04, evening scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -32,6 +32,12 @@ the README's B1–B13 numbering is canonical.
 4. Keep runs within the 45s bash-call limit (chunk long computations).
 5. If GitHub push isn't possible in this session, save everything locally and log it under
    "Pending push" below; do not retry endlessly.
+6. **CACHE-BUST EVERY FETCH.** raw.githubusercontent.com serves stale CDN copies to fresh
+   sessions (three B13 duplications so far, incl. one accidental overwrite of a file of
+   record). Before choosing a work mode: (a) fetch README/agenda with `?cb=<timestamp>`
+   appended, AND (b) load github.com/AmirshayanHamidin/qrc-shot-wall/commits/main in the
+   browser and confirm the fetched content mentions the latest commits. If the two disagree,
+   trust the commits page and re-fetch pinned to the HEAD SHA.
 
 ## Method rules
 
@@ -57,8 +63,8 @@ the README's B1–B13 numbering is canonical.
 - [ ] **AUDIT MODE (standing default).** Do not invent new benchmarks.
       Pick the least-recently-audited benchmark, re-run its key numbers from repo code, check
       every claim in its write-up, append an AUDITS.md entry (confirmed/discrepancy, numbers
-      side by side). Audited so far: B13 (2026-07-03, CONFIRMED; +2026-07-04 third
-      independent repro, see AUDITS.md addendum), B5 (2026-07-04, DISCREPANCY → RESTORED
+      side by side). Audited so far: B13 (2026-07-03, CONFIRMED; +2026-07-04 same-convention
+      repros #2 and #3, see AUDITS.md addenda), B5 (2026-07-04, DISCREPANCY → RESTORED
       same day). Suggested order: B6 and B11 next (they quote/build on B5's figures), then
       B2, B10, B12. Also open: B5 regression cells (30) re-run; regenerate
       figures/qrc_law.png from law_rerun.json.
@@ -78,7 +84,7 @@ the README's B1–B13 numbering is canonical.
   repo page — first push had propagated the 0.991 headline; second push same session corrected
   PREPRINT (v0.3), RELATED_WORK, README (B5 paragraph + Start-here) to audited numbers.
   Next run: B5 restoration item above, or audit B6/B11.
-- 2026-07-04 (this scheduled session) — Started from a stale CDN README (pre-B13) and
+- 2026-07-04 (later scheduled session) — Started from a stale CDN README (pre-B13) and
   independently re-implemented B13 before discovering the published version — numbers
   reproduced exactly; logged as an AUDITS.md addendum, nothing overwritten. Then executed
   the real queue top: **B5 restoration** (generator committed, 8-seed 150-cell re-run,
@@ -86,6 +92,18 @@ the README's B1–B13 numbering is canonical.
   Next run: audit B6 or B11 (audit mode); optional: regenerate qrc_law.png, B5 regression
   cells. Practical note for future sessions: ALWAYS cache-bust raw.githubusercontent
   fetches (append `?cb=<date>`) — stale CDN copies have now caused duplicate B13 work twice.
+- 2026-07-04 (evening scheduled session) — **Stale-cache incident #3 + repair.** Session
+  fetched README/agenda without a cache-buster, received a pre-B13 CDN copy (which also hid
+  the anti-stale rule added after incident #2), concluded the small-margin sweep was still
+  queued, and re-implemented B13 (own pre-registration written before running; its pooled H1
+  failed and H2/H3 held, consistent with the published verdicts; numbers matched the
+  2026-07-03 audit implementation to reported precision — same natural seed convention).
+  Commit `a2ed28d` briefly overwrote `src/qrc_smallmargin.py` and added a stray fig script
+  before the published B13 was discovered via the repo pages. **Repaired same session:**
+  published code restored byte-for-byte from `97319c2`, fig script replaced with a
+  provenance stub, AUDITS.md second addendum appended, and the cache-bust rule promoted to
+  HARD GUARDRAIL 6. No results/figures/JSON files of record were touched. Next run: audit
+  B6 or B11 (audit mode); optional: regenerate qrc_law.png, B5 regression cells re-run.
 
 ## Pending push
 
