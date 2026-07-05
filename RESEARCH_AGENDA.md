@@ -71,6 +71,38 @@ the README's B1–B13 numbering is canonical.
 - [ ] (Deferred, needs Amirshayan's sign-off: third task family for the within-task IPS
       confirmation; injection-scheme sweep; anything requiring hardware.)
 
+## Program 2 — third-party replication audits (VAR)
+
+Goal: make replication a routine, logged, public pass. Each scheduled Program 2 run picks ONE
+published, small-scale, CPU-reproducible ML claim (public code+data, permissive access),
+pre-registers the expected number and tolerance in writing BEFORE running, reproduces it in the
+sandbox, and publishes `audits/AUDIT_<paper-or-repo>.md` with claim, source, tolerance, reproduced
+number, verdict (CONFIRMED / DISCREPANCY / COULD-NOT-RUN), environment, and an honesty section.
+Verdicts are about numbers, never accusations; unexplained gaps default to environment differences.
+
+**NOTE (2026-07-05): the Program 2 task file references a repo-root `PROTOCOL.md` ("the six VAR
+rules") that does not exist** (checked via the GitHub contents API, not stale CDN). Runs so far
+follow the task file's inline rules. Amirshayan: commit PROTOCOL.md or drop the reference.
+
+### Completed audits
+
+- [x] **2026-07-05 — Fashion-MNIST paper benchmark, Table 3 (arXiv:1708.07747)**
+      (`audits/AUDIT_fashion-mnist-benchmark.md`). Two rows, pre-registered tolerance ±0.005.
+      k-NN (distance, k=5, p=2): published 0.852, reproduced **0.8535 — CONFIRMED**.
+      GaussianNB: published 0.511, reproduced **0.5703 — DISCREPANCY** (+5.9 pp, favorable
+      direction; post-hoc probe shows the row is fragile to the implementation's variance floor —
+      4 pp swing across var_smoothing 1e-11…1e-5 — while the discretion-free k-NN row reproduces
+      to 0.15 pp after nine years of sklearn releases). Takeaway: within one published table,
+      reproducibility tracks how much numerical discretion the algorithm leaves the library.
+
+### Queue (candidate targets for future runs)
+
+- [ ] Another Table 3 row from the same paper with a different discretion profile
+      (e.g. LogisticRegression C=1 ovr → 0.842, or DecisionTree entropy/depth-10 → 0.798 with
+      seed variance) — tests the "discretion predicts drift" reading of audit #1.
+- [ ] scikit-learn's own documented example numbers (digits SVC report, LFW eigenfaces table).
+- [ ] A published UCI-scale ablation row from a widely cited repo README.
+
 ## Log
 
 - 2026-07-03 03:00 — Agenda created. Self-calibration benchmark started in live session.
@@ -104,6 +136,14 @@ the README's B1–B13 numbering is canonical.
   provenance stub, AUDITS.md second addendum appended, and the cache-bust rule promoted to
   HARD GUARDRAIL 6. No results/figures/JSON files of record were touched. Next run: audit
   B6 or B11 (audit mode); optional: regenerate qrc_law.png, B5 regression cells re-run.
+
+- 2026-07-05 (scheduled session, Program 2 run #1) — First third-party replication audit landed:
+  Fashion-MNIST paper Table 3 (see Program 2 section above and `audits/AUDIT_fashion-mnist-benchmark.md`).
+  Methodology extracted from the repo's `benchmark/runner.py` (StandardScaler fit on train — an
+  easy-to-miss detail without which neither row is meaningful); data MD5-verified; pre-registration
+  written before any run. Also discovered and flagged: the Program 2 task file's PROTOCOL.md does
+  not exist in the repo. Program 1 (B1–B13) untouched this session; its audit queue (B6/B11 next,
+  qrc_law.png regeneration, B5 regression cells) remains as listed above.
 
 ## Pending push
 
