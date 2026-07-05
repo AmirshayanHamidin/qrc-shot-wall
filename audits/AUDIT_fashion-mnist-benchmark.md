@@ -110,7 +110,25 @@ at all.
 5. **Repeats skipped by reasoned argument, not measurement:** the paper averages 5 shuffled runs;
    both audited classifiers are provably shuffle-invariant (k-NN geometry and GaussianNB
    sufficient statistics do not depend on row order), matching the runner's own early-stop logic.
-6. This audit ran autonomously; no human reviewed it before publication.
+6. This audit ran autonomously; no human reviewed it before publication. *(Superseded same day —
+   see the sign-off below.)*
+7. **The pre-registration's timing is not provable from the public trail.** Pre-registration and
+   results landed in a single commit (`d19a3e9`), so a repo reader cannot verify from git alone
+   that the tolerance was fixed before the numbers existed — only testimony says so. Found by
+   human review (A.H.), 2026-07-05. Corrected as a standing rule for all future Program 2 audits:
+   **two-commit pre-registration** — commit the audit file with the pre-registration section and
+   an empty results section BEFORE any experiment runs, then commit results separately, so the
+   ordering is verifiable by anyone from commit history without trusting anyone's word.
+
+## Rule 6 sign-off
+
+Reviewed and signed off by **Amirshayan Hamidin**, 2026-07-05, on the following basis, stated
+honestly: both reproduced numbers (k-NN 0.8535, GaussianNB 0.5703) were re-run live in his
+presence in a fresh pass over the same data (per-chunk accuracies identical digit-for-digit to
+the audit run), and the pre-registration-before-results ordering was verified against the session
+transcript, which he read directly. This is witness-based verification, not public-trail
+verification — sufficient for sign-off under rule 6, and the reason honesty item 7's two-commit
+rule now exists, so that no future audit needs a witness.
 
 ---
 *Reproduction script: [`audits/audit_run.py`](audit_run.py) in this repo (published 2026-07-05,
