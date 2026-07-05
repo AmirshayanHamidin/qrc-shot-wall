@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-05, Program 2 run #2 scheduled session)
+## State (updated 2026-07-05, Program 2 run #3 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -117,12 +117,25 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       internal multiclass path: 98.9% prediction agreement, no sign flips). "Discretion
       predicts drift" is now 3/3 across rows: k-NN 0.15 pp < LogReg 0.25 pp < GaussianNB 5.9 pp.
 
+- [x] **2026-07-05 — scikit-learn 1.8 docs, digits SVC classification report (run #3)**
+      (`audits/AUDIT_sklearn-digits-svc.md` + `audits/audit_digits_svc_run.py`). Two-commit rule:
+      pre-registration `b22be5d` provably precedes results `b9e481a`. Published 0.97 (899 test
+      samples): reproduced **0.9689 (871/899) — CONFIRMED**; all 33 printed report numbers
+      identical at 2 dp across a 1.8.0 -> 1.7.2 version gap (1.8.0 not installable in sandbox;
+      pre-declared). Zero-discretion anchor: "discretion predicts drift" now 4/4 —
+      docs-SVC ~0.00 pp < k-NN 0.15 pp < LogReg 0.25 pp < GaussianNB 5.9 pp (first point digits,
+      others Fashion-MNIST).
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
       run #2 (LogisticRegression C=1 ovr l1, see Completed audits). Still open from this bullet:
       DecisionTree entropy/depth-10 → 0.798 (adds *seed* discretion, a profile not yet tested).
-- [ ] scikit-learn's own documented example numbers (digits SVC report, LFW eigenfaces table).
+- [x] ~~scikit-learn's own documented example numbers~~ — digits SVC report DONE run #3
+      (see Completed audits). Still open from this bullet: LFW eigenfaces table.
+- [ ] Fashion-MNIST DecisionTree entropy/depth-10 -> 0.798 — **infra-blocked in this sandbox**
+      (run #3 synthetic probe: >=2 min single-process fit vs hard 45 s cap; no claim-preserving
+      amendment). Needs an environment without the per-process cap.
 - [ ] A published UCI-scale ablation row from a widely cited repo README.
 
 ## Log
@@ -177,6 +190,18 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
   audit file. Freshness verified against the commits page per HARD GUARDRAIL 6 (HEAD
   `ff1575b` at session start). Program 1 untouched; its audit queue (B6/B11 next,
   qrc_law.png regeneration, B5 regression cells) unchanged.
+
+- 2026-07-05 (scheduled session, Program 2 run #3) — Third replication audit landed: scikit-learn
+  1.8 docs digits SVC report (`audits/AUDIT_sklearn-digits-svc.md` + `audits/audit_digits_svc_run.py`),
+  verdict CONFIRMED (0.9689 vs 0.97; 33/33 printed numbers identical across the 1.8.0 -> 1.7.2
+  gap; two-commit rule `b22be5d` -> `b9e481a`). Queue's first candidate (DecisionTree row)
+  found infra-blocked by a synthetic timing probe BEFORE any pre-registration; the switch to the
+  next queue item was pre-declared inside the audit file. Stale-CDN incident #4 (mild): post-commit
+  verification via un-pinned raw URL returned the pre-results file even WITH a cache-buster —
+  re-verified pinned to the HEAD SHA. Practical rule for future runs: verify pushes pinned to SHA,
+  not just cache-busted. Editor typing artifacts during commit 1 were repaired before committing
+  and are disclosed in the audit's honesty section (item 5). Program 1 untouched; its audit queue
+  (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
 
 ## Pending push
 
