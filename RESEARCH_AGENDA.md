@@ -12,8 +12,12 @@ correction (B13). **PREPRINT.md consolidated (v0.2). RELATED_WORK.md literature 
 (2026-07-04)** — preprint Related-work section populated with verified citations.
 **AUDITS.md started** — B13 independently re-implemented and CONFIRMED (2026-07-03).
 **B5 audit (2026-07-04, earlier session): DISCREPANCY** — headline R²=0.991/1.3 pp not
-reproducible from committed code; law survives at R²≈0.92–0.94 / MAE 3.6 pp; prediction-
-generator script missing from `src/`. README/PREPRINT/RELATED_WORK now quote audited numbers.
+reproducible from committed code. **B5 RESTORATION DONE (2026-07-04, later session):**
+canonical generator committed (`src/qrc_law_predict.py`, convention pinned), 150-cell grid
+re-run with 8 documented seeds (`src/qrc_law_rerun.py`, per-seed cells in
+`results/law_rerun.json`). Restored headline: **R²=0.939 (0.944 noise-corr.), MAE 3.3 pp,
+bias −1.0 pp**; 8-seed noise floor 0.9 pp. RESULTS_LAW.md rewritten around the restored
+numbers + provenance note; README/PREPRINT (v0.4)/AUDITS updated in the same batch.
 
 Note: older entries below the log used a different B6–B11 numbering (pre-consolidation);
 the README's B1–B13 numbering is canonical.
@@ -45,16 +49,19 @@ the README's B1–B13 numbering is canonical.
       Key takeaway logged: B2's strategy set *includes* the literature's main mitigation
       proposal (SVD truncation), strengthening the wall claim. No contradicting or
       anticipating prior art found within the stated search limits (see honesty section).
-- [ ] **B5 restoration (top priority, from the 2026-07-04 audit).** Consolidation, not a new
-      benchmark: commit a prediction-generator script that produces `law_theory.json`-style
-      pred from the documented formula; re-run the 150-cell grid with ≥8 documented sampling
-      seeds; update RESULTS_LAW.md's headline to the re-run numbers; note the provenance issue
-      in its honesty section. Until then, audited numbers (R²≈0.92–0.94, 3.6 pp) are canonical.
+- [x] **B5 restoration — DONE 2026-07-04.** Generator committed (`src/qrc_law_predict.py`),
+      8-seed re-run (`results/law_rerun.json`), RESULTS_LAW.md headline replaced
+      (R²=0.939/0.944, MAE 3.3 pp), provenance note added, README/PREPRINT/AUDITS synced.
+      Leftovers folded into audit mode: 30 regression cells not re-run;
+      `figures/qrc_law.png` still shows the original run (regenerate from law_rerun.json).
 - [ ] **AUDIT MODE (standing default).** Do not invent new benchmarks.
       Pick the least-recently-audited benchmark, re-run its key numbers from repo code, check
       every claim in its write-up, append an AUDITS.md entry (confirmed/discrepancy, numbers
-      side by side). Audited so far: B13 (2026-07-03, CONFIRMED), B5 (2026-07-04, DISCREPANCY).
-      Suggested order: B6 and B11 next (they quote/build on B5's figures), then B2, B10, B12.
+      side by side). Audited so far: B13 (2026-07-03, CONFIRMED; +2026-07-04 third
+      independent repro, see AUDITS.md addendum), B5 (2026-07-04, DISCREPANCY → RESTORED
+      same day). Suggested order: B6 and B11 next (they quote/build on B5's figures), then
+      B2, B10, B12. Also open: B5 regression cells (30) re-run; regenerate
+      figures/qrc_law.png from law_rerun.json.
 - [ ] (Deferred, needs Amirshayan's sign-off: third task family for the within-task IPS
       confirmation; injection-scheme sweep; anything requiring hardware.)
 
@@ -71,6 +78,14 @@ the README's B1–B13 numbering is canonical.
   repo page — first push had propagated the 0.991 headline; second push same session corrected
   PREPRINT (v0.3), RELATED_WORK, README (B5 paragraph + Start-here) to audited numbers.
   Next run: B5 restoration item above, or audit B6/B11.
+- 2026-07-04 (this scheduled session) — Started from a stale CDN README (pre-B13) and
+  independently re-implemented B13 before discovering the published version — numbers
+  reproduced exactly; logged as an AUDITS.md addendum, nothing overwritten. Then executed
+  the real queue top: **B5 restoration** (generator committed, 8-seed 150-cell re-run,
+  R²=0.939/MAE 3.3 pp, RESULTS_LAW.md rewritten, README/PREPRINT v0.4/AUDITS synced).
+  Next run: audit B6 or B11 (audit mode); optional: regenerate qrc_law.png, B5 regression
+  cells. Practical note for future sessions: ALWAYS cache-bust raw.githubusercontent
+  fetches (append `?cb=<date>`) — stale CDN copies have now caused duplicate B13 work twice.
 
 ## Pending push
 

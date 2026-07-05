@@ -2,6 +2,26 @@
 
 Verification-only entries: independent re-runs of published benchmarks against their written claims. Format per entry: what was re-run, how independently, verdict (CONFIRMED / DISCREPANCY), numbers side by side.
 
+## 2026-07-04 (later session) — B5 RESTORATION — closes the 2026-07-04 discrepancy
+
+**What was done (consolidation, not a new benchmark).** The three audit findings below are now remediated in the repo:
+
+1. **Missing generator (finding #3) → committed.** `src/qrc_law_predict.py` is now the canonical prediction generator. Its readout convention is pinned in the docstring: raw-feature logistic regression, C = 10⁴, 70% chronological train split — the convention the audit's reconstruction found to match the published `pred` column (MAE 1.2–1.4 pp). From that file onward the law's prediction is defined by committed code, not by a lost script.
+2. **Under-seeded observations (finding #2) → 8 documented seeds.** `src/qrc_law_rerun.py` re-ran all 150 classification cells with sampling seeds 1–8 (observation convention unchanged: `law_eval_arch.py`-style retrained readout). Per-seed accuracies are stored in `results/law_rerun.json`, so the noise floor is recomputable by anyone: 8-seed expected MAE floor = **0.91 pp**.
+3. **Irreproducible headline (finding #1) → retired and replaced.** `results/RESULTS_LAW.md` now leads with the restored numbers and a provenance note; README and PREPRINT were updated in the same push. `law_theory.json` remains untouched as the historical file of record.
+
+**Restored headline vs audit estimate vs original claim:**
+
+| | R² | noise-corr. R² | MAE | bias |
+|---|---|---|---|---|
+| Original claim (retired) | 0.991 | — | 1.33 pp | — |
+| Audit estimate (2-seed obs) | 0.922 | ≈0.944 | 3.64 pp | — |
+| **Restored (8-seed obs, committed code)** | **0.939** | **0.944** | **3.33 pp** | **−0.98 pp** |
+
+Per-budget R²: 0.855 / 0.897 / 0.946 / 0.950 / 0.962 at S = 250 / 1k / 4k / 16k / 64k. Bias runs −2.7 pp (law pessimistic; retraining recovers margin the fixed-readout probit doesn't see, cf. B10) at 250 shots to +0.85 pp at 64k. The audit's noise-corrected estimate (≈0.944) and the independent 8-seed re-run (0.944) agree to three decimals — the audit's characterization of the law is confirmed end-to-end.
+
+**Still open:** the 30 regression cells were not re-run; B6/B10/B11 quote their own statistics and remain unaudited (B6 and B11 are the suggested next audits); `figures/qrc_law.png` still shows the original run and should be regenerated from `law_rerun.json`.
+
 ## 2026-07-04 — B5 (RESULTS_LAW.md): full 150-cell re-run from committed code — **DISCREPANCY FOUND**
 
 **What was re-run.** The entire B5 grid, from the repo's own committed code: `src/qrc_law.py build` for all 6 architectures, then `src/law_eval_arch.py` (retrained readout, documented sampling seeds (1,2)) for all 150 classification cells. Environment: numpy + sklearn 1.7.2, fresh workspace. Raw side-by-side cells and aggregates: `results/audit_b5_repro.json`; audit predictor reconstruction: `src/audit_law_theory.py`.
@@ -16,7 +36,7 @@ Verification-only entries: independent re-runs of published benchmarks against t
 
 **What survives.** The claim's arithmetic is internally consistent (recomputing from `law_theory.json`: R² = 0.9909, MAE = 1.332 pp — matches the stated 0.991/1.3). And the law itself survives the re-run *qualitatively*: published predictions vs independently reproduced observations give **R² = 0.922, MAE = 3.64 pp** (2-seed obs; correcting for obs sampling noise, R² ≈ 0.944), improving from R² 0.82 at 250 shots to 0.96 at 64k. A zero-parameter prediction at ~3.6 pp MAE across 150 cells is still a strong, useful law.
 
-**Verdict: DISCREPANCY.** The qualitative B5 claim (parameter-free probit law predicts shot-limited accuracy) is **confirmed** at R² ≈ 0.92–0.94. The headline precision **R² = 0.991 / MAE 1.3 pp is not reproducible** from the committed code, the published observations' provenance is unclear for at least a subset of cells, and the prediction generator is missing from `src/`. Until the original generator scripts are restored and the grid re-run with ≥8 documented seeds, README/PREPRINT should quote the reproduced numbers (R² ≈ 0.92, MAE ≈ 3.6 pp, noise-corrected R² ≈ 0.94) or explicitly flag the headline as unaudited. Downstream note: B6/B10/B11 quote or build on the 0.991 figure; their own numbers were not re-checked today.
+**Verdict: DISCREPANCY.** The qualitative B5 claim (parameter-free probit law predicts shot-limited accuracy) is **confirmed** at R² ≈ 0.92–0.94. The headline precision **R² = 0.991 / MAE 1.3 pp is not reproducible** from the committed code, the published observations' provenance is unclear for at least a subset of cells, and the prediction generator is missing from `src/`. Until the original generator scripts are restored and the grid re-run with ≥8 documented seeds, README/PREPRINT should quote the reproduced numbers (R² ≈ 0.92, MAE ≈ 3.6 pp, noise-corrected R² ≈ 0.94) or explicitly flag the headline as unaudited. Downstream note: B6/B10/B11 quote or build on the 0.991 figure; their own numbers were not re-checked today. *(Update, later session same day: restoration completed — see entry above.)*
 
 *Caveats: audit ran sklearn 1.7.2 / current numpy — environment differences could shift marginal cells a few pp, but cannot explain 13–18 pp deviations on cells where eight seeds bracket a disjoint range. The published `law_theory.json` remains untouched as file of record.*
 
@@ -46,3 +66,5 @@ Verification-only entries: independent re-runs of published benchmarks against t
 **Verdict: CONFIRMED.** Every qualitative claim and every headline number in RESULTS_SMALLMARGIN.md reproduces under an independent implementation with different sampling seeds; residual differences (≤1.6 pp in accuracies, ≤0.19 in within-task ρ on the weakest task) are consistent with 3-seed sampling variance and protocol microdifferences. No discrepancies found. The re-run's raw cells are preserved in this session's local copy but are deliberately **not** pushed over the published `smallmargin_law.json` — the published file remains the file of record.
 
 *Audit code: independent `qrc_smallmargin.py` variant (this session); pre-registration of its own H1–H3 was written before any run, and its pooled H1/H3 also failed — consistent with the published honest negative.*
+
+*Addendum (2026-07-04): a second scheduled session, also starting from a stale CDN README, independently re-implemented B13 a third time before discovering the published version, again reproducing the headline numbers (pooled ρ = +0.069/p = 0.75, star 0.784, star−chain +1.9 pp in 3/3 seeds, exact span 0.961–1.000, within-task ρ = +0.88/+0.77/+0.60). Recorded for completeness; adds a same-convention replication on top of the different-convention one above.*
