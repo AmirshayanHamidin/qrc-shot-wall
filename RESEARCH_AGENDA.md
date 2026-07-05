@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-05, Program 2 run #3 scheduled session)
+## State (updated 2026-07-05, Program 2 run #4 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -126,6 +126,18 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       docs-SVC ~0.00 pp < k-NN 0.15 pp < LogReg 0.25 pp < GaussianNB 5.9 pp (first point digits,
       others Fashion-MNIST).
 
+- [x] **2026-07-05 — Breiman (2001) "Random Forests", Table 2 ionosphere row, Forest-RI (run #4)**
+      (`audits/AUDIT_breiman2001-rf-ionosphere.md` + `audits/audit_rf_ionosphere_run.py` +
+      `audits/rf_iono_raw.json`). Two-commit rule: pre-registration `717ce63` provably precedes
+      results `bdb2248`. First cross-implementation target (Breiman's 2001 Fortran CART ->
+      scikit-learn 1.7.2, a 25-year gap) and first target older than the auditing library:
+      Single Input (F=1) published 7.5% -> reproduced **6.69%**; Selection published 7.1% ->
+      reproduced **6.36%** — **CONFIRMED** (pre-registered bar ±1.5 pp, both columns, and robust
+      across all 3 master seeds; the paper's Selection < Single Input ordering also reproduces).
+      Secondary prediction held: drift 0.74–0.81 pp lands between LogReg (0.25) and GaussianNB
+      (5.9) — "discretion predicts drift" now 5/5, with cross-implementation+seed discretion
+      priced at ~0.8 pp.
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -136,7 +148,11 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
 - [ ] Fashion-MNIST DecisionTree entropy/depth-10 -> 0.798 — **infra-blocked in this sandbox**
       (run #3 synthetic probe: >=2 min single-process fit vs hard 45 s cap; no claim-preserving
       amendment). Needs an environment without the per-process cap.
-- [ ] A published UCI-scale ablation row from a widely cited repo README.
+- [x] ~~A published UCI-scale ablation row from a widely cited repo README.~~ — DONE run #4, with a
+      widely cited *paper* table instead of a repo README (Breiman 2001 Table 2, ionosphere; see
+      Completed audits). Still open from this bullet: a row sourced from an actual repo README;
+      also LFW eigenfaces (run #3 bullet) and other Breiman Table 2 rows (sonar, glass, diabetes)
+      if a cross-implementation *ladder within one paper* is wanted.
 
 ## Log
 
@@ -202,6 +218,20 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
   not just cache-busted. Editor typing artifacts during commit 1 were repaired before committing
   and are disclosed in the audit's honesty section (item 5). Program 1 untouched; its audit queue
   (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
+
+- 2026-07-05 (scheduled session, Program 2 run #4) — Fourth replication audit landed: Breiman
+  (2001) Table 2, ionosphere Forest-RI row (`audits/AUDIT_breiman2001-rf-ionosphere.md` +
+  `audits/audit_rf_ionosphere_run.py` + `audits/rf_iono_raw.json`), verdict **CONFIRMED**
+  (6.69/6.36 vs published 7.5/7.1, pre-registered bar ±1.5 pp, robust across 3 master seeds;
+  two-commit rule `717ce63` -> `bdb2248`). First cross-implementation audit and first target
+  older than the auditing library; drift (~0.8 pp) lands exactly where the discretion ladder
+  predicted — now 5/5. Freshness verified against the commits page per HARD GUARDRAIL 6 (HEAD
+  `2abb3bb` at session start); all pushes verified pinned to SHA per run #3's rule. One editor
+  incident, disclosed in the audit's honesty item 8: a selectAll+paste on the lazily-rendered
+  web editor replaced only rendered lines, briefly duplicating old text — caught on screen
+  before committing, re-pasted whole, committed file verified byte-identical to the local copy.
+  Program 1 untouched; its audit queue (B6/B11 next, qrc_law.png regeneration, B5 regression
+  cells) unchanged.
 
 ## Pending push
 
