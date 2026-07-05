@@ -80,9 +80,11 @@ sandbox, and publishes `audits/AUDIT_<paper-or-repo>.md` with claim, source, tol
 number, verdict (CONFIRMED / DISCREPANCY / COULD-NOT-RUN), environment, and an honesty section.
 Verdicts are about numbers, never accusations; unexplained gaps default to environment differences.
 
-**NOTE (2026-07-05): the Program 2 task file references a repo-root `PROTOCOL.md` ("the six VAR
-rules") that does not exist** (checked via the GitHub contents API, not stale CDN). Runs so far
-follow the task file's inline rules. Amirshayan: commit PROTOCOL.md or drop the reference.
+**RESOLVED (2026-07-05, same day):** the missing `PROTOCOL.md` flagged by run #1 was committed
+by Amirshayan later that morning (VAR v1.0, six rules). Program 2 runs now follow it directly.
+Run #1's compliance was checked retroactively: rules 1, 2, 5, 6 held; rule 4 N/A for replication
+audits; rule 3 (code lives in the repo) was initially violated — the reproduction script sat in
+ephemeral session storage — and was corrected the same session (`audits/audit_run.py`).
 
 ### Completed audits
 
