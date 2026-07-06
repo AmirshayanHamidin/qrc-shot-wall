@@ -59,16 +59,44 @@ Per master seed m in {0, 1, 2} (seed 0 primary for the verdict; drift for the tr
 
 ## Results
 
-(EMPTY at pre-registration commit. Filled only after the runs, in a separate commit.)
+Data check: `ionosphere.data` md5 `85649e5fb5b15fb9dab726c400be61fe`, 351 rows; train rows 1-200 = 101 good / 99 bad (paper: 101/99); test rows 201-350 = 123 good / 27 bad (paper: 123/27); rows 201-351 = 124 good / 27 bad. Split reading confirmed exactly as pinned.
+
+Primary configurations (library defaults, master seed 0):
+
+| Row | Published | Reproduced | Drift | Correct (repro vs implied) |
+|---|---|---|---|---|
+| Linear perceptron (test rows 201-350) | 90.67 | **91.333** | +0.663 pp | 137/150 vs 136/150 |
+| 1NN (test rows 201-351) | 92.1 | **92.053** | -0.047 pp | 139/151 vs 139/151 |
+
+Master seeds 1 and 2: perceptron 92.667 / 91.333 (SGD shuffle order is the only live RNG; `n_iter_` = 12/12/14 of max 1000 - default tol=1e-3 stops training early); 1NN bit-identical across all three seeds, as expected for a no-RNG pipeline (verified). **Standardized drift for the tracker (3-seed mean |reproduced - published|): perceptron 1.11 pp, 1NN 0.05 pp.**
+
+The 1NN row reproduces the implied published correct count EXACTLY (139 of 151) - strong evidence that Aha used precisely this split and Euclidean metric on the raw features. The perceptron row lands one test case above the paper's 136/150.
+
+Labelled sensitivity checks:
+
+- Perceptron, penalty=None: identical to primary at every seed (91.333 / 92.667 / 91.333) - the defaulted l2 (alpha=1e-4) is numerically inert here.
+- Perceptron on all 151 remaining rows: 91.391 / 92.715 / 91.391 - within 0.06 pp of primary; the 150-vs-151 ambiguity is immaterial for this row.
+- 1NN on the 150-row test: 92.000 (138/150; the extra 151st case is a correctly-classified "good") - under this alternate reading the drift would be 0.10 pp, still far inside the bar.
+- 1NN on z-scored features: identical to primary (92.053) - scaling discretion inert on this already-normalized data.
+- Side observation (not part of the verdict): reproduced TRAINING accuracy 84.5 / 85.5 / 85.0 vs the paper's reported training convergence 87.5 - the modern default stops after ~12 epochs vs the paper's ~400 presentations, i.e. the reproduction is systematically less trained yet slightly EXCEEDS the published test number.
+
+Secondary pre-registered prediction: **FAILED** (it was a conjunction and one clause failed). Clause 1 held: perceptron 3-seed drift 1.11 pp > 1NN 0.05 pp (score 5 > score 2 within the audit). Clause 2 failed: 1.11 pp is NOT greater than 1.96 pp (the largest score-2 drift in the set). The first executable score-5 point therefore lands BELOW the score-2 ceiling - evidence against the hypothesis at the high-discretion end, reported with the same prominence as the confirmations.
 
 ## Verdict
 
-(EMPTY at pre-registration commit.)
+**CONFIRMED.** Both rows land within their pre-registered bars at master seed 0 in the primary configurations (perceptron +0.663 pp vs +/-5.0; 1NN -0.047 pp vs +/-2.0), robust across all 3 master seeds (worst perceptron seed: +2.00 pp). A 1989 gradient-trained linear unit and a 1980s nearest-neighbor number both reproduce under 2026 library defaults; the 1NN correct count is exact.
 
 ## Environment
 
-(To be recorded with results.)
+Sandbox Linux (Ubuntu 22.04, CPU only), Python 3.10.12, scikit-learn 1.7.2, numpy 2.2.6, scipy 1.15.3. Reproduction script: `audits/audit_iono_perc1nn_run.py` (single pass, seconds - the 45 s cap never approached). Raw output (all configurations x 3 seeds + data check): `audits/iono_perc1nn_raw.json`. Both committed in this session's batch.
 
 ## Honesty section
 
-(To be completed with results; will include at minimum: the estimator-mapping decision — SGDRegressor as the modern default for a squared-error linear unit; the split-reading decisions above, which rest partly on dataset-doc glosses and claim arithmetic rather than the paper alone; the 1NN row's dataset-documentation provenance class; and the non-independence of two rows sharing one dataset and split.)
+1. Estimator mapping: the paper's "linear perceptron" is a linear output unit trained by iterative steepest descent on squared error - `SGDRegressor` + 0.5 threshold is the faithful modern-default route, but sklearn's schedule (invscaling eta0=0.01) and tol-based stop (n_iter_ ~ 12 epochs vs the paper's ~400 presentations) mean the reproduction is far less trained than the original. That this discretion barely moved the number (~1 pp) is the audit's finding, not an assumption.
+2. Split reading: the paper never says WHICH 200 rows are the training set; "first 200" comes from ionosphere.names, and the docs' own counting error leaves a 150-vs-151 test ambiguity. Both pinned readings were resolved before running (paper-composition 150 for the perceptron; the only-arithmetically-consistent 151 for 1NN) and the sensitivity checks show the choice moves nothing materially (max 0.10 pp).
+3. Provenance split: the perceptron number was verified against the fetched primary source (JHU APL Technical Digest PDF, read this session); the 1NN number exists only in the dataset documentation with no stated protocol (same claim class as audit #7's wine rows) - the exact 139/151 match is post-hoc corroboration of the protocol guess, not pre-registered knowledge.
+4. The two (score, drift) points share one dataset and one split, so they are not independent - same caveat as every prior multi-row audit in the set.
+5. Two-commit ordering: pre-registration was committed to the REMOTE (`e5decc2`, verified byte-identical at 8333 B by SHA-pinned fetch) before any reproduction code existed; results were computed afterwards in this same session.
+6. Commit-dialog autofill: GitHub's Copilot pre-filled a commit message and extended description for the prereg commit; both were replaced/cleared and DOM-verified before submitting (the committed message is the registered one, with no appended description).
+7. The secondary prediction's failure is informative, not embarrassing: at rubric 5/5 the hypothesis expects large drift, and this target delivered 1.11 pp. One low-drift score-5 point does not refute the hypothesis (the confirmatory test waits for n=30), but it now bounds the high end from below.
+8. The paper's 90.67% is itself a single training run of one network (no seed averaging in the original); comparing a 3-seed band (91.3-92.7) against a single historical draw is an unavoidable asymmetry of this claim class.
