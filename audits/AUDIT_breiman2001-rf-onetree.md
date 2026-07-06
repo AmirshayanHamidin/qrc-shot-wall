@@ -47,16 +47,31 @@ Secondary pre-registered prediction (hypothesis-consistent direction): at rubric
 
 ## Results
 
-(EMPTY at pre-registration commit. Filled in the results commit.)
+Data check: ionosphere OpenML data_id=59 → shape (351, 34), {b: 126, g: 225}, X md5 `47340afe07e851bf0bd0ea7b84af7b6b` — identical to audit #4. Sonar OpenML data_id=40 → shape (208, 60), {Mine: 111, Rock: 97}, X md5 `e5f03fedbe063c500c22a7be8c4fe878`.
+
+| Row | Published | Reproduced (master seed 0, primary) | Drift |
+|---|---|---|---|
+| ionosphere | 12.7 | **13.88** (SEM 0.13) | +1.18 pp |
+| sonar | 31.7 | **33.17** (SEM 0.22) | +1.47 pp |
+
+Seed sensitivity (identical 100-iteration procedure, master seeds 1 and 2): ionosphere 13.62 / 13.84; sonar 32.97 / 32.98. Every seed × row combination is inside the pre-registered ±3.0 pp bar. **Standardized drift for the tracker (3-seed mean |reproduced − published|): ionosphere 1.08 pp, sonar 1.34 pp.** All 100 trees scored in every iteration (no empty OOB sets). The OOB selection picked the F=6 forest in 60–70 of 100 iterations across seeds and datasets, consistent with audit #4's 60–70 on ionosphere.
+
+Secondary pre-registered prediction: **FAILED.** Neither row's 3-seed drift (1.08 / 1.34 pp) exceeds the largest score-2 drift (1.96 pp, LeCun-1998 least squares). Reported as-is: at rubric 3/5 this target drifted *less* than one score-2 target — a point of evidence AGAINST the hypothesis in the mid-score range. Both points enter the confirmatory set as measured.
 
 ## Verdict
 
-(EMPTY at pre-registration commit.)
+**CONFIRMED.** Both rows reproduce within the pre-registered ±3.0 pp on the primary seed — 13.88 vs 12.7 (+1.18 pp) and 33.17 vs 31.7 (+1.47 pp) — and on all three master seeds. The individual-tree OOB numbers of a 25-year-old table, computed by a different CART implementation, land within a point and a half on modern scikit-learn.
 
 ## Environment
 
-(EMPTY at pre-registration commit.)
+Sandbox Linux (Ubuntu 22.04, CPU only), Python 3.10.12, scikit-learn 1.7.2, numpy 2.2.6. Reproduction script: `audits/audit_rf_onetree_run.py` (chunked for the 45 s per-process cap); raw per-iteration rows (2 datasets × 3 seeds × 100 iterations, per-iteration one-tree error and OOB selection): `audits/rf_onetree_raw.json` (md5 `2a907c667fe5dfc80599cf99794aa807`). Both committed in this session's batch.
 
 ## Honesty section
 
-(EMPTY at pre-registration commit.)
+1. Drift direction: all six reproduced numbers (3 seeds × 2 rows) are *higher* than published (+0.9 to +1.5 pp) — a small systematic gap. Plausible sources: different CART growth details across 25 years, our bootstrap-reconstruction of OOB membership, and the pinned aggregation reading (per-iteration tree average, then iteration average). Per protocol, the default explanation is implementation/environment difference, not error in the paper.
+2. The secondary pre-registered prediction failed (see Results). This is the second consecutive audit whose outcome leans against the discretion-drift hypothesis in the 1–3 score range; both are logged without adjustment and carry no confirmatory weight before n=30.
+3. Per-tree OOB membership is reconstructed via the private API `sklearn.ensemble._forest._generate_sample_indices(tree.random_state, n, n)` — the same generator `fit` uses in the pinned version (1.7.2). Declared here because private APIs can change between versions.
+4. The two rows share the harness and per-iteration RNG streams (same master seeds, same split sequence per dataset), so the two (score, drift) points are not fully independent — the same caveat as the multi-row points of audits #1–#3.
+5. The pre-registration commit's message acquired an auto-appended extended description from the web editor's autofill (as in Program 2b run #1); the committed file content was verified byte-identical to the injected text (6492 bytes) at SHA `1021e13` before any code ran.
+6. Two-commit ordering: the pre-registration was committed to the REMOTE (`1021e13`) before any reproduction code executed in this session — satisfying the run #2 guardrail, not just local-clone ordering.
+7. Audit #1's sonar cache could not be cross-checked (fresh sandbox, cache not in the repo); the sonar X md5 above is logged so future audits can cross-check against this one.
