@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-06, Program 2b run #12 scheduled session)
+## State (updated 2026-07-06, Program 2b run #13 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -306,6 +306,22 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       `thread=4`; replicates in the raw JSON), so the within-paper ordering is uninformative; second clause
       HELD. Same-engine caveat (authors' maintained library) in the audit's honesty item 1.
 
+- [x] **2026-07-06 — Breiman (1996) "Bagging Predictors", Table 2, glass rows e_S + e_B (Program 2b
+      confirmatory audit #14)** (`audits/AUDIT_breiman1996-bagging-cart-glass.md` +
+      `audits/audit_breiman96_bag_glass_run.py` + `audits/breiman96_bag_glass_raw.json`). Two-commit
+      rule: prereg `475742c` web-committed to the remote (verified byte-identical via git fetch + md5)
+      BEFORE any reproduction code existed. Second bagging-family paper (cross-paper contrast with
+      audits #9/#11: FS96's C4.5 bagging vs Breiman's own CART bagging on the SAME glass dataset);
+      blind rubric **3/5 both rows**. Published 30.4 / 23.6 (% misclassification, 100× random 90/10
+      splits; single CV-pruned tree / 50 bootstrap trees pruned on L per §4.3) -> reproduced
+      **32.143 / 25.667** (seed 0; bar ±4.0 pp) — **CONFIRMED** on both rows, all 3 master seeds.
+      Standardized drift (3-seed): **0.95 / 1.37 pp**. Per-seed iteration SEs (0.8–1.0) bracket the
+      published SEs (1.1/0.9) — the reproduction's noise floor matches the paper's. The published
+      6.8 pp bagging improvement reproduces as 5.8–6.5 pp. Secondary prediction FAILED (both
+      standardized drifts below the 1.96 pp score-2 ceiling; fifth mid/high-score failure in seven) —
+      the seed-0 e_B point alone (2.07 pp) would have cleared it, but the registered measure is the
+      3-seed mean (honesty item 6: small systematic upward offset on both rows, all seeds).
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -329,7 +345,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 12/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 13/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -339,9 +355,10 @@ wine LOO, LDA/QDA/1NN], (5, 1.11), (2, 0.05) [Sigillito-1989 ionosphere perceptr
 [NIST StRD LLS certified R², Longley / Filip], (4, 2.43), (4, 0.33) [Freund-Schapire 1996
 bagging C4.5, glass / iris], (2, 0.04), (2, 0.00), (2, 0.02) [sklearn 1.9.0 docs k-means
 digits demo, k-means++ / random / PCA-based], (3, 0.08), (2, 0.11) [Joulin-2016 fastText
-AG News, h=10 / h=10 bigram].
-Running rho (EXPLORATORY until n=30): spearmanr over the 26 points as printed above (2-dp) =
-**0.642, p = 0.0004** — eased from 0.655 with two more small drifts at scores 3 and 2; no confirmatory
+AG News, h=10 / h=10 bigram], (3, 0.95), (3, 1.37) [Breiman-1996 Bagging Predictors glass,
+e_S / e_B].
+Running rho (EXPLORATORY until n=30): spearmanr over the 28 points as printed above (2-dp) =
+**0.653, p = 0.0002** — firmed from 0.642 with two score-3 points at ~1 pp; no confirmatory
 weight. (Correction, run #11 second-instance addendum: first logged as 0.660/0.0005, computed from
 the three new points' full-precision drifts; runs #1–#10's logged rho values reproduce from the
 printed 2-dp list, so the printed-list convention is pinned from here on.) Family
@@ -664,3 +681,28 @@ score 2), and the blocked audit #4 SGD target in a cap-free environment. Decade 
   (2652 vs 2651 B, JSON-identical — same class as runs #1/#10). All pushes verified by SHA-pinned raw
   fetch with MD5 match per the run #6 guardrail. Program 1 untouched; its audit queue (B6/B11 next,
   qrc_law.png regeneration, B5 regression cells) unchanged.
+
+- 2026-07-06 (scheduled session, Program 2b run #13) — Fourteenth confirmatory audit landed: Breiman
+  (1996) "Bagging Predictors", Table 2, glass e_S + e_B rows (see Completed audits) — **CONFIRMED** on
+  both rows (32.143 / 25.667 vs 30.4 / 23.6, bar ±4.0 pp, all 3 master seeds; 3-seed drifts 0.95 / 1.37 pp
+  at blind rubric 3/5). Second bagging-family paper, giving the set's first cross-paper same-dataset
+  contrast (Breiman's CART bagging vs FS96's C4.5 bagging on glass: 1.37 vs 2.43 pp at scores 3 vs 4).
+  Primary source (Springer PDF of Machine Learning 24, 123–140) fetched and read this session; §4.3's
+  prune-on-L rule and the tie-to-lowest-label vote implemented as stated; glass.data md5-identical to
+  audits #9/#11. Secondary prediction FAILED (both standardized drifts under the 1.96 pp score-2
+  ceiling). Tracker n=13/30; exploratory rho over 28 printed 2-dp points = 0.653 (p=0.0002, no
+  confirmatory weight). Session mechanics: fresh git clone (not CDN) was ground truth at HEAD `9529f0d`
+  (doubles as the pre-prereg twin check; post-prereg fetch showed a clean 475742c lineage, and the feed
+  is re-checked before the results batch per the run #11 guardrail); no git push credentials (as runs
+  #2–#12) so publication via the GitHub web editor, content injected through the CodeMirror document API
+  (the new tiled editor exposes the view at `.cm-content.cmTile.view`, not `.cmView` — noted for future
+  runs) with doc-vs-source equality asserted before each commit; prereg byte-verified on the remote via
+  git fetch + md5 BEFORE any reproduction code ran (run #2 guardrail); Copilot autofill on both commit
+  fields replaced/cleared and readback-verified (recurring class); compute chunked 12×~30 s under the
+  45-s cap with per-iteration seeding (seed_i = master_seed·100000 + iteration) so chunk boundaries
+  cannot affect the numbers. Priorities unchanged: score-0/1 anchors from other claim classes (repo-README
+  row still open — the Zalando README table was inspected this session and its rows are third-party
+  deep-learning submissions, NOT CPU-reproducible library claims; the S3 benchmark site remains the
+  viable route), score-4/5 density, and the blocked audit #4 SGD target in a cap-free environment.
+  Program 1 untouched; its audit queue (B6/B11 next, qrc_law.png regeneration, B5 regression cells)
+  unchanged.
