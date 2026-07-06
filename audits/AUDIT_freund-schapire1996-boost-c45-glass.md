@@ -57,16 +57,42 @@ Per master seed m in {0, 1, 2} (seed 0 primary for the verdict; drift for the tr
 
 ## Results
 
-*(empty — to be filled by a separate commit AFTER the reproduction runs)*
+Data check: `glass.data` md5 `2732c9170bf8c483f33da3c58929c067`, 214 rows, class counts {1: 70, 2: 76, 3: 17, 5: 13, 6: 9, 7: 29} — identical to the pre-commit counting check.
+
+Primary configurations (pinned mapping, master seed 0; 10 runs × stratified 10-fold CV, pooled per-run error, mean over runs):
+
+| Row | Published | Reproduced | Drift |
+|---|---|---|---|
+| C4.5 alone | 31.7 | **31.682** | −0.018 pp |
+| boosting C4.5 (T=100) | 22.7 | **20.981** | −1.719 pp |
+
+Master seeds 1 and 2: tree 31.776 / 32.290; boost 21.682 / 21.355. **Standardized drift for the tracker (3-seed mean |reproduced − published|): C4.5-alone 0.23 pp, boosting-C4.5 1.36 pp.** The paper's headline ordering reproduces: boosting improves on the single tree at every seed (published improvement 9.0 pp; reproduced 10.7 / 10.1 / 10.9 pp).
+
+Committee diagnostic (pre-declared risk): the degeneration did NOT occur in the primary configuration — every one of the 300 AdaBoost fits (3 seeds × 100 folds) used all 100 estimators (first-round weighted error > 0 in every fold, because min_samples_leaf=2 leaves impure leaves on glass's overlapping classes).
+
+Labelled sensitivity checks (master seed 0, never the verdict):
+
+- (a) Paper-faithful AdaBoost.M1 **with resampling** (hand implementation of Figure 1): 20.93 — within 0.05 pp of sklearn's SAMME-with-reweighting 20.98; all 100 rounds used in every fold. The M1-vs-SAMME + resampling-vs-reweighting discretion is numerically inert here.
+- (b) Pure-default base tree (gini, min_samples_leaf=1): tree row 31.45 (still within 0.3 pp of published) — but the boost row **DEGENERATES exactly as pre-declared**: the unpruned default tree reaches zero training error, sklearn's perfect-fit early stop collapses every committee to n_est = 1, and the "boosted" error is 32.01, i.e. the single-tree number, 9.31 pp from the published 22.7 and OUTSIDE the ±4.0 bar. The C4.5-default mapping (-m 2 → min_samples_leaf=2), pinned before any code ran, is load-bearing for the entire boost row.
+- (c) Unstratified KFold(shuffle=True): tree 31.78, boost 22.15 — the CV-construction discretion is worth ≤ 0.6 pp.
+
+Secondary pre-registered prediction: **FAILED.** Neither row's 3-seed drift (0.23 / 1.36 pp) exceeds 1.96 pp (the largest score-2 drift in the set). The first two score-4 points land below the score-2 ceiling — the third consecutive mid/high-score target to do so.
 
 ## Verdict
 
-*(empty)*
+**CONFIRMED.** Both rows land within the pre-registered ±4.0 pp at master seed 0 in the primary configuration (−0.018 pp and −1.719 pp), robust across all 3 master seeds (worst case: tree +0.59, boost −1.72). A 1996 boosting table reproduces under a 2026 library: the single-tree row is within one pooled test case of the published number, and AdaBoost.M1's 9-point improvement over C4.5 reproduces as a 10–11-point improvement over the mapped CART.
 
 ## Environment
 
-*(empty)*
+Sandbox Linux (Ubuntu 22.04, CPU only), Python 3.10.12, scikit-learn 1.7.2, numpy 2.2.6, scipy 1.15.3. Reproduction script: `audits/audit_fs96_boost_glass_run.py` (chunked one master seed per invocation for the 45 s per-process cap). Raw output (per-run errors, per-fold committee sizes, all sensitivity configurations): `audits/fs96_boost_glass_raw.json` (md5 `98360db6c35c846a17db902f62b7d2e3`). Both committed in this session's batch.
 
 ## Honesty section
 
-*(empty)*
+1. The CONFIRMED verdict is conditional on the pinned estimator mapping. Sensitivity (b) shows that the most naive library-default route (AdaBoost around sklearn's default tree) collapses to a single tree and lands 9.31 pp out — OUTSIDE the bar. The mapping that saves the row (criterion='entropy', min_samples_leaf=2 = C4.5's documented -m 2 default) was pinned in the pre-registration commit (`c364bac`) before any reproduction code existed, so this is not a post-hoc rescue — but a reproducer who chose differently would have published a DISCREPANCY. That ~9 pp mapping sensitivity IS the discretion this audit set out to measure, and it is the largest single-choice effect observed in the confirmatory set so far.
+2. C4.5's gain ratio and pessimistic pruning (confidence 0.25) remain inexpressible in scikit-learn; the reproduction is unpruned information-gain CART. That this residual gap costs only ~0.2 pp (tree row) / ~1.7 pp (boost row) is the audit's finding, not an assumption.
+3. The paper's boosting route for C4.5 (AdaBoost.M1 with resampling) differs from sklearn's (SAMME with reweighting); the hand-implemented paper route agrees with sklearn to 0.05 pp (sensitivity a), so this discretion is inert here despite being real.
+4. The paper's own protocol has residual ambiguity (stratification, per-run pooling, fold rounding); the pinned reading was fixed before running and sensitivity (c) bounds its effect at ~0.6 pp.
+5. The two (score, drift) points share one dataset and one CV harness, so they are not independent — same caveat as every prior multi-row audit.
+6. Two-commit ordering: pre-registration was committed to the REMOTE (`c364bac`, verified byte-identical at 9516 B by SHA-pinned fetch) before any reproduction code existed; results were computed afterwards in this same session. The commit dialog had no Copilot autofill this session (checked in the DOM before submitting).
+7. The published numbers are means over the authors' own 100 randomized runs with an unlogged 1996 RNG; our 3 × (10-run mean) band (tree 31.68–32.29, boost 20.98–21.68) is the closest achievable comparison, and the boost row's entire 3-seed band sits ~1–1.7 pp BELOW the published value (modern boosted trees slightly better than 1996 boosted C4.5 on this dataset), direction consistent with the unpruned-base difference.
+8. The secondary prediction's failure is reported with the same prominence as the confirmation: at rubric 4/5 the hypothesis expects drift above the score-2 ceiling (1.96 pp) and got 0.23 / 1.36 pp. The mid/high rubric range (scores 3–5) has now produced six of seven points below that ceiling — the exploratory rho (0.625 over 17 points) is weakening as coverage improves, exactly what an honest confirmatory design is for.
