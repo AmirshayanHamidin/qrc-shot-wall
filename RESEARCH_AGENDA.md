@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-06, Program 2b run #9 scheduled session)
+## State (updated 2026-07-06, Program 2b run #10 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -262,6 +262,21 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       point out-drifts three score-2 points). Finding: at zero statistical discretion, drift is floored
       by library numerical *policy* defaults, not by zero.
 
+- [x] **2026-07-06 — Freund & Schapire (1996) Table 2, bagging C4.5 column, glass + iris rows
+      (Program 2b confirmatory audit #11)** (`audits/AUDIT_freund-schapire1996-bag-c45-glass-iris.md` +
+      `audits/audit_fs96_bag_glass_iris_run.py` + `audits/fs96_bag_glass_iris_raw.json`). Two-commit rule:
+      prereg `b358b39` web-committed to the remote (verified byte-identical, 9218 B) BEFORE any reproduction
+      code existed. **First bagging-family points** (the tracker's explicitly named unclaimed item) and two
+      more score-4 points (the density priority); first appearance of iris. Blind rubric **4/5 both rows**
+      (primary source: the ICML-96 author PDF, re-fetched and re-read this session, byte-identical to audit
+      #9's artifact). Published 25.7 / 5.0 (% test error, 10-run averaged 10-fold CV, T=100) -> reproduced
+      **23.084 / 4.867** (seed 0; bar ±4.0 pp) — **CONFIRMED** on both rows, all 3 seeds. Standardized drift
+      (3-seed): **2.43 / 0.33 pp**. Secondary prediction **HELD** — first mid/high-score point to clear the
+      1.96 pp score-2 ceiling (glass 2.43 pp), after six consecutive failures of that prediction. Sensitivity
+      contrast with audit #9 (honesty item 3): the pure-default base tree moves bagged rows ≤ 0.4 pp versus
+      9.31 pp under boosting — bagging insulates the exact discretion that broke the naive boosting route;
+      largest single choice here is CV stratification (1.4 pp on glass).
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -285,24 +300,23 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 9/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 10/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
 Table 2 "One Tree" column, ionosphere/sonar], (2, 0.02), (2, 0.04), (2, 0.59) [Aeberhard-1992
 wine LOO, LDA/QDA/1NN], (5, 1.11), (2, 0.05) [Sigillito-1989 ionosphere perceptron / Aha 1NN],
 (4, 0.23), (4, 1.36) [Freund-Schapire 1996 glass C4.5 / boosted C4.5], (0, 0.00), (0, 0.11)
-[NIST StRD LLS certified R², Longley / Filip].
-Running rho (EXPLORATORY until n=30): spearmanr over the 19 points = **0.662, p = 0.0020** —
-ticked up from 0.625 with the two score-0 anchors; no confirmatory weight. Score coverage is now
-COMPLETE: {0, 1, 2, 3, 4, 5}. But the low anchor is impure: the Filip score-0 point (0.11 pp)
-out-drifts three score-2 points — at zero statistical discretion the drift floor is set by
-library numerical-policy defaults (numpy-vs-scipy lstsq truncation = 0.096 pp on one identical
-estimand, audit #10's sharpest finding), a noise-floor fact the n=30 test will have to live
-with. Priorities: more score-0/1 anchors from OTHER claim classes (a repo-README table row
-remains the open queue item), score-4/5 points from NEW families (bagging — same F&S/Breiman
-tables — remains unclaimed; the blocked audit #4 SGD target remains re-runnable in a cap-free
-environment), and a clustering or dataset-doc claim if a scoreable one can be sourced.
+[NIST StRD LLS certified R², Longley / Filip], (4, 2.43), (4, 0.33) [Freund-Schapire 1996
+bagging C4.5, glass / iris].
+Running rho (EXPLORATORY until n=30): spearmanr over the 21 points = **0.629, p = 0.0022** —
+ticked down from 0.662; no confirmatory weight. Score coverage remains complete {0–5}; the
+score-4 column now has four points {0.23, 1.36, 2.43, 0.33} including the first mid/high-score
+drift above the 1.96 pp score-2 ceiling (glass bagging, secondary prediction HELD for the first
+time since audit #7). Priorities: score-0/1 anchors from OTHER claim classes (a repo-README
+table row remains the open queue item), a clustering or 2010s+ target for family/decade breadth
+(newest sampled decade is still 2017 Fashion-MNIST), and the blocked audit #4 SGD target in a
+cap-free environment.
 
 ## Log
 
@@ -411,6 +425,21 @@ environment), and a clustering or dataset-doc claim if a scoreable one can be so
   seed-0 process hit the 45 s cap (fetch+run combined) and was deterministically re-run; audit #1's
   sonar cache reused after md5 match. Program 1 untouched; its audit queue (B6/B11 next,
   qrc_law.png regeneration, B5 regression cells) unchanged.
+
+- 2026-07-06 (scheduled session, Program 2b run #10) — Eleventh confirmatory audit landed: Freund &
+  Schapire (1996) Table 2, bagging C4.5 column, glass + iris — verdict **CONFIRMED** (23.084/4.867 vs
+  25.7/5.0, bar ±4.0 pp, all 3 seeds in; 3-seed drifts 2.43/0.33 pp at blind rubric 4/4; see Completed
+  audits). First bagging-family points; secondary prediction HELD for the first time in six audits
+  (glass 2.43 pp > the 1.96 pp score-2 ceiling). Tracker n=10/30; exploratory rho over 21 points =
+  0.629 (p=0.0022). Sharpest finding: the pure-default base tree that broke audit #9's boost row by
+  9.31 pp moves the bagged rows by ≤ 0.4 pp — ensemble type modulates how much base-learner discretion
+  matters. Incidents: Copilot commit-message autofill recurred on commit 1 and was replaced+DOM-verified
+  before submitting (disclosed in the audit's honesty item 6); GitHub's new-file editor now exposes the
+  CodeMirror view at `.cm-content.cmTile.view` (old `.cmView` path gone) — noted for future runs;
+  GitHub's web commit appended a trailing newline to fs96_bag_glass_iris_raw.json (5494 vs 5493 B,
+  JSON-identical — same class as the run #1 incident). All
+  pushes verified by SHA-pinned raw fetch with exact byte counts; freshness verified against the
+  commits page at session start (HEAD 2eb1f5c). Program 1 untouched; its audit queue unchanged.
 
 ## Pending push
 
