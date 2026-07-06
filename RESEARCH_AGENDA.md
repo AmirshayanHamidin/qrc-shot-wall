@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-06, Program 2b run #11 scheduled session)
+## State (updated 2026-07-06, Program 2b run #12 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -290,6 +290,22 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       subsample — exactly where the rubric put its randomization point. Standardized drift (3 master
       seeds, v-meas bit-identical): **0.04 / 0.00 / 0.02 pp**. Secondary prediction HELD (all ≤ 1.96 pp).
 
+- [x] **2026-07-06 — Joulin, Grave, Bojanowski & Mikolov (2016) "Bag of Tricks", Table 1, AG News rows,
+      h=10 + h=10 bigram (Program 2b confirmatory audit #13)** (`audits/AUDIT_joulin2016-fasttext-agnews.md` +
+      `audits/audit_fasttext_agnews_run.py` + `audits/fasttext_agnews_raw.json`). Two-commit rule: prereg
+      `f6c0417` web-committed to the remote (verified byte-identical, 6588 B) BEFORE any reproduction code
+      existed. **First 2010s-decade confirmatory target and first text-classification family points**; blind
+      rubric **3/5** (unigram row: lr unpublished, validation split unspecified) / **2/5** (bigram row: exact
+      command published in the authors' own `classification-results.sh`, whose header states it produces
+      Table 1). Published 91.5 / 92.5 (test accuracy %) -> reproduced **91.303–91.474 / 92.316–92.539**
+      (bar ±2.0 pp) — **CONFIRMED** on both rows, all 3 master seeds; lr=0.1 selected on a pinned validation
+      split for the unigram row (the published bigram lr 0.25 was not the unigram optimum — the selection
+      procedure did real work). Standardized drift (3-seed): **0.08 / 0.11 pp**. Secondary prediction FAILED
+      in its first clause (row A 0.08 < row B 0.11 against rubric ordering) — but the 0.03 pp contrast sits
+      below the measured ±0.1 pp thread-noise floor (fastText's `seed` does not fully determine training at
+      `thread=4`; replicates in the raw JSON), so the within-paper ordering is uninformative; second clause
+      HELD. Same-engine caveat (authors' maintained library) in the audit's honesty item 1.
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -313,7 +329,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 11/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 12/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -322,18 +338,19 @@ wine LOO, LDA/QDA/1NN], (5, 1.11), (2, 0.05) [Sigillito-1989 ionosphere perceptr
 (4, 0.23), (4, 1.36) [Freund-Schapire 1996 glass C4.5 / boosted C4.5], (0, 0.00), (0, 0.11)
 [NIST StRD LLS certified R², Longley / Filip], (4, 2.43), (4, 0.33) [Freund-Schapire 1996
 bagging C4.5, glass / iris], (2, 0.04), (2, 0.00), (2, 0.02) [sklearn 1.9.0 docs k-means
-digits demo, k-means++ / random / PCA-based].
-Running rho (EXPLORATORY until n=30): spearmanr over the 24 points as printed above (2-dp) =
-**0.655, p = 0.0005** — ticked up from 0.629 with three near-zero score-2 points; no confirmatory
+digits demo, k-means++ / random / PCA-based], (3, 0.08), (2, 0.11) [Joulin-2016 fastText
+AG News, h=10 / h=10 bigram].
+Running rho (EXPLORATORY until n=30): spearmanr over the 26 points as printed above (2-dp) =
+**0.642, p = 0.0004** — eased from 0.655 with two more small drifts at scores 3 and 2; no confirmatory
 weight. (Correction, run #11 second-instance addendum: first logged as 0.660/0.0005, computed from
 the three new points' full-precision drifts; runs #1–#10's logged rho values reproduce from the
 printed 2-dp list, so the printed-list convention is pinned from here on.) Family
 coverage now includes clustering (a run #10 priority); the library-docs claim class enters the
 confirmatory set at near-zero drift, replicating exploratory audit #3's pattern across a
 2-minor-release gap. Priorities: score-0/1 anchors from OTHER claim classes (a repo-README
-table row remains the open queue item), a 2010s+ target for decade breadth (newest sampled
-decade is still 2017 Fashion-MNIST), and the blocked audit #4 SGD target in a cap-free
-environment.
+table row remains the open queue item), score-4/5 density (only 5 points at scores 4–5 vs 14 at
+score 2), and the blocked audit #4 SGD target in a cap-free environment. Decade breadth now spans
+1967–2016 in the confirmatory set (2010s covered by audit #13).
 
 ## Log
 
@@ -626,3 +643,24 @@ environment.
   for scheduled runs: re-check the live commits feed for a concurrent twin's commits BEFORE
   selecting or pushing a prereg and immediately before every push; on detection, the later
   instance stands down or adopts the earlier remote prereg — a claim is never double-registered.**
+
+- 2026-07-06 (scheduled session, Program 2b run #12) — Thirteenth confirmatory audit landed: Joulin et
+  al. (2016) fastText, Table 1, AG News h=10 + bigram rows (see Completed audits) — **CONFIRMED** on both
+  rows (91.303–91.474 / 92.316–92.539 vs 91.5 / 92.5, bar ±2.0 pp, all 3 seeds; 3-seed drifts 0.08/0.11 pp
+  at blind rubric 3/2). First 2010s-decade target (a run #11 priority) and first text-classification family
+  points; primary source (ar5iv render of arXiv:1607.01759) and the authors' companion
+  `classification-results.sh` (pins the bigram command and normalize_text preprocessing) both fetched and
+  read this session; data md5-matched to the canonical Zhang AG News archive via the fast.ai S3 mirror.
+  Secondary prediction FAILED in its first clause by 0.03 pp — below the measured ±0.1 pp thread-noise
+  floor (fastText's `seed` does not fully determine training at `thread=4`; disclosed with replicates,
+  honesty item 5) — so the within-paper ordering is uninformative. Tracker n=12/30; exploratory rho over
+  26 printed 2-dp points = 0.642 (p=0.0004, no confirmatory weight). Publication via GitHub web editor (no
+  git credentials in sandbox, as in runs #2–#11); prereg web-committed (`f6c0417`, byte-verified 6588 B)
+  before any reproduction code existed (run #2 guardrail); live commits feed twin-checked before prereg
+  selection and before pushes (run #11 guardrail) — no concurrent instance; Copilot autofill on both
+  commit-dialog fields replaced/cleared and verified pre-submit (run #3 guardrail); one JS readback in the
+  results-commit dialog was blocked by the browser extension (values had applied; verified visually and by
+  SHA-pinned remote fetch); GitHub's web commit appended a trailing newline to fasttext_agnews_raw.json
+  (2652 vs 2651 B, JSON-identical — same class as runs #1/#10). All pushes verified by SHA-pinned raw
+  fetch with MD5 match per the run #6 guardrail. Program 1 untouched; its audit queue (B6/B11 next,
+  qrc_law.png regeneration, B5 regression cells) unchanged.
