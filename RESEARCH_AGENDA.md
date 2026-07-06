@@ -147,6 +147,21 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       standardized drift (3-seed mean |repro−pub|): **0.59 / 0.94 pp**. Honest caveat: seed-0 Selection
       used 98% of the bar (see the audit's honesty section).
 
+- [x] **2026-07-05 — Gorman & Sejnowski (1988) sonar backprop MLP, aspect-angle-independent 12/24
+      hidden rows (Program 2b confirmatory audit #2)** (`audits/AUDIT_gorman1988-sonar-mlp.md` +
+      `audits/audit_mlp_sonar_run.py` + `audits/mlp_sonar_raw.json`). Two-commit rule: blind rubric
+      **3/5** pre-registered with an empty results section BEFORE results were published (see the
+      audit's ordering caveat: prereg ran before any code in the session-local clone; on the remote
+      both commits land in this session's batch, prereg first). Oldest target yet (1988, 38-year
+      gap), first neural-network family point, same dataset as audit #1 (within-dataset discretion
+      contrast). Published 84.7 / 84.5 -> reproduced **75.96 / 75.58** (seed 0; pre-registered bar
+      ±5.0 pp) — **DISCREPANCY** on both rows, all 3 seeds; bar not moved. Standardized drift
+      (3-seed): **8.95 / 10.35 pp**. Candidate mechanisms (honesty section): sklearn cannot honor
+      the paper's squared-error-with-0.2-margin loss, ±0.3 uniform init, 2-unit output coding, or
+      per-pattern updates; reproduced ~76% ≈ the paper's own no-hidden-unit row (77.1%), consistent
+      with systematic under-training by modern defaults. The 1988 claim is not challenged — its
+      *portability* to library defaults is what the drift prices (~9–10 pp at rubric 3/5).
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -170,10 +185,13 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 1/30 confirmatory audits.** Points (blind score, |drift| pp): (2, 0.59), (2, 0.94)
-[sonar Single Input / Selection]. Running rho: undefined so far (no score variation yet — all points
-at score 2); EXPLORATORY only until n=30 regardless. Future target selection should diversify the
-discretion range (0–1 and 4–5 scorers) and algorithm families/decades per PREREG_DRIFT.md.
+**Tracker: n = 2/30 confirmatory audits.** Points (blind score, |drift| pp): (2, 0.59), (2, 0.94)
+[Breiman sonar Single Input / Selection], (3, 8.95), (3, 10.35) [Gorman-Sejnowski sonar MLP 12 / 24
+hidden]. Running rho (EXPLORATORY until n=30): spearmanr over the 4 points = **0.894, p = 0.106** —
+directionally consistent with the hypothesis, no confirmatory weight. Score coverage so far {2, 3};
+future target selection should keep diversifying toward 0–1 and 4–5 scorers and new algorithm
+families/decades per PREREG_DRIFT.md (audit #2 added the first NN family point and the first
+pre-2000 target).
 
 ## Log
 
@@ -267,6 +285,22 @@ discretion range (0–1 and 4–5 scorers) and algorithm families/decades per PR
   the CodeMirror document API with length verification, and every push was verified by git fetch +
   MD5 against the local copy (stronger than SHA-pinned raw fetches). Program 1 untouched; its audit
   queue (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
+- 2026-07-05 (scheduled session, Program 2b run #2) — Second confirmatory audit landed: Gorman &
+  Sejnowski (1988) sonar MLP, aspect-angle-independent 12/24-hidden rows — verdict **DISCREPANCY**
+  (75.96/75.58 vs 84.7/84.5, pre-registered bar ±5.0 pp, all 3 seeds outside; 3-seed drift
+  8.95/10.35 pp at blind rubric 3/5; see Completed audits). Tracker n=2/30; exploratory rho over 4
+  points = 0.894 (p=0.106). Incidents, disclosed in the audit's honesty section: (a) no git push
+  credentials in this sandbox, so remote publication used the GitHub web editor at session end —
+  remote prereg commit precedes results, but the reproduction had already run in-session
+  (local-clone ordering only). **New guardrail for Program 2b: web-commit the pre-registration to
+  the remote BEFORE running any reproduction code**, as run #1 did. (b) The session-outputs mount
+  again served stale/truncated copies of edited files (incident class from run #1); a truncated
+  results file was briefly committed to the session-local clone, caught by byte/UTF-8 checks before
+  publication, and all published files were rebuilt sandbox-locally and re-verified. (c) The first
+  seed-0 process hit the 45 s cap (fetch+run combined) and was deterministically re-run; audit #1's
+  sonar cache reused after md5 match. Program 1 untouched; its audit queue (B6/B11 next,
+  qrc_law.png regeneration, B5 regression cells) unchanged.
+
 ## Pending push
 
 (none)
