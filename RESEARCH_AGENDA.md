@@ -323,8 +323,11 @@ wine LOO, LDA/QDA/1NN], (5, 1.11), (2, 0.05) [Sigillito-1989 ionosphere perceptr
 [NIST StRD LLS certified R², Longley / Filip], (4, 2.43), (4, 0.33) [Freund-Schapire 1996
 bagging C4.5, glass / iris], (2, 0.04), (2, 0.00), (2, 0.02) [sklearn 1.9.0 docs k-means
 digits demo, k-means++ / random / PCA-based].
-Running rho (EXPLORATORY until n=30): spearmanr over the 24 points = **0.660, p = 0.0005** —
-ticked up from 0.629 with three near-zero score-2 points; no confirmatory weight. Family
+Running rho (EXPLORATORY until n=30): spearmanr over the 24 points as printed above (2-dp) =
+**0.655, p = 0.0005** — ticked up from 0.629 with three near-zero score-2 points; no confirmatory
+weight. (Correction, run #11 second-instance addendum: first logged as 0.660/0.0005, computed from
+the three new points' full-precision drifts; runs #1–#10's logged rho values reproduce from the
+printed 2-dp list, so the printed-list convention is pinned from here on.) Family
 coverage now includes clustering (a run #10 priority); the library-docs claim class enters the
 confirmatory set at near-zero drift, replicating exploratory audit #3's pattern across a
 2-minor-release gap. Priorities: score-0/1 anchors from OTHER claim classes (a repo-README
@@ -602,3 +605,24 @@ environment.
   (run #3 guardrail); freshness verified at session start (HEAD `c2b41b9`) per HARD GUARDRAIL 6; all
   pushes verified by SHA-pinned raw fetch (run #6 guardrail). Program 1 untouched; its audit queue
   (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
+
+- 2026-07-06 (scheduled session, Program 2b run #11 — SECOND-INSTANCE ADDENDUM: duplicate-session
+  incident + accidental replication) — Run #11's schedule fired TWICE: two autonomous instances
+  worked the same task concurrently against one repo and one sandbox. This (second) instance
+  independently selected the SAME target and measurand (sklearn 1.9.0 docs k-means digits table,
+  v-meas column, ±2.0 pp at rubric 2/5) and had its own prereg drafted, then found the twin's
+  `988f595` already on the commits page during the pre-commit freshness check (HARD GUARDRAIL 6)
+  and STOOD DOWN — no duplicate prereg was pushed and no duplicate points entered the tracker; one
+  increment, landed once, by the first instance. Working from the REMOTE prereg's pinned plan
+  (started before the twin's results commit appeared), this instance's independent reproduction
+  matches the published `audits/kmeans_digits_raw.json` bit-for-bit on all 54 deterministic cells
+  (3 master seeds × 3 rows × 6 metrics; e.g. k-means++ v-measure 0.6205610989354435) — an
+  accidental two-instance blind replication of audit #12, same class as the 2026-07-04 B13
+  accidental replication. The first instance had no way to detect the second from its own session
+  and is not at fault. Tracker correction folded into the tracker line above: spearmanr over the
+  printed 2-dp points list gives rho 0.655 (p 0.00052), while the logged 0.660 (p 0.00045) used
+  the three new points' full-precision drifts — the printed-list convention (used by runs #1–#10)
+  is pinned going forward. This closes the 5-run supervised batch (runs #7–#11). **New guardrail
+  for scheduled runs: re-check the live commits feed for a concurrent twin's commits BEFORE
+  selecting or pushing a prereg and immediately before every push; on detection, the later
+  instance stands down or adopts the earlier remote prereg — a claim is never double-registered.**
