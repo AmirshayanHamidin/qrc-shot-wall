@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-06, Program 2b run #6 scheduled session)
+## State (updated 2026-07-06, Program 2b run #8 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -229,6 +229,22 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       FAILED in its second clause: the score-5 drift (1.11 pp) sits BELOW the largest score-2 drift
       (1.96 pp) — first direct evidence against the hypothesis at the high-discretion end.
 
+- [x] **2026-07-06 — Freund & Schapire (1996) "Experiments with a New Boosting Algorithm", Table 2
+      glass rows, C4.5 alone + boosting C4.5 (Program 2b confirmatory audit #9)**
+      (`audits/AUDIT_freund-schapire1996-boost-c45-glass.md` + `audits/audit_fs96_boost_glass_run.py` +
+      `audits/fs96_boost_glass_raw.json`). Two-commit rule: prereg `c364bac` web-committed to the remote
+      (verified byte-identical, 9516 B) BEFORE any reproduction code existed. **First boosting-family
+      points and first score-4 points** (the exact coverage gap named by run #7): blind rubric **4/5 per
+      row** (primary source: the ICML-96 author PDF, fetched and read this session). Published 31.7 / 22.7
+      (% test error, 10-run averaged 10-fold CV) -> reproduced **31.682 / 20.981** (seed 0; bar ±4.0 pp) —
+      **CONFIRMED** on both rows, all 3 seeds; the tree row is within one pooled test case of the 1996
+      number, and boosting's published 9-pp improvement reproduces as 10–11 pp. Standardized drift
+      (3-seed): **0.23 / 1.36 pp**. Secondary prediction FAILED (both score-4 drifts below the 1.96 pp
+      score-2 ceiling). Sharpest finding (sensitivity, honesty item 1): with sklearn's pure-default base
+      tree the boosted committee degenerates to a single tree (perfect-fit early stop) and lands 9.31 pp
+      OUT — the pre-pinned C4.5 -m2 mapping (entropy, min_samples_leaf=2) is load-bearing for the row;
+      the paper-faithful M1-with-resampling route agrees with sklearn's SAMME to 0.05 pp.
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -252,20 +268,23 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 7/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 8/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
 Table 2 "One Tree" column, ionosphere/sonar], (2, 0.02), (2, 0.04), (2, 0.59) [Aeberhard-1992
-wine LOO, LDA/QDA/1NN], (5, 1.11), (2, 0.05) [Sigillito-1989 ionosphere perceptron / Aha 1NN].
-Running rho (EXPLORATORY until n=30): spearmanr over the 15 points = **0.739, p = 0.0016** —
-directionally consistent, no confirmatory weight. Score coverage now {1, 2, 3, 5}: run #7 landed
-the first executed score-5 point and it came in LOW (1.11 pp, below the 1.96 pp score-2 ceiling;
-run #7's secondary prediction failed on that clause) — the high end of the discretion scale is no
-longer unexplored, but it currently leans against the hypothesis, joining the run #5 mid-range
-lean. Priorities: score-0 and score-4 targets, more score-5 points (the blocked audit #4 SGD
-target remains re-runnable in a cap-free environment), and new families/decades (boosting —
-Freund & Schapire 1996 UCI tables — remains unclaimed).
+wine LOO, LDA/QDA/1NN], (5, 1.11), (2, 0.05) [Sigillito-1989 ionosphere perceptron / Aha 1NN],
+(4, 0.23), (4, 1.36) [Freund-Schapire 1996 glass C4.5 / boosted C4.5].
+Running rho (EXPLORATORY until n=30): spearmanr over the 17 points = **0.625, p = 0.0073** —
+still directionally positive, but weakening as mid/high-score coverage improves; no confirmatory
+weight. Score coverage now {1, 2, 3, 4, 5}: run #8 landed the first two score-4 points and both
+came in BELOW the 1.96 pp score-2 ceiling (its secondary prediction failed) — six of the seven
+executed points at scores 3–5 now sit under that ceiling, so the exploratory correlation is
+increasingly carried by the two Gorman score-3 outliers. Priorities: more low-end anchors
+(score 0–1: only one point below score 2 exists), more score-4/5 points from NEW families
+(bagging — same F&S/Breiman tables — remains unclaimed; the blocked audit #4 SGD target remains
+re-runnable in a cap-free environment), and a clustering or dataset-doc claim if a scoreable one
+can be sourced.
 
 ## Log
 
@@ -463,3 +482,24 @@ Freund & Schapire 1996 UCI tables — remains unclaimed).
   `2d9890d` at session start) per HARD GUARDRAIL 6; all pushes verified by SHA-pinned raw fetch with
   exact byte counts per the run #6 guardrail (local mount checksums not trusted). Program 1
   untouched; its audit queue (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
+
+- 2026-07-06 (scheduled session, Program 2b run #8) — Ninth confirmatory audit landed: Freund &
+  Schapire (1996) ICML boosting paper, Table 2 glass rows, C4.5 alone + boosting C4.5 (see Completed
+  audits) — **CONFIRMED** (31.682/20.981 vs 31.7/22.7, bar ±4.0 pp, all 3 seeds; 3-seed drifts
+  0.23/1.36 pp at blind rubric 4/5 both rows). First boosting-family and first score-4 points —
+  score coverage is now {1,2,3,4,5}; both landed below the 1.96 pp score-2 ceiling (secondary
+  prediction FAILED), the third consecutive mid/high-score target to do so; tracker n=8/30,
+  exploratory rho over 17 points = 0.625 (p=0.0073, no confirmatory weight). The audit's sharpest
+  finding sits in a sensitivity check: sklearn's pure-default base tree reaches zero training error
+  on glass, AdaBoost's perfect-fit early stop collapses the committee to one tree, and the boost row
+  lands 9.31 pp OUT — the pre-pinned C4.5 -m2 mapping (entropy, min_samples_leaf=2) is load-bearing,
+  a ~9 pp single-choice effect, the largest implementation-discretion effect measured in the
+  confirmatory set so far (audit honesty item 1). The pre-declared degeneration risk (written into
+  the prereg with the duplicate-pair data check) materialized exactly there and nowhere else.
+  Publication via GitHub web uploader (no git credentials in sandbox, as in runs #2–#7); prereg
+  web-committed to the remote (`c364bac`, byte-verified 9516 B) before any reproduction code existed
+  (run #2 guardrail); commit messages DOM-verified pre-submit, no Copilot autofill this session
+  (run #3 guardrail); freshness confirmed against the commits page (HEAD `da08746` at session start)
+  per HARD GUARDRAIL 6; all pushes verified by SHA-pinned raw fetch with exact byte counts per the
+  run #6 guardrail. Program 1 untouched; its audit queue (B6/B11 next, qrc_law.png regeneration,
+  B5 regression cells) unchanged.
