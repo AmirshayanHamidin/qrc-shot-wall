@@ -1,0 +1,58 @@
+{
+  "audit": "lecun1998-mnist-pca-quadratic",
+  "claim_source": "LeCun-Bottou-Bengio-Haffner 1998 Proc.IEEE Fig.9 '40 PCA + quadratic'",
+  "published_test_error_pct": 3.3,
+  "metric": "MNIST test error %",
+  "split": "60000 train / 10000 test",
+  "pipeline": "PCA(n_components=40, svd_solver='randomized', random_state=seed) on [0,1] pixels -> QuadraticDiscriminantAnalysis(reg_param=0.0)",
+  "mnist_md5": {
+    "train-images": "6bbc9ace898e44ae57da46a324031adb",
+    "train-labels": "a25bea736e30d166cdddb491f175f624",
+    "t10k-images": "2646ac647ad5339dbf082846283269ea",
+    "t10k-labels": "27ae3e4e09519cfbb04c329615203637"
+  },
+  "per_seed": [
+    {
+      "seed": 0,
+      "test_errors": 374,
+      "test_error_pct": 3.74
+    },
+    {
+      "seed": 1,
+      "test_errors": 379,
+      "test_error_pct": 3.79
+    },
+    {
+      "seed": 2,
+      "test_errors": 376,
+      "test_error_pct": 3.76
+    }
+  ],
+  "three_seed_mean_error_pct": 3.7633,
+  "three_seed_mean_abs_drift_pp": 0.4633,
+  "blind_discretion_score": 3,
+  "prereg_bar_pp": 3.0,
+  "verdict": "CONFIRMED",
+  "sensitivity": {
+    "full_svd_[0,1]_reg0": 3.75,
+    "full_svd_0-255_reg0": 3.75,
+    "full_svd_whiten_reg0": 3.75,
+    "reg_param": {
+      "1e-4": 3.75,
+      "1e-3": 3.71,
+      "1e-2": 3.63,
+      "1e-1": 3.63
+    },
+    "note": "QDA affine-invariant: pixel scaling & whitening numerically inert; randomized-vs-full SVD <=0.05pp; reg_param <=0.12pp"
+  },
+  "env": {
+    "python": "3.x",
+    "sklearn": "1.7.2",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "cpu_only": true
+  },
+  "running_rho_after": 0.6436,
+  "running_p_after": 0.000166,
+  "n_points_after": 29
+}
