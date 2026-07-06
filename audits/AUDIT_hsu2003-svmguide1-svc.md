@@ -45,12 +45,34 @@ The pipeline contains no stochastic component; per PREREG_DRIFT.md the procedure
 
 ## Results
 
-*(empty at pre-registration — filled by a later commit in this session's batch)*
+Data check: `load_svmlight_file` → train (3089, 4), test (4000, 4); train classes {1089, 2000}, test classes {2000, 2000} — matches Table 1 (3,089 / 4,000 / 4 features / 2 classes). MD5s match the pre-registered values.
+
+| Column | Published | Reproduced (master seed 0, primary) | Drift |
+|---|---|---|---|
+| A — unscaled, defaults | 66.925 | **66.925** (2677/4000) | 0.000 pp |
+| B — scaled, defaults | 96.15 | **96.150** (3846/4000) | 0.000 pp |
+| C — scaled, C=2 γ=2 | 96.875 | **96.875** (3875/4000) | 0.000 pp |
+
+Seed sensitivity (master seeds 1, 2): identical to the last printed digit on all three columns, as pre-registered for a pipeline with no stochastic component — the three runs are procedural replicates.
+
+**Program 2b standardized drift (3-seed mean |reproduced − published|): A 0.000 pp, B 0.000 pp, C 0.000 pp.** With the blind rubric scores recorded in the pre-registration commit (`098cc566`), this audit contributes the points (2, 0.00), (2, 0.00) and (1, 0.00) to the confirmatory set (n=3 audits toward 30).
+
+Not just within tolerance but *exact*: every correct-prediction count matches the guide's printed fractions (2677, 3846, 3875 of 4000). Consistent with the shared-engine expectation — sklearn's SVC wraps LIBSVM, so once the default mapping (C=1, γ=1/num_features) and the svm-scale mirror are chosen correctly, the ~two-decade-old printed numbers are bit-stable.
+
+Secondary pre-registered prediction: **held** — low scores (1–2) produced the lowest drift yet (0.00 pp), below the Breiman-sonar score-2 points (0.59/0.94 pp) and far below the score-3 MLP points (8.95/10.35 pp).
 
 ## Verdict
 
-*(empty at pre-registration)*
+**CONFIRMED.** All three columns reproduce exactly (0.000 pp drift, seed-0 primary and both sensitivity seeds) against the pre-registered ±2.0 pp bar.
+
+## Honesty section
+
+1. **Commit-1 message lost in the web editor**: the pre-registration commit `098cc566` carries the generic message "Add files via upload" — the typed message ("Program 2b audit #3: PRE-REGISTRATION ONLY …") did not register in the commit-summary field. The *content* of the commit is the pre-registration file, byte-identical (MD5-verified against the pinned SHA) to the local original, with empty Results/Verdict sections; ordering is provable from git history as required.
+2. **Guide version ambiguity**: the guide was first issued 2003 and revised repeatedly; the audited numbers were transcribed from the current PDF fetched this session. The claim's LIBSVM version is unspecified; drift turned out to be 0.000 pp anyway, so the ambiguity is moot for this audit.
+3. **Shared engine caveat for the drift study**: sklearn's SVC wraps LIBSVM itself, so these three points price *wrapper + default-mapping* discretion, not an independent re-implementation. That is exactly what the rubric scored (the two points awarded were default-mapping and tolerance discretion), but readers pooling the confirmatory set should know these are the "same engine" end of the spectrum.
+4. **Zero variance across seeds**: pre-declared; the 3-seed averaging is pro forma here and adds no information.
+5. **grid.py step not audited**: column C reproduces the final train/predict at C=2, γ=2; the cross-validation search that selected those values (96.8922% CV rate) was not reproduced (it is a selection procedure, not one of the three pre-registered test-set claims).
 
 ## Environment
 
-*(logged with results)*
+Sandbox Linux (Ubuntu 22.04, CPU only), Python 3.10.12, scikit-learn 1.7.2, numpy 2.2.6, scipy 1.15.3. Runtime ≈ 5 s for all 3 seeds (no 45 s cap risk). Reproduction script: `audits/audit_svmguide1_run.py`; raw per-seed results + data checks: `audits/svmguide1_raw.json`. Both committed in this session's batch.
