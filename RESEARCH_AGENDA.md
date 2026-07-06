@@ -192,6 +192,16 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       the bar)**. Largest score-2 drift so far -> logged as mild evidence AGAINST the hypothesis at
       the low-discretion end. First linear-model/1990s family point.
 
+- [x] **2026-07-06 — Breiman (2001) Table 2, "One Tree" column, ionosphere + sonar rows (Program 2b
+      confirmatory audit #6)** (`audits/AUDIT_breiman2001-rf-onetree.md` + `audits/audit_rf_onetree_run.py`
+      + `audits/rf_onetree_raw.json`). Two-commit rule: prereg `1021e13` web-committed to the remote BEFORE
+      any reproduction code ran; results `2fa11ff`. Blind rubric **3/5** — first score-3 point outside the
+      neural-network family; measurand is the paper's OOB individual-tree error at the best Forest-RI setting.
+      Published 12.7 / 31.7 -> reproduced **13.88 / 33.17** (seed 0; pre-registered bar ±3.0 pp) — **CONFIRMED**
+      on all 3 master seeds. Standardized drift (3-seed): **1.08 / 1.34 pp**. The audit's secondary prediction
+      FAILED: both score-3 drifts sit below the largest score-2 drift (1.96 pp) — logged as evidence against
+      the hypothesis in the mid-score range (see the audit's honesty section).
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -215,11 +225,12 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 4/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 5/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
-(2, 1.96) [LeCun-1998 MNIST linear via least squares]. Running rho (EXPLORATORY until n=30):
-spearmanr over the 8 points = **0.803, p = 0.016** — still directionally consistent, no confirmatory
+(2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
+Table 2 "One Tree" column, ionosphere/sonar]. Running rho (EXPLORATORY until n=30):
+spearmanr over the 10 points = **0.753, p = 0.012** — still directionally consistent, no confirmatory
 weight; note the new point is the largest score-2 drift yet (mildly AGAINST the hypothesis at the
 low end). Score coverage {1, 2, 3}; the first score-5 target was selected and pre-registered
 (audit #4) but blocked by infrastructure — future runs in a cap-free environment should re-run it
@@ -370,3 +381,17 @@ and new families/decades.
   credentials in sandbox, as in runs #2–#3); commit messages verified in the DOM before submitting
   (run #3 guardrail) and every push verified by cache-busted raw fetch + MD5. Program 1 untouched;
   its audit queue (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
+
+- 2026-07-06 (scheduled session, Program 2b run #5) — Sixth confirmatory audit landed: Breiman (2001)
+  Table 2 "One Tree" column, ionosphere + sonar (see Completed audits) — **CONFIRMED** (13.88/33.17 vs
+  12.7/31.7, bar ±3.0 pp, all 3 seeds; 3-seed drift 1.08/1.34 pp at blind rubric 3/5). The audit's
+  secondary prediction FAILED (both score-3 drifts < the 1.96 pp score-2 point) — second consecutive
+  run leaning against the hypothesis in the low/mid range; tracker n=5/30, exploratory rho over 10
+  points = 0.753 (p=0.012, no confirmatory weight). Score coverage still {1,2,3}: the blocked score-5
+  target (audit #4) remains the top diversification priority for a cap-free environment. Publication
+  via GitHub web editor/uploader (no git credentials in sandbox, as in runs #2–#4); prereg committed
+  to the remote before any code ran (run #2 guardrail); commit messages DOM-verified (run #3
+  guardrail); every push verified by SHA-pinned fetch with exact byte counts (prereg 6492 B, results
+  10251 B, raw JSON 87442 B). The prereg commit message again acquired an autofill-appended
+  description (disclosed in the audit's honesty item 5). Program 1 untouched; its audit queue (B6/B11
+  next, qrc_law.png regeneration, B5 regression cells) unchanged.
