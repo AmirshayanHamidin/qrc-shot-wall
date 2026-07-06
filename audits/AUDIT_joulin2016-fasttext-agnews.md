@@ -56,13 +56,29 @@ Sandbox: Ubuntu 22, CPU only, 45 s per-process cap. Python 3.10; fasttext via Py
 
 ## Results
 
-(EMPTY at pre-registration — commit 1 of the two-commit rule. Results land in a separate, later commit.)
+**Verdict: CONFIRMED on both rows, all 3 master seeds** (pre-registered bar ±2.0 pp; prereg commit `f6c0417`, provably before any reproduction code existed).
+
+Row A lr selection (seed-0 108,000/12,000 split, completed BEFORE any test-set evaluation — full table in `fasttext_agnews_raw.json`): val P@1 = 91.317 / **91.525** / 91.450 / 91.300 for lr = 0.05 / **0.1 (selected)** / 0.25 / 0.5.
+
+| Row | Published | seed 0 | seed 1 | seed 2 | 3-seed mean drift |
+|---|---|---|---|---|---|
+| A: h=10, lr=0.1 (selected) | 91.5 | 91.303 | 91.474 | 91.474 | **0.08 pp** |
+| B: h=10, bigram, lr=0.25 (published) | 92.5 | 92.539 | 92.395 | 92.316 | **0.11 pp** |
+
+- Every cell is within 0.20 pp of the published number, ten years after publication, through the authors' evolved library (0.9.2) and a translated preprocessing pipeline. The paper's published bigram improvement (+1.0 pp on AG) also reproduces: +1.03 pp on 3-seed means.
+- **Secondary prediction FAILED in its first clause**: row A's drift (0.08 pp, rubric 3/5) is BELOW row B's (0.11 pp, rubric 2/5) — but the contrast is 0.03 pp, beneath the measured thread-noise floor (honesty item 5), so this audit is uninformative on the within-paper ordering. Second clause HELD (both ≤ 1.96 pp).
+- Tracker points: **(3, 0.08), (2, 0.11)** — n=12/30.
+
+## Environment (final)
+
+Python 3.10.12, fasttext-wheel 0.9.2 (PyPI), numpy 2.2.6, Ubuntu 22.04 sandbox, CPU only, `thread=4`. Runner: `audit_fasttext_agnews_run.py`; raw cells: `fasttext_agnews_raw.json`.
 
 ## Honesty section
 
-(To be completed with results. Items known at prereg time:)
-
-1. Same-engine caveat: the reproduction uses the authors' maintained library, so this audit prices data + preprocessing + decade drift, not cross-implementation drift.
-2. Data provenance: fast.ai S3 mirror, not the original Google Drive link (which requires interactive download); MD5s recorded above match the canonical archive.
-3. `myshuf` seeded-shuffle amendment (procedure step 1) — labelled, claim-preserving.
-4. The paper's Table 2 reports 1 s AG train time (20 threads, 2016 hardware); the 45 s cap is not expected to bind. Any chunking will be disclosed here.
+1. **Same-engine caveat**: reproduction uses the authors' maintained library, so this audit prices data + preprocessing + decade/version drift, not cross-implementation drift (same class as audit #3's LIBSVM note).
+2. **Data provenance**: fast.ai S3 mirror, not the original Google Drive link (interactive download); MD5s in the Data section match the canonical Zhang archive.
+3. **`myshuf` amendment**: the authors' unseeded shuffle was replaced by `random.Random(master_seed)` — labelled, claim-preserving, required for a reportable 3-seed procedure.
+4. **Timing**: the 45 s cap never bound (≤5 s per train); stages ran as separate processes via the runner's CLI, as designed.
+5. **`seed` does not fully determine training at `thread=4`** (HogWild SGD): post-hoc replicates of the identical seed-0 command spread 91.368–91.408 (row A) and 92.395–92.487 (row B) — a ±0.1 pp thread-noise floor (raw JSON, `sensitivity_thread_noise_seed0_replicates`). The secondary prediction's 0.03 pp contrast sits below this floor and is reported as noise, not signal. Per-seed cells should be read with the same floor.
+6. **lr selection outcome**: the validation grid picked lr=0.1 for the unigram row; the bigram row's published lr=0.25 was not the unigram optimum (91.450 < 91.525) — consistent with the paper selecting lr per configuration, and evidence the pinned selection procedure did real work.
+7. **Companion-script provenance**: `classification-results.sh` was fetched from the fastText repo `main` (unversioned, 2016-era); it is treated as part of the published claim since its header states it produces Table 1.
