@@ -216,6 +216,19 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       priors numerically inert; raw features collapse 1NN to 76.97 (the z-transform qualifier is
       load-bearing exactly where the rubric said).
 
+- [x] **2026-07-06 — Sigillito, Wing, Hutton & Baker (1989) ionosphere linear perceptron + Aha 1NN
+      (Program 2b confirmatory audit #8)** (`audits/AUDIT_sigillito1989-ionosphere-perc-1nn.md` +
+      `audits/audit_iono_perc1nn_run.py` + `audits/iono_perc1nn_raw.json`). Two-commit rule: prereg
+      `e5decc2` web-committed to the remote (verified byte-identical, 8333 B) BEFORE any reproduction
+      code existed. **First EXECUTED score-5 point** (the prior score-5, audit #4, was infra-blocked):
+      blind rubric **5/5** for the paper's gradient-trained linear unit (primary source PDF fetched and
+      read this session — JHU APL Technical Digest 10(3)), **2/5** for the 1NN dataset-doc row. Published
+      90.67 / 92.1 -> reproduced **91.333 / 92.053** (seed 0; bars +/-5.0 / +/-2.0 pp) — **CONFIRMED**
+      on both rows, all 3 seeds; the 1NN row matches the implied published correct count EXACTLY
+      (139/151). Standardized drift (3-seed): **1.11 / 0.05 pp**. The audit's secondary prediction
+      FAILED in its second clause: the score-5 drift (1.11 pp) sits BELOW the largest score-2 drift
+      (1.96 pp) — first direct evidence against the hypothesis at the high-discretion end.
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -239,19 +252,20 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 6/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 7/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
 Table 2 "One Tree" column, ionosphere/sonar], (2, 0.02), (2, 0.04), (2, 0.59) [Aeberhard-1992
-wine LOO, LDA/QDA/1NN]. Running rho (EXPLORATORY until n=30): spearmanr over the 13 points =
-**0.760, p = 0.0026** — directionally consistent, no confirmatory weight; run #6's secondary
-prediction HELD (all three new score-2 drifts ≤ 1.96 pp), and the no-RNG pipeline delivered the
-near-zero drifts the hypothesis expects at the low end. Score coverage still {1, 2, 3}; the first
-score-5 target was selected and pre-registered (audit #4) but blocked by infrastructure — future
-runs in a cap-free environment should re-run it (pinned plan is complete in its audit file);
-score-2 is now heavily sampled (8 of 13 points), so the priority is 0 and 4–5 scorers and new
-families/decades.
+wine LOO, LDA/QDA/1NN], (5, 1.11), (2, 0.05) [Sigillito-1989 ionosphere perceptron / Aha 1NN].
+Running rho (EXPLORATORY until n=30): spearmanr over the 15 points = **0.739, p = 0.0016** —
+directionally consistent, no confirmatory weight. Score coverage now {1, 2, 3, 5}: run #7 landed
+the first executed score-5 point and it came in LOW (1.11 pp, below the 1.96 pp score-2 ceiling;
+run #7's secondary prediction failed on that clause) — the high end of the discretion scale is no
+longer unexplored, but it currently leans against the hypothesis, joining the run #5 mid-range
+lean. Priorities: score-0 and score-4 targets, more score-5 points (the blocked audit #4 SGD
+target remains re-runnable in a cap-free environment), and new families/decades (boosting —
+Freund & Schapire 1996 UCI tables — remains unclaimed).
 
 ## Log
 
@@ -432,3 +446,20 @@ families/decades.
   remote fetch verified complete content: audit 11338 B, script 4299 B, JSON 1810 B, agenda 34597 B).
   Guardrail for future runs: treat SHA-pinned remote fetch as the ONLY valid post-push verification;
   never trust mount-side sizes/checksums of files edited in-session.
+
+- 2026-07-06 (scheduled session, Program 2b run #7) — Eighth confirmatory audit landed: Sigillito et
+  al. (1989) ionosphere linear perceptron + Aha 1NN from ionosphere.names (see Completed audits) —
+  **CONFIRMED** (91.333/92.053 vs 90.67/92.1, bars +/-5.0/+/-2.0 pp, all 3 seeds; 3-seed drift
+  1.11/0.05 pp at blind rubric 5/5 and 2/5; 1NN exact on the implied correct count 139/151). First
+  EXECUTED score-5 point — and it landed below the score-2 ceiling (secondary-prediction clause
+  failed), the first direct evidence against the hypothesis at the high-discretion end; tracker
+  n=7/30, exploratory rho over 15 points = 0.739 (p=0.0016, no confirmatory weight). Primary source
+  strengthened over run #6's precedent: the 1989 JHU APL Technical Digest PDF was fetched and read
+  directly (90.67% verified in the paper's own text), while the 1NN row remains dataset-doc class.
+  Publication via GitHub web editor (no git credentials in sandbox, as in runs #2–#6); prereg
+  web-committed to the remote (`e5decc2`, byte-verified 8333 B) before any reproduction code existed
+  (run #2 guardrail); commit-dialog Copilot autofill (message + description) replaced/cleared and
+  DOM-verified pre-submit (run #3 guardrail); freshness confirmed against the commits page (HEAD
+  `2d9890d` at session start) per HARD GUARDRAIL 6; all pushes verified by SHA-pinned raw fetch with
+  exact byte counts per the run #6 guardrail (local mount checksums not trusted). Program 1
+  untouched; its audit queue (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
