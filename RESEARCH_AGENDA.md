@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-06, Program 2b run #4 scheduled session)
+## State (updated 2026-07-06, Program 2b run #6 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -202,6 +202,20 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       FAILED: both score-3 drifts sit below the largest score-2 drift (1.96 pp) — logged as evidence against
       the hypothesis in the mid-score range (see the audit's honesty section).
 
+- [x] **2026-07-06 — Aeberhard, Coomans & de Vel (1992), wine dataset leave-one-out results, LDA/QDA/1NN
+      rows (Program 2b confirmatory audit #7)** (`audits/AUDIT_aeberhard1992-wine-loo.md` +
+      `audits/audit_wine_loo_run.py` + `audits/wine_loo_raw.json`). Two-commit rule: prereg `d60a39f`
+      web-committed to the remote (verified byte-identical, 7080 B) BEFORE any reproduction code ran.
+      Blind rubric **2/5 per row** — first discriminant-analysis family points, first fully deterministic
+      (no-RNG) pipeline, first dataset-documentation claim class (UCI `wine.names` quoting Tech. Rep.
+      92-02; provenance caveat in the audit's honesty item 1). Published 98.9 / 99.4 / 96.1 (% correct,
+      LOO, z-transformed) -> reproduced **98.876 / 99.438 / 95.506** (pre-registered bar ±1.5 pp) —
+      **CONFIRMED**; LDA and QDA match the published LOO error counts EXACTLY (2 and 1 of 178) across a
+      34-year gap; 1NN differs by one LOO case. Standardized drift (3 seeds bit-identical): **0.02 /
+      0.04 / 0.59 pp**. Secondary prediction HELD (all ≤ 1.96 pp). Sensitivity checks: scaler scope and
+      priors numerically inert; raw features collapse 1NN to 76.97 (the z-transform qualifier is
+      load-bearing exactly where the rubric said).
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -225,17 +239,19 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 5/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 6/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
-Table 2 "One Tree" column, ionosphere/sonar]. Running rho (EXPLORATORY until n=30):
-spearmanr over the 10 points = **0.753, p = 0.012** — still directionally consistent, no confirmatory
-weight; note the new point is the largest score-2 drift yet (mildly AGAINST the hypothesis at the
-low end). Score coverage {1, 2, 3}; the first score-5 target was selected and pre-registered
-(audit #4) but blocked by infrastructure — future runs in a cap-free environment should re-run it
-(pinned plan is complete in its audit file); otherwise keep diversifying toward 0 and 4–5 scorers
-and new families/decades.
+Table 2 "One Tree" column, ionosphere/sonar], (2, 0.02), (2, 0.04), (2, 0.59) [Aeberhard-1992
+wine LOO, LDA/QDA/1NN]. Running rho (EXPLORATORY until n=30): spearmanr over the 13 points =
+**0.760, p = 0.0026** — directionally consistent, no confirmatory weight; run #6's secondary
+prediction HELD (all three new score-2 drifts ≤ 1.96 pp), and the no-RNG pipeline delivered the
+near-zero drifts the hypothesis expects at the low end. Score coverage still {1, 2, 3}; the first
+score-5 target was selected and pre-registered (audit #4) but blocked by infrastructure — future
+runs in a cap-free environment should re-run it (pinned plan is complete in its audit file);
+score-2 is now heavily sampled (8 of 13 points), so the priority is 0 and 4–5 scorers and new
+families/decades.
 
 ## Log
 
@@ -395,3 +411,17 @@ and new families/decades.
   10251 B, raw JSON 87442 B). The prereg commit message again acquired an autofill-appended
   description (disclosed in the audit's honesty item 5). Program 1 untouched; its audit queue (B6/B11
   next, qrc_law.png regeneration, B5 regression cells) unchanged.
+
+- 2026-07-06 (scheduled session, Program 2b run #6) — Seventh confirmatory audit landed: Aeberhard,
+  Coomans & de Vel (1992) wine LOO results, LDA/QDA/1NN rows (see Completed audits) — **CONFIRMED**
+  (98.876/99.438/95.506 vs 98.9/99.4/96.1, bar ±1.5 pp; drifts 0.02/0.04/0.59 pp at blind rubric
+  2/5 per row; LDA and QDA exact on the published LOO error counts). Secondary prediction HELD —
+  first run since #3 to land in the hypothesis-consistent direction; tracker n=6/30, exploratory rho
+  over 13 points = 0.760 (p=0.0026, no confirmatory weight). New claim class documented: dataset-
+  documentation numbers (UCI wine.names quoting Tech. Rep. 92-02), provenance one step from the
+  primary source — flagged in the audit's honesty item 1. Publication via GitHub web uploader (no
+  git credentials in sandbox, as in runs #2–#5); prereg web-committed to the remote (`d60a39f`,
+  byte-verified 7080 B) before any reproduction code ran (run #2 guardrail); commit message
+  DOM-verified pre-submit (run #3 guardrail), no autofill description this time; freshness confirmed
+  against the commits page (HEAD `3889133` at session start) per HARD GUARDRAIL 6. Program 1
+  untouched; its audit queue (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
