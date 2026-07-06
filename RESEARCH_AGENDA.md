@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-05, Program 2 run #4 scheduled session)
+## State (updated 2026-07-06, Program 2b run #4 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -173,6 +173,25 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       match of the printed counts 2677/3846/3875 of 4000; sklearn SVC wraps LIBSVM — the
       same-engine caveat is in the audit's honesty section).
 
+- [x] **2026-07-06 — LeCun, Bottou, Bengio & Haffner (1998), Fig. 9 "Linear" row, MNIST 12.0%
+      (Program 2b audit #4)** (`audits/AUDIT_lecun1998-mnist-linear.md` + pinned runner
+      `audits/audit_mnist_linear_run.py`). Two-commit rule: pre-registration `515ce8d` (blind rubric
+      **5/5** — first score-5 target) provably precedes everything. **COULD-NOT-RUN**: the pinned
+      sklearn-defaults SGD fit is an atomic ≥113 s per class (tol never triggers; 1000-epoch
+      trajectory) and this sandbox kills every process at tool-call end, so no faithful execution
+      fits the 45 s cap. No reproduced number was ever observed (block is outcome-independent);
+      contributes NO drift point, does not count toward n. Full probe evidence and the rejected
+      sparse-representation shortcut (numerically divergent regime) in the audit's honesty section.
+
+- [x] **2026-07-06 — Same claim via the paper's other stated route, "directly solving linear
+      systems" (Program 2b confirmatory audit #5)** (`audits/AUDIT_lecun1998-mnist-linear-lsq.md` +
+      `audits/audit_mnist_linear_lsq_run.py` + `audits/mnist_linear_lsq_raw.json`). Two-commit rule:
+      pre-registration `cb9f5b7` precedes results. Blind rubric **2/5**. Published 12.0 ->
+      reproduced **13.96** (1,396/10,000 errors; 3 replicates bit-identical, deterministic Cholesky)
+      — drift **1.96 pp**, inside the pre-registered ±2.0 pp bar: **CONFIRMED, marginally (98% of
+      the bar)**. Largest score-2 drift so far -> logged as mild evidence AGAINST the hypothesis at
+      the low-discretion end. First linear-model/1990s family point.
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -196,14 +215,16 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 3/30 confirmatory audits.** Points (blind score, |drift| pp): (2, 0.59), (2, 0.94)
-[Breiman sonar Single Input / Selection], (3, 8.95), (3, 10.35) [Gorman-Sejnowski sonar MLP 12 / 24
-hidden], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1 unscaled / scaled / C=2 gamma=2].
-Running rho (EXPLORATORY until n=30): spearmanr over the 7 points = **0.827, p = 0.022** —
-directionally consistent with the hypothesis, no confirmatory weight. Score coverage so far
-{1, 2, 3}; future target selection should keep diversifying toward 0 and 4–5 scorers and new
-algorithm families/decades per PREREG_DRIFT.md (audit #3 added the first kernel-SVM family point
-and the first score-1 point).
+**Tracker: n = 4/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
+[Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
+(2, 1.96) [LeCun-1998 MNIST linear via least squares]. Running rho (EXPLORATORY until n=30):
+spearmanr over the 8 points = **0.803, p = 0.016** — still directionally consistent, no confirmatory
+weight; note the new point is the largest score-2 drift yet (mildly AGAINST the hypothesis at the
+low end). Score coverage {1, 2, 3}; the first score-5 target was selected and pre-registered
+(audit #4) but blocked by infrastructure — future runs in a cap-free environment should re-run it
+(pinned plan is complete in its audit file); otherwise keep diversifying toward 0 and 4–5 scorers
+and new families/decades.
 
 ## Log
 
@@ -328,3 +349,24 @@ and the first score-1 point).
   in the audit's honesty section — future runs should re-check the message field before
   committing. Program 1 untouched; its audit queue (B6/B11 next, qrc_law.png regeneration,
   B5 regression cells) unchanged.
+
+- 2026-07-06 (scheduled session, Program 2b run #4) — Two audits landed on one claim (LeCun et al.
+  1998, MNIST linear classifier, Fig. 9 "Linear" 12.0%; number verified from a public mirror of the
+  paper this session). Audit #4 (gradient-descent route, blind rubric 5/5, prereg `515ce8d`
+  web-committed before any reproduction code ran, per the run #2 guardrail): **COULD-NOT-RUN** —
+  new incident class confirmed: this sandbox kills ALL user processes at tool-call end (setsid/nohup
+  sentinels dead at next call), so the pre-declared background-poll mitigation is impossible here;
+  the pinned defaults fit is an atomic ≥113 s/class (tol=1e-3 never triggers on squared loss;
+  probes: 1 epoch = 1.2 s, 230 epochs = 26.1 s with n_iter_=230). A sparse-CSR shortcut (10x faster)
+  was tested and REJECTED: in this numerically unstable default regime dense-vs-sparse coefficients
+  diverge to ~1e12 differences (48.5% prediction agreement on a subset probe) — switching
+  representation post-prereg would have changed the measurand. No reproduced number was observed;
+  no drift point; target remains available for a cap-free environment. Audit #5 (same claim via the
+  paper's stated "directly solving linear systems" route, rubric 2/5, prereg `cb9f5b7` committed
+  before the run): reproduced 13.96 vs published 12.0 — drift 1.96 pp, **CONFIRMED marginally at
+  98% of the ±2.0 pp bar**, 3 bit-identical replicates; logged as the largest score-2 drift so far
+  (mildly against the hypothesis at the low end). Tracker n=4/30, exploratory rho over 8 points =
+  0.803 (p=0.016, no confirmatory weight). All publication via GitHub web uploader (no git
+  credentials in sandbox, as in runs #2–#3); commit messages verified in the DOM before submitting
+  (run #3 guardrail) and every push verified by cache-busted raw fetch + MD5. Program 1 untouched;
+  its audit queue (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
