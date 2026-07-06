@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-06, Program 2b run #10 scheduled session)
+## State (updated 2026-07-06, Program 2b run #11 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -277,6 +277,19 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       9.31 pp under boosting — bagging insulates the exact discretion that broke the naive boosting route;
       largest single choice here is CV stratification (1.4 pp on glass).
 
+- [x] **2026-07-06 — scikit-learn 1.9.0 docs, k-means digits demo, results table, 3 init rows
+      (Program 2b confirmatory audit #12)** (`audits/AUDIT_sklearn-kmeans-digits.md` +
+      `audits/audit_kmeans_digits_run.py` + `audits/kmeans_digits_raw.json`). Two-commit rule: prereg
+      `988f595` web-committed to the remote (verified byte-identical) BEFORE any reproduction code
+      existed. **First clustering-family target** (the tracker's named gap); the library-docs claim
+      class's first confirmatory appearance. Blind rubric **2/5 all rows** (points: unseeded silhouette
+      subsample; version-default tolerances across the 1.9.0→1.7.2 gap). Published v-meas 62.1 / 70.1 /
+      62.2 pp (k-means++ / random / PCA-based) -> reproduced **62.056 / 70.104 / 62.224** (bar ±2.0 pp)
+      — **CONFIRMED**; 18/18 deterministic printed cells (homo/compl/v-meas/ARI/AMI + inertia) identical
+      at published precision across the version gap; the ONLY moving column is the unseeded silhouette
+      subsample — exactly where the rubric put its randomization point. Standardized drift (3 master
+      seeds, v-meas bit-identical): **0.04 / 0.00 / 0.02 pp**. Secondary prediction HELD (all ≤ 1.96 pp).
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -300,7 +313,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 10/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 11/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -308,15 +321,16 @@ Table 2 "One Tree" column, ionosphere/sonar], (2, 0.02), (2, 0.04), (2, 0.59) [A
 wine LOO, LDA/QDA/1NN], (5, 1.11), (2, 0.05) [Sigillito-1989 ionosphere perceptron / Aha 1NN],
 (4, 0.23), (4, 1.36) [Freund-Schapire 1996 glass C4.5 / boosted C4.5], (0, 0.00), (0, 0.11)
 [NIST StRD LLS certified R², Longley / Filip], (4, 2.43), (4, 0.33) [Freund-Schapire 1996
-bagging C4.5, glass / iris].
-Running rho (EXPLORATORY until n=30): spearmanr over the 21 points = **0.629, p = 0.0022** —
-ticked down from 0.662; no confirmatory weight. Score coverage remains complete {0–5}; the
-score-4 column now has four points {0.23, 1.36, 2.43, 0.33} including the first mid/high-score
-drift above the 1.96 pp score-2 ceiling (glass bagging, secondary prediction HELD for the first
-time since audit #7). Priorities: score-0/1 anchors from OTHER claim classes (a repo-README
-table row remains the open queue item), a clustering or 2010s+ target for family/decade breadth
-(newest sampled decade is still 2017 Fashion-MNIST), and the blocked audit #4 SGD target in a
-cap-free environment.
+bagging C4.5, glass / iris], (2, 0.04), (2, 0.00), (2, 0.02) [sklearn 1.9.0 docs k-means
+digits demo, k-means++ / random / PCA-based].
+Running rho (EXPLORATORY until n=30): spearmanr over the 24 points = **0.660, p = 0.0005** —
+ticked up from 0.629 with three near-zero score-2 points; no confirmatory weight. Family
+coverage now includes clustering (a run #10 priority); the library-docs claim class enters the
+confirmatory set at near-zero drift, replicating exploratory audit #3's pattern across a
+2-minor-release gap. Priorities: score-0/1 anchors from OTHER claim classes (a repo-README
+table row remains the open queue item), a 2010s+ target for decade breadth (newest sampled
+decade is still 2017 Fashion-MNIST), and the blocked audit #4 SGD target in a cap-free
+environment.
 
 ## Log
 
@@ -572,3 +586,19 @@ cap-free environment.
   against the commits page (HEAD `76cd9cc` at session start) per HARD GUARDRAIL 6; all pushes
   verified by SHA-pinned raw fetch with exact byte counts per the run #6 guardrail. Program 1
   untouched; its audit queue (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
+
+- 2026-07-06 (scheduled session, Program 2b run #11) — Twelfth confirmatory audit landed: scikit-learn
+  1.9.0 docs k-means digits demo, 3 init rows (see Completed audits) — **CONFIRMED**
+  (62.056/70.104/62.224 vs 62.1/70.1/62.2, bar ±2.0 pp; 3-seed drifts 0.04/0.00/0.02 pp at blind
+  rubric 2/2/2; 18/18 deterministic printed cells exact across the 1.9.0→1.7.2 gap; the only moving
+  column is the unseeded silhouette subsample — precisely the rubric's randomization point). First
+  clustering-family points; secondary prediction HELD. Tracker n=11/30; exploratory rho over 24
+  points = 0.660 (p=0.0005, no confirmatory weight). Session notes: a stale commits-page HTML at
+  session start briefly suggested run #10's agenda commit was missing; the commits API disagreed,
+  was trusted, and no repair was needed or made (no files of record affected). One prereg prose slip
+  disclosed in the audit's honesty item 1. Publication via GitHub web editor (no git credentials in
+  sandbox, as in runs #2–#10); prereg web-committed (`988f595`) before any reproduction code existed
+  (run #2 guardrail); commit messages DOM-verified pre-submit, no Copilot autofill this session
+  (run #3 guardrail); freshness verified at session start (HEAD `c2b41b9`) per HARD GUARDRAIL 6; all
+  pushes verified by SHA-pinned raw fetch (run #6 guardrail). Program 1 untouched; its audit queue
+  (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
