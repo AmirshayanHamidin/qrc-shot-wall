@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-06, Program 2b run #8 scheduled session)
+## State (updated 2026-07-06, Program 2b run #9 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -245,6 +245,23 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       OUT — the pre-pinned C4.5 -m2 mapping (entropy, min_samples_leaf=2) is load-bearing for the row;
       the paper-faithful M1-with-resampling route agrees with sklearn's SAMME to 0.05 pp.
 
+- [x] **2026-07-06 — NIST/ITL StRD Linear Least Squares certified R-squared, Longley (1967) + Filip
+      (Program 2b confirmatory audit #10)** (`audits/AUDIT_nist-strd-lls-longley-filip.md` +
+      `audits/audit_nist_lls_run.py` + `audits/nist_lls_raw.json`). Two-commit rule: prereg `4ad15b8`
+      web-committed to the remote (verified byte-identical, 8388 B) BEFORE any reproduction code existed.
+      **First score-0 points** (the tracker's #1 coverage gap) and first regression-family target; oldest
+      claim year in the program (Longley 1967 JASA). Blind rubric **0/5 both columns** — 16-digit certified
+      values, data verbatim in the claim files, zero statistical discretion. Published (certified R², pp)
+      99.5479004577296 / 99.6727416185620 -> reproduced **99.54790045772953 / 99.55957626651001**
+      (bar ±0.1 pp, the program's tightest) — **DISCREPANCY**: Longley passes at machine precision
+      (−7.1e-14 pp) but Filip lands at −0.1132 pp, 13% outside the bar. Cause isolated: numpy lstsq's
+      rcond=None truncation policy rank-truncates Filip's condition-1e15 design; scipy's gelsd on the
+      identical estimand drifts only −0.018 pp (in-bar) and NIST's centered-refit remedy reproduces the
+      certified value to 13 digits — the certified claim itself is exactly right. Standardized drift
+      (3 replicates bit-identical): **0.00 / 0.11 pp**. Secondary prediction FAILED (the Filip score-0
+      point out-drifts three score-2 points). Finding: at zero statistical discretion, drift is floored
+      by library numerical *policy* defaults, not by zero.
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -268,23 +285,24 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 8/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 9/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
 Table 2 "One Tree" column, ionosphere/sonar], (2, 0.02), (2, 0.04), (2, 0.59) [Aeberhard-1992
 wine LOO, LDA/QDA/1NN], (5, 1.11), (2, 0.05) [Sigillito-1989 ionosphere perceptron / Aha 1NN],
-(4, 0.23), (4, 1.36) [Freund-Schapire 1996 glass C4.5 / boosted C4.5].
-Running rho (EXPLORATORY until n=30): spearmanr over the 17 points = **0.625, p = 0.0073** —
-still directionally positive, but weakening as mid/high-score coverage improves; no confirmatory
-weight. Score coverage now {1, 2, 3, 4, 5}: run #8 landed the first two score-4 points and both
-came in BELOW the 1.96 pp score-2 ceiling (its secondary prediction failed) — six of the seven
-executed points at scores 3–5 now sit under that ceiling, so the exploratory correlation is
-increasingly carried by the two Gorman score-3 outliers. Priorities: more low-end anchors
-(score 0–1: only one point below score 2 exists), more score-4/5 points from NEW families
-(bagging — same F&S/Breiman tables — remains unclaimed; the blocked audit #4 SGD target remains
-re-runnable in a cap-free environment), and a clustering or dataset-doc claim if a scoreable one
-can be sourced.
+(4, 0.23), (4, 1.36) [Freund-Schapire 1996 glass C4.5 / boosted C4.5], (0, 0.00), (0, 0.11)
+[NIST StRD LLS certified R², Longley / Filip].
+Running rho (EXPLORATORY until n=30): spearmanr over the 19 points = **0.662, p = 0.0020** —
+ticked up from 0.625 with the two score-0 anchors; no confirmatory weight. Score coverage is now
+COMPLETE: {0, 1, 2, 3, 4, 5}. But the low anchor is impure: the Filip score-0 point (0.11 pp)
+out-drifts three score-2 points — at zero statistical discretion the drift floor is set by
+library numerical-policy defaults (numpy-vs-scipy lstsq truncation = 0.096 pp on one identical
+estimand, audit #10's sharpest finding), a noise-floor fact the n=30 test will have to live
+with. Priorities: more score-0/1 anchors from OTHER claim classes (a repo-README table row
+remains the open queue item), score-4/5 points from NEW families (bagging — same F&S/Breiman
+tables — remains unclaimed; the blocked audit #4 SGD target remains re-runnable in a cap-free
+environment), and a clustering or dataset-doc claim if a scoreable one can be sourced.
 
 ## Log
 
@@ -503,3 +521,25 @@ can be sourced.
   per HARD GUARDRAIL 6; all pushes verified by SHA-pinned raw fetch with exact byte counts per the
   run #6 guardrail. Program 1 untouched; its audit queue (B6/B11 next, qrc_law.png regeneration,
   B5 regression cells) unchanged.
+
+- 2026-07-06 (scheduled session, Program 2b run #9) — Tenth confirmatory audit landed: NIST/ITL StRD
+  Linear Least Squares certified R-squared, Longley (1967) + Filip (see Completed audits) —
+  **DISCREPANCY**, the program's second (after audit #2): certified 99.5479004577296 /
+  99.6727416185620 pp vs reproduced 99.54790045772953 / 99.55957626651001 pp at the program's
+  tightest bar (±0.1 pp); Longley exact to machine precision, Filip −0.1132 pp out via numpy
+  lstsq's rcond=None rank truncation on a condition-1e15 design (scipy gelsd: −0.018 pp, in-bar;
+  NIST's centered remedy: certified value to 13 digits — the claim itself is exactly right, the
+  discrepancy is charged to the pinned reproduction route per protocol). First score-0 points and
+  first regression-family target; score coverage now {0,1,2,3,4,5}; 3 replicate invocations
+  bit-identical; standardized drifts 0.00/0.11 pp; secondary prediction FAILED (fourth consecutive
+  audit — Filip's score-0 point out-drifts three score-2 points, so the drift measure's noise floor
+  is solver-policy-dependent, not zero). Tracker n=9/30, exploratory rho over 19 points = 0.662
+  (p=0.0020, no confirmatory weight). Publication via GitHub web uploader (no git credentials in
+  sandbox, as in runs #2–#8); prereg web-committed to the remote (`4ad15b8`, byte-verified 8388 B)
+  before any reproduction code existed (run #2 guardrail); commit messages DOM-verified pre-submit,
+  no Copilot autofill this session (run #3 guardrail); one mechanical incident, disclosed in audit
+  honesty item 6: the first commit-1 submit fired before GitHub finished processing the uploaded
+  file and did not register — redone successfully, no repo state affected. Freshness confirmed
+  against the commits page (HEAD `76cd9cc` at session start) per HARD GUARDRAIL 6; all pushes
+  verified by SHA-pinned raw fetch with exact byte counts per the run #6 guardrail. Program 1
+  untouched; its audit queue (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
