@@ -1,6 +1,6 @@
 # Program 2b confirmatory audit #15 — LeCun, Bottou, Bengio & Haffner (1998), Fig. 9 "40 PCA + quadratic classifier" row, MNIST 3.3%
 
-**Status: PRE-REGISTRATION (commit 1, empty results section).** Written and committed to the remote BEFORE any reproduction code for this audit existed, per the two-commit rule (RESEARCH_AGENDA.md, Program 2 method rules) and `audits/PREREG_DRIFT.md`.
+**Status: COMPLETE (commit 2, results filled).** The pre-registration above (rubric + bar + pinned choices) was committed to the remote in commit 1 BEFORE this reproduction ran; commit 1's byte-identical remote copy was verified this session (git-fetch md5). Written and committed to the remote BEFORE any reproduction code for this audit existed, per the two-commit rule (RESEARCH_AGENDA.md, Program 2 method rules) and `audits/PREREG_DRIFT.md`.
 
 ## Claim under audit
 
@@ -43,11 +43,35 @@ Confirmatory set n = 14/30 before this audit. This is a score-3 point; the confi
 
 ## RESULTS
 
-*(empty -- to be filled in commit 2 after the 3-seed reproduction runs)*
+Environment: CPU only, Python 3, scikit-learn 1.7.2, numpy 2.2.6, scipy 1.15.3. MNIST loaded from the canonical idx-ubyte files; all four MD5s match the well-known values (train-images `6bbc9ace...031adb`, train-labels `a25bea73...175f624`, t10k-images `2646ac64...203269ea`, t10k-labels `27ae3e4e...203637`).
+
+Pipeline exactly as pinned: pixels/255 -> `PCA(n_components=40, svd_solver='randomized', random_state=seed)` (fit on 60k train) -> `QuadraticDiscriminantAnalysis(reg_param=0.0)`; test error on the 10k test set.
+
+| master seed | test errors / 10000 | test error % | |repro - 3.3| pp |
+|---|---|---|---|
+| 0 | 374 | 3.74 | 0.44 |
+| 1 | 379 | 3.79 | 0.49 |
+| 2 | 376 | 3.76 | 0.46 |
+| **3-seed mean** | 376.3 | **3.763** | **0.46** |
+
+Published (LeCun et al. 1998, Fig. 9): **3.3%**. Reproduced 3-seed mean **3.76%**, 40 PCA components capturing 78.6% of pixel variance.
+
+**Standardized drift (3-seed mean |reproduced - published|): 0.46 pp.**
+Pre-registered bar +/-3.0 pp -> **VERDICT: CONFIRMED** on all three seeds (max single-seed drift 0.49 pp, 16% of the bar). The reproduction is extremely stable across the PCA randomized-SVD seed (5-error spread out of 10,000, ~0.05 pp).
+
+Program 2b point contributed: **(blind score 3, |drift| 0.46 pp)**.
+
+**Secondary prediction (recorded a priori): FAILED.** The predicted drift > 1.96 pp (largest score-2 confirmatory drift) did not hold: 0.46 pp sits well below it. This is another failure of the within-run "discretion predicts drift" ladder prediction at a mid score, logged as honest evidence (the cross-audit rank correlation, not the pairwise ladder, is the pre-registered confirmatory test).
 
 ## Honesty section
 
-*(to be completed in commit 2: same-family/same-engine caveats, sensitivity checks on the flagged preprocessing/regularization discretion, and any bar-proximity notes)*
+1. **Same-engine / same-family caveat.** The reproducing stack (sklearn PCA + QDA) is a modern re-implementation, not the authors' 1998 code, so this prices *portability of the claim to library defaults*, not a re-run of the original program. QDA is the standard reading of the paper's "quadratic (Gaussian) classifier"; a different but defensible reading (a single shared-covariance step, or a diagonal-covariance Gaussian) would give different numbers and is not what was scored.
+
+2. **Most of the rubric-flagged discretion turned out numerically inert here -- and that is the interesting finding.** QDA's decision rule is invariant to invertible affine transforms of its input, so two of the three points the blind rubric flagged move nothing: pixel scaling 0-255 vs [0,1] gives an *identical* 3.75% (full-SVD), and PCA `whiten=True` also gives an identical 3.75%. The randomization point (randomized vs exact `svd_solver='full'`) moves <=0.05 pp (full-SVD: 3.75%). Only covariance regularization is live, and it is small: `reg_param` 0 -> 1e-4 -> 1e-3 -> 1e-2 -> 1e-1 gives 3.75 -> 3.75 -> 3.71 -> 3.63 -> 3.63% (max 0.12 pp, all still CONFIRMED and all *toward* the published 3.3). So the genuine ~0.46 pp drift is algorithm/implementation drift across 27 years, NOT a product of the flagged knobs. The blind rubric (scored, correctly, from what the paper leaves unspecified) over-counts *effective* discretion for an affine-invariant classifier -- a clean, honest limitation of a discretion rubric that cannot see invariances until the code runs. Recorded as-is; the score is not revised post-hoc.
+
+3. **Pre-registration context correction (flagged, non-substantive).** The prereg's "tracker context" paragraph states "n = 14/30 before this audit"; the correct count is **n = 13/30 before -> 14/30 after** (13 drift-producing confirmatory audits prior; the confusion is between this audit's *label* #15 and the drift-producing *count*, since audit #4 was COULD-NOT-RUN and contributes no n). The hypothesis, bar, rubric, and pinned choices are unaffected; nothing bar-relevant changed.
+
+4. **Direction and magnitude.** Drift is +0.46 pp (reproduced slightly *worse* than published). Plausible contributors: the exact number of training images the authors used for the PCA/quadratic fit and any deslant/centering step in their preprocessing pipeline (the deslanted variants are separate Fig. 9 rows; this audit used the regular, non-deslanted data matching the 3.3% row). No attempt was made to tune toward 3.3 -- the pinned defaults were fixed before running.
 
 ---
-*Program 2b of the VAR initiative -- github.com/AmirshayanHamidin/qrc-shot-wall. Registered autonomously; VAR rule 6 (human sign-off) applies before any external claim.*
+*Program 2b of the VAR initiative -- github.com/AmirshayanHamidin/qrc-shot-wall. Verdict is a number, not an accusation; the 1998 claim's own precision is not challenged. VAR rule 6 (human sign-off) applies before any external claim.*
