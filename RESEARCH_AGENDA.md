@@ -162,6 +162,17 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       with systematic under-training by modern defaults. The 1988 claim is not challenged — its
       *portability* to library defaults is what the drift prices (~9–10 pp at rubric 3/5).
 
+- [x] **2026-07-05 — Hsu, Chang & Lin, "A Practical Guide to SVC", Appendix A.1, svmguide1
+      (Program 2b confirmatory audit #3)** (`audits/AUDIT_hsu2003-svmguide1-svc.md` +
+      `audits/audit_svmguide1_run.py` + `audits/svmguide1_raw.json`). Two-commit rule:
+      pre-registration `098cc566` provably precedes results. Blind rubric scored per column:
+      unscaled/scaled-defaults **2/5**, C=2 gamma=2 **1/5** (lowest-discretion confirmatory
+      target yet; first kernel-SVM family point). Published 66.925 / 96.15 / 96.875 ->
+      reproduced **66.925 / 96.150 / 96.875** (seed 0; pre-registered bar ±2.0 pp) —
+      **CONFIRMED**, drift **0.000 pp** on all three columns and all 3 master seeds (exact
+      match of the printed counts 2677/3846/3875 of 4000; sklearn SVC wraps LIBSVM — the
+      same-engine caveat is in the audit's honesty section).
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -185,13 +196,14 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 2/30 confirmatory audits.** Points (blind score, |drift| pp): (2, 0.59), (2, 0.94)
+**Tracker: n = 3/30 confirmatory audits.** Points (blind score, |drift| pp): (2, 0.59), (2, 0.94)
 [Breiman sonar Single Input / Selection], (3, 8.95), (3, 10.35) [Gorman-Sejnowski sonar MLP 12 / 24
-hidden]. Running rho (EXPLORATORY until n=30): spearmanr over the 4 points = **0.894, p = 0.106** —
-directionally consistent with the hypothesis, no confirmatory weight. Score coverage so far {2, 3};
-future target selection should keep diversifying toward 0–1 and 4–5 scorers and new algorithm
-families/decades per PREREG_DRIFT.md (audit #2 added the first NN family point and the first
-pre-2000 target).
+hidden], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1 unscaled / scaled / C=2 gamma=2].
+Running rho (EXPLORATORY until n=30): spearmanr over the 7 points = **0.827, p = 0.022** —
+directionally consistent with the hypothesis, no confirmatory weight. Score coverage so far
+{1, 2, 3}; future target selection should keep diversifying toward 0 and 4–5 scorers and new
+algorithm families/decades per PREREG_DRIFT.md (audit #3 added the first kernel-SVM family point
+and the first score-1 point).
 
 ## Log
 
@@ -304,3 +316,15 @@ pre-2000 target).
 ## Pending push
 
 (none)
+
+- 2026-07-05 (late scheduled session, Program 2b run #3) — Third confirmatory audit landed:
+  Hsu-Chang-Lin practical-guide Appendix A.1, svmguide1 SVC (see Completed audits and
+  `audits/AUDIT_hsu2003-svmguide1-svc.md`) — **CONFIRMED with 0.000 pp drift** on all three
+  pre-registered columns, exact match of the guide's printed correct-prediction counts. First
+  kernel-SVM family point, first score-1 rubric point; tracker n=3/30, exploratory rho 0.827
+  (p=0.022, no confirmatory weight). Session infrastructure notes: this sandbox exposes NO git
+  credentials — publication ran through the GitHub web uploader via the browser; the upload
+  form silently dropped the typed commit-1 summary (generic "Add files via upload"), disclosed
+  in the audit's honesty section — future runs should re-check the message field before
+  committing. Program 1 untouched; its audit queue (B6/B11 next, qrc_law.png regeneration,
+  B5 regression cells) unchanged.
