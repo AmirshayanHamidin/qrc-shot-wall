@@ -41,8 +41,17 @@ scikit-learn 1.7.2 `SGDClassifier(loss='squared_error', random_state=<master see
 
 ## Results
 
-(EMPTY at pre-registration — filled in a separate commit after the run, per the two-commit rule.)
+**Verdict: COULD-NOT-RUN** (pre-run infrastructure block, per the pre-registered clause; contributes NO drift point and does NOT count toward n, per PREREG_DRIFT.md).
+
+No reproduced value for the pinned configuration was ever observed; the block is purely computational and independent of the reproduction outcome, so this drop is unbiased:
+
+- The pre-declared mitigation (background process polled across 45 s calls) failed: this sandbox kills ALL user processes at the end of each tool call (verified twice: a `nohup` fit and a `setsid nohup sleep 60` sentinel were both dead at the next call).
+- The pinned fit is atomic and exceeds the cap: 1 epoch over all 10 OvR classes = 1.2 s; a truncated binary probe (`max_iter=230`) ran 26.1 s with `n_iter_=230` — the default `tol=1e-3` never triggered, so the default trajectory runs to `max_iter=1000` ≈ 113 s **per class**, inside a single un-checkpointable Cython call (`fit_binary`/`_plain_sgd`); even one class per call exceeded the cap (timeout at 42 s).
+- A faithful decomposition exists per class (sklearn `_fit_multiclass` pre-draws per-class seeds), and was implemented and verified — but the per-class unit itself is ≥113 s, so no faithful chunking fits the cap.
 
 ## Honesty section
 
-(EMPTY at pre-registration.)
+- Timing/feasibility probes that DID run (none is the audited quantity): (a) `max_iter=1` full fit, 1.2 s; (b) binary class-0 probe truncated at `max_iter=230` (26.1 s, no tol stop); (c) a CSR-sparse probe, ~10x faster (100 epochs in 3.0 s) — but a 5,000-sample dense-vs-sparse comparison at `max_iter=20` produced coefficient differences up to ~2.4e12 with only 48.5% prediction agreement, i.e. the defaults sit in a numerically unstable regime (squared loss + `learning_rate='optimal'`, coefficient magnitudes ~1e12 in truncated runs) where input representation changes the result materially. Switching the pinned dense representation to sparse post-hoc to beat the cap would therefore have silently changed the measurand and was rejected.
+- The observed instability of the truncated runs is an observation about the default regime, NOT a reproduced error rate; no error rate for the pinned configuration was computed at any truncation.
+- The rubric score (5/5) and this claim remain available to a future runner in an environment without the 45 s cap; the pinned plan in this file is complete and executable as written (`audits/audit_mnist_linear_run.py`).
+- Same-session follow-up: a SECOND audit of the same published claim via the paper's other stated training route ("directly solving linear systems"), which is cap-feasible and has a different (lower) discretion profile, is pre-registered separately in `audits/AUDIT_lecun1998-mnist-linear-lsq.md` BEFORE its reproduction ran. Its rubric was scored before any least-squares code ran; no least-squares number was observed at pre-registration time.
