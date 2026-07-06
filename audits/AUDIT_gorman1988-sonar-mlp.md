@@ -68,8 +68,56 @@ are expected and correct (fixed 300-epoch budget, matching the paper).
 
 ## Results
 
-*(empty at pre-registration — filled in a separate commit)*
+Data check: OpenML data_id=40 → shape (208, 60), classes {111, 97}, X md5
+`e5f03fedbe063c500c22a7be8c4fe878` — identical to the design matrix used by confirmatory audit #1.
+Environment: Python 3.10, scikit-learn 1.7.2, NumPy 2.x, Linux sandbox, CPU only.
+130 evaluations per (seed, row); 780 total, raw per-fit rows in `mlp_sonar_raw.json`.
+
+| Row | Published | Reproduced (seed 0 / 1 / 2) | Seed-0 drift | 3-seed drift (standardized) |
+|---|---|---|---|---|
+| 12 hidden | 84.7 | **75.96** / 75.00 / 76.30 | 8.74 pp | **8.95 pp** |
+| 24 hidden | 84.5 | **75.58** / 72.64 / 74.23 | 8.92 pp | **10.35 pp** |
+
+**Verdict: DISCREPANCY** — seed-0 primary values miss the pre-registered ±5.0 pp bar on both rows
+(and on every seed; the bar was not moved). Reproduced dispersion across the 130 evaluations
+(std ≈ 8–10) is comparable to the published std (5.7). The paper's internal ordering
+(12 ≥ 24 hidden) does reproduce in 3 of 3 seeds.
+
+**Program 2b points contributed (blind score, |drift| pp): (3, 8.95) and (3, 10.35).**
 
 ## Honesty section
 
-*(empty at pre-registration)*
+- A DISCREPANCY verdict is a number, not an accusation, and defaults to environment/implementation
+  differences (VAR rules). Here the gap has clear candidate mechanisms that the modern library
+  cannot honor even in principle: squared-error loss with the 0.2 error margin (sklearn: log-loss,
+  no margin), uniform ±0.3 init (sklearn: Glorot), 2-unit one-hot output coding (sklearn: single
+  logistic output), and — most plausibly — 1988-style per-pattern weight updates vs sklearn's
+  192-sample near-full-batch SGD, which at lr 2.0 takes 300 coarse steps instead of ~57,600 fine
+  ones. Notably, the reproduced ~76% sits near the paper's own **no-hidden-unit** row (77.1%),
+  consistent with systematic under-training rather than data or metric error.
+- The 1988 claim itself is NOT challenged; what failed is its *portability* to a modern library's
+  defaults — exactly the quantity Program 2b is designed to measure. High drift at rubric 3/5 is
+  consistent with the pre-registered hypothesis, but per PREREG_DRIFT the running correlation stays
+  EXPLORATORY until n=30.
+- The pre-registered bar (±5.0 pp) was set wider than score-2 audits in anticipation of this
+  discretion, and was still exceeded; it was not moved after data.
+- Operational notes: the first seed-0 invocation combined data fetch + run in one process and hit
+  the sandbox's 45 s wall; it was cleanly re-run (procedure fully deterministic given the master
+  seed). The data cache from audit #1 (same VM, earlier session) was reused after md5 verification
+  against audit #1's published hash. A final cosmetic `fetch` call to reprint the md5 failed on a
+  file-permission quirk (cache owned by the earlier session's uid); the md5 above was computed
+  directly from the cache instead. Separately, the session-outputs mount served stale/truncated
+  copies of freshly edited files (incident class already logged by Program 2b run #1); a truncated
+  results file was briefly committed to the session-LOCAL clone, caught by a byte/UTF-8 check
+  before any publication, and repaired by rebuilding all published files sandbox-locally — the
+  published versions are verified below by byte count and UTF-8 round-trip.
+- Published std (5.7) implies single-run values routinely land 5–10 pp from 84.7; the drift measure
+  uses the 130-evaluation mean, matching the paper's aggregation, so this does not rescue the bar.
+- **Ordering caveat (disclosed, with proposed guardrail):** this session's sandbox had no git push
+  credentials, so remote publication went through the GitHub web editor at session end (as in prior
+  runs). The empty-results pre-registration version of this file was committed to the remote before
+  the results version (same batch, minutes apart), but by then the reproduction had already run
+  inside the session. The BEFORE-any-code ordering is evidenced by the session-local git clone,
+  where the prereg commit (rubric 3/5, empty results) precedes the first reproduction call — but
+  that clone is not remotely verifiable. Proposed guardrail for future Program 2b runs: web-commit
+  the pre-registration to the remote FIRST, then run, as Program 2b run #1 did.
