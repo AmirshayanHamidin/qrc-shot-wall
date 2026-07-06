@@ -1,0 +1,180 @@
+{
+  "audit": "Program 2b confirmatory audit #10 - NIST StRD LLS certified R2, Longley + Filip",
+  "bit_identity_excluding_replicate_id": true,
+  "environment": {
+    "numpy": "2.2.6",
+    "os": "Ubuntu 22.04 sandbox, CPU only",
+    "python": "3.10.12",
+    "scipy": "1.15.3"
+  },
+  "prereg_commit": "4ad15b8",
+  "replicates": [
+    {
+      "Filip": {
+        "drift_pp": -0.1131653520519933,
+        "primary_numpy_lstsq": {
+          "max_rel_coef_err": 1.0742004819408433,
+          "r2": 0.9955957626651001
+        },
+        "published_r2": 0.99672741618562,
+        "published_r2_pp": 99.672741618562,
+        "reproduced_r2_pp": 99.55957626651,
+        "sens_centered_refit": {
+          "r2": 0.9967274161856202
+        },
+        "sens_certified_plugin": {
+          "r2": 0.9967274161524213
+        },
+        "sens_normal_equations": {
+          "max_rel_coef_err": 1.0657633054392701,
+          "r2": 0.9956525251616198
+        },
+        "sens_scipy_gelsd": {
+          "max_rel_coef_err": 8.697876901550928e-07,
+          "r2": 0.9967099771559399
+        }
+      },
+      "Longley": {
+        "drift_pp": -7.105427357601002e-14,
+        "primary_numpy_lstsq": {
+          "max_rel_coef_err": 1.1633573050884937e-11,
+          "r2": 0.9954790045772953
+        },
+        "published_r2": 0.995479004577296,
+        "published_r2_pp": 99.5479004577296,
+        "reproduced_r2_pp": 99.54790045772953,
+        "sens_certified_plugin": {
+          "r2": 0.9954790045772941
+        },
+        "sens_normal_equations": {
+          "max_rel_coef_err": 4.175115900706935e-08,
+          "r2": 0.9954790045772971
+        },
+        "sens_scipy_gelsd": {
+          "max_rel_coef_err": 1.1633573050884937e-11,
+          "r2": 0.9954790045772953
+        }
+      },
+      "data_md5": {
+        "Filip.dat": "7bfcad7c8559c0baa134373f36c1cfef",
+        "Longley.dat": "2061b8f8819c5aae0f43dc87fcf658cf"
+      },
+      "replicate": 0
+    },
+    {
+      "Filip": {
+        "drift_pp": -0.1131653520519933,
+        "primary_numpy_lstsq": {
+          "max_rel_coef_err": 1.0742004819408433,
+          "r2": 0.9955957626651001
+        },
+        "published_r2": 0.99672741618562,
+        "published_r2_pp": 99.672741618562,
+        "reproduced_r2_pp": 99.55957626651,
+        "sens_centered_refit": {
+          "r2": 0.9967274161856202
+        },
+        "sens_certified_plugin": {
+          "r2": 0.9967274161524213
+        },
+        "sens_normal_equations": {
+          "max_rel_coef_err": 1.0657633054392701,
+          "r2": 0.9956525251616198
+        },
+        "sens_scipy_gelsd": {
+          "max_rel_coef_err": 8.697876901550928e-07,
+          "r2": 0.9967099771559399
+        }
+      },
+      "Longley": {
+        "drift_pp": -7.105427357601002e-14,
+        "primary_numpy_lstsq": {
+          "max_rel_coef_err": 1.1633573050884937e-11,
+          "r2": 0.9954790045772953
+        },
+        "published_r2": 0.995479004577296,
+        "published_r2_pp": 99.5479004577296,
+        "reproduced_r2_pp": 99.54790045772953,
+        "sens_certified_plugin": {
+          "r2": 0.9954790045772941
+        },
+        "sens_normal_equations": {
+          "max_rel_coef_err": 4.175115900706935e-08,
+          "r2": 0.9954790045772971
+        },
+        "sens_scipy_gelsd": {
+          "max_rel_coef_err": 1.1633573050884937e-11,
+          "r2": 0.9954790045772953
+        }
+      },
+      "data_md5": {
+        "Filip.dat": "7bfcad7c8559c0baa134373f36c1cfef",
+        "Longley.dat": "2061b8f8819c5aae0f43dc87fcf658cf"
+      },
+      "replicate": 1
+    },
+    {
+      "Filip": {
+        "drift_pp": -0.1131653520519933,
+        "primary_numpy_lstsq": {
+          "max_rel_coef_err": 1.0742004819408433,
+          "r2": 0.9955957626651001
+        },
+        "published_r2": 0.99672741618562,
+        "published_r2_pp": 99.672741618562,
+        "reproduced_r2_pp": 99.55957626651,
+        "sens_centered_refit": {
+          "r2": 0.9967274161856202
+        },
+        "sens_certified_plugin": {
+          "r2": 0.9967274161524213
+        },
+        "sens_normal_equations": {
+          "max_rel_coef_err": 1.0657633054392701,
+          "r2": 0.9956525251616198
+        },
+        "sens_scipy_gelsd": {
+          "max_rel_coef_err": 8.697876901550928e-07,
+          "r2": 0.9967099771559399
+        }
+      },
+      "Longley": {
+        "drift_pp": -7.105427357601002e-14,
+        "primary_numpy_lstsq": {
+          "max_rel_coef_err": 1.1633573050884937e-11,
+          "r2": 0.9954790045772953
+        },
+        "published_r2": 0.995479004577296,
+        "published_r2_pp": 99.5479004577296,
+        "reproduced_r2_pp": 99.54790045772953,
+        "sens_certified_plugin": {
+          "r2": 0.9954790045772941
+        },
+        "sens_normal_equations": {
+          "max_rel_coef_err": 4.175115900706935e-08,
+          "r2": 0.9954790045772971
+        },
+        "sens_scipy_gelsd": {
+          "max_rel_coef_err": 1.1633573050884937e-11,
+          "r2": 0.9954790045772953
+        }
+      },
+      "data_md5": {
+        "Filip.dat": "7bfcad7c8559c0baa134373f36c1cfef",
+        "Longley.dat": "2061b8f8819c5aae0f43dc87fcf658cf"
+      },
+      "replicate": 2
+    }
+  ],
+  "tracker_points": {
+    "Filip": [
+      0,
+      0.11
+    ],
+    "Longley": [
+      0,
+      0.0
+    ]
+  },
+  "verdict": "DISCREPANCY (Filip primary-route drift -0.1132 pp exceeds pre-registered +/-0.1 pp bar; Longley -7.1e-14 pp within bar)"
+}
