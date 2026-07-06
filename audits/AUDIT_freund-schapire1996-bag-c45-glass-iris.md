@@ -49,16 +49,40 @@ Per master seed m in {0, 1, 2} (seed 0 primary for the verdict; drift for the tr
 
 ## Results
 
-*(empty — to be filled in a separate commit AFTER the pre-registration commit is on the remote)*
+Data checks: `glass.data` md5 `2732c9170bf8c483f33da3c58929c067`, 214 rows; `iris.data` md5 `42615765a885ddf54427f12c34a0a070`, 150 rows — identical to the pre-commit counting checks (md5 re-asserted inside every runner invocation).
+
+Primary configurations (pinned mapping, master seed 0; 10 runs × stratified 10-fold CV, pooled per-run error, mean over runs):
+
+| Row | Published | Reproduced | Drift |
+|---|---|---|---|
+| glass, bagging C4.5 (T=100) | 25.7 | **23.084** | −2.616 pp |
+| iris, bagging C4.5 (T=100) | 5.0 | **4.867** | −0.133 pp |
+
+Master seeds 1 and 2: glass 23.364 / 23.364; iris 4.533 / 4.600. **Standardized drift for the tracker (3-seed mean |reproduced − published|): glass 2.43 pp, iris 0.33 pp.** The paper's bag-beats-tree ordering on glass reproduces relative to audit #9's tree row (23.08–23.36 here vs 31.68–32.29 there, an 8.3–8.6 pp improvement vs the published 6.0); on iris the published 0.9 pp tree-vs-bag gap is within noise and no ordering claim is scored.
+
+Labelled sensitivity checks (master seed 0, never the verdict):
+
+- (a) Paper-faithful **hard simple voting** (hand-rolled Breiman bagging, majority over 100 tree labels): glass 23.084, iris 5.200 — within 0.34 pp of sklearn's soft-vote route on both datasets. The soft-vs-hard aggregation discretion is numerically inert here. (The glass means agree to all printed digits by coincidence of averaging — the per-run values differ; see the raw JSON.)
+- (b) Pure-default base tree (gini, min_samples_leaf=1): glass 23.458, iris 4.933. As pre-declared, NO degeneration occurs (bagging has no perfect-fit early stop — all 100 trees are always used), and the C4.5 mapping is worth ≤ 0.4 pp inside a bagged committee — versus 9.31 pp for the same mapping inside audit #9's AdaBoost. Bagging insulates the very discretion that broke the naive boosting route.
+- (c) Unstratified `KFold(shuffle=True)`: glass 24.486, iris 4.400 — the CV-construction discretion is worth up to 1.4 pp on glass (vs ≤ 0.6 pp in audit #9), the largest single-choice effect measured in this audit.
+
+Secondary pre-registered prediction: **HELD.** The glass row's 3-seed drift (2.43 pp) exceeds 1.96 pp (the largest score-2 drift in the confirmatory set) — the FIRST mid/high-score point to clear the score-2 ceiling after six consecutive failures of this prediction (audits #5–#10 pattern), though the iris row (0.33 pp) lands below it.
 
 ## Verdict
 
-*(empty)*
+**CONFIRMED.** Both rows land within the pre-registered ±4.0 pp at master seed 0 in the primary configuration (−2.616 pp and −0.133 pp), robust across all 3 master seeds (worst case: glass −2.616, iris −0.467). Breiman-style bagging of a mapped C4.5 reproduces under a 2026 library: iris is within one-fifth of a pooled test case of the 1996 number, and glass lands 2.3–2.6 pp BELOW the published error (modern bagged trees slightly better than 1996 bagged C4.5 on this dataset), the same favorable direction as audit #9's boost row.
 
 ## Environment
 
-*(empty)*
+Sandbox Linux (Ubuntu 22.04, CPU only), Python 3.10.12, scikit-learn 1.7.2, numpy 2.2.6, scipy 1.15.3. Reproduction script: `audits/audit_fs96_bag_glass_iris_run.py` (chunked one master-seed × dataset per invocation for the 45 s per-process cap). Raw output (per-run errors, all sensitivity configurations): `audits/fs96_bag_glass_iris_raw.json` (md5 `2bf2379f81e98362d0b421c5704aa8bc`, 5493 B). Both committed in this session's batch.
 
 ## Honesty section
 
-*(empty)*
+1. The reproduced glass row sits 2.3–2.6 pp below the published 25.7 at every seed — a systematic, not seed-level, gap. Default attribution: implementation differences (unpruned info-gain CART vs pruned gain-ratio C4.5 inside the committee, soft vs hard vote, 2026 numerics), not an error in the 1996 table. The published number is not challenged; its library-defaults portability costs ~2.4 pp, and that is exactly what the score-4 rubric priced.
+2. What this is NOT: not an accusation, not a re-tuning exercise, and not evidence about bagging's merit — only about how far the printed numbers move when a 2026 library holds the discretion the claim left open.
+3. The CONFIRMED verdict is mapping-conditional in principle, but far less than audit #9's: sensitivity (b) shows the pure-default base tree moves the rows ≤ 0.4 pp (vs 9.31 pp under boosting). A reproducer making any of the obvious choices lands inside the bar on both rows.
+4. C4.5's gain ratio and pessimistic pruning remain inexpressible in scikit-learn; the residual ~2.4 pp glass gap plausibly includes exactly this (pruned committees generalize differently on glass's 6 overlapping classes), but this attribution is unverifiable here and stays a hypothesis.
+5. The two (score, drift) points share the paper, the protocol, and the CV harness (though not the dataset), so they are not independent — same caveat as every prior multi-row audit; cross-audit, they also share the glass dataset and harness with audit #9's points.
+6. Two-commit ordering: pre-registration was committed to the REMOTE (`b358b39`, verified byte-identical at 9218 B + md5 by SHA-pinned fetch) before any reproduction code existed; results were computed afterwards in this same session. Copilot autofill DID populate the commit-message field in the commit dialog ("Add audit for Freund & Schapire bagging C4.5 study"); it was replaced with the pre-planned message via the DOM and verified before submitting, per standing incident procedure.
+7. The published numbers are means over the authors' own 100 randomized 1996 runs with an unlogged RNG; our 3 × (10-run mean) band is the closest achievable comparison. The iris row's published 5.0 is likely rounded to one decimal (± 0.05 pp), immaterial at this bar.
+8. The secondary prediction's success is one point, not a trend reversal: the score-4 column now holds drifts {0.23, 1.36, 2.43, 0.33} — two of four above 1 pp, still none near the score-3 MLP points (8.95/10.35). The exploratory rho moved 0.662 → 0.629 with these two points; the n=30 test will decide.
