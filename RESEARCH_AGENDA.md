@@ -425,3 +425,10 @@ families/decades.
   DOM-verified pre-submit (run #3 guardrail), no autofill description this time; freshness confirmed
   against the commits page (HEAD `3889133` at session start) per HARD GUARDRAIL 6. Program 1
   untouched; its audit queue (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
+  New incident class (no files of record affected): the sandbox's outputs mount serves STALE,
+  SIZE-TRUNCATED views of files edited after creation (post-edit local `wc -c`/`md5sum` reported the
+  pre-edit size with new content cut mid-line), so LOCAL checksum verification is unreliable in this
+  environment. The web uploader reads the true files (upload byte totals matched, and every SHA-pinned
+  remote fetch verified complete content: audit 11338 B, script 4299 B, JSON 1810 B, agenda 34597 B).
+  Guardrail for future runs: treat SHA-pinned remote fetch as the ONLY valid post-push verification;
+  never trust mount-side sizes/checksums of files edited in-session.
