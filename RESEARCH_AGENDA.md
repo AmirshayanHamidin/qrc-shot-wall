@@ -138,6 +138,15 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       (5.9) — "discretion predicts drift" now 5/5, with cross-implementation+seed discretion
       priced at ~0.8 pp.
 
+- [x] **2026-07-05 — Breiman (2001) Table 2, sonar row, Forest-RI (Program 2b confirmatory audit #1)**
+      (`audits/AUDIT_breiman2001-rf-sonar.md` + `audits/audit_rf_sonar_run.py` + `audits/rf_sonar_raw.json`).
+      First audit under `audits/PREREG_DRIFT.md` (registered this session BEFORE the audit): blind
+      discretion rubric scored **2/5** in the pre-registration commit `babcc6a`, results in `0ad7fad`.
+      Single Input published 18.0 -> reproduced **18.19**; Selection published 15.9 -> **17.86**
+      (seed 0 primary; pre-registered bar ±2.0 pp) — **CONFIRMED** on all 3 master seeds. Program 2b
+      standardized drift (3-seed mean |repro−pub|): **0.59 / 0.94 pp**. Honest caveat: seed-0 Selection
+      used 98% of the bar (see the audit's honesty section).
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -153,6 +162,18 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       Completed audits). Still open from this bullet: a row sourced from an actual repo README;
       also LFW eigenfaces (run #3 bullet) and other Breiman Table 2 rows (sonar, glass, diabetes)
       if a cross-implementation *ladder within one paper* is wanted.
+
+## Program 2b — pre-registered drift study (discretion predicts drift)
+
+Registered 2026-07-05 in `audits/PREREG_DRIFT.md` (commit `ad8aa31`) BEFORE any confirmatory audit:
+Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONCE at n=30 confirmatory
+audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
+runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
+
+**Tracker: n = 1/30 confirmatory audits.** Points (blind score, |drift| pp): (2, 0.59), (2, 0.94)
+[sonar Single Input / Selection]. Running rho: undefined so far (no score variation yet — all points
+at score 2); EXPLORATORY only until n=30 regardless. Future target selection should diversify the
+discretion range (0–1 and 4–5 scorers) and algorithm families/decades per PREREG_DRIFT.md.
 
 ## Log
 
@@ -233,6 +254,19 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
   Program 1 untouched; its audit queue (B6/B11 next, qrc_law.png regeneration, B5 regression
   cells) unchanged.
 
+- 2026-07-05 (scheduled session, Program 2b run #1) — Pre-registration + first confirmatory audit
+  landed. `audits/PREREG_DRIFT.md` committed BEFORE the audit (`ad8aa31`: hypothesis, blind 0–5
+  discretion rubric, 3-seed standardized drift, n=30 one-shot Spearman test). Audit #1: Breiman 2001
+  Table 2 sonar (rubric 2/5 in prereg commit `babcc6a` -> results `0ad7fad`, script `46bd70c`, raw
+  `ce84b48`): **CONFIRMED**, 3-seed drift 0.59/0.94 pp — see Completed audits. Incidents (cosmetic,
+  disclosed in the audit's honesty section): Copilot commit-message autofill garbled the PREREG
+  commit's message (file content verified byte-identical via git fetch + MD5); the session-outputs
+  mount served stale copies of freshly edited files twice (worked around by writing sandbox-local);
+  GitHub's web commit appended a trailing newline to rf_sonar_raw.json (20494 vs 20493 bytes,
+  JSON-identical). No lazy-render paste incidents: all editor content this session was injected via
+  the CodeMirror document API with length verification, and every push was verified by git fetch +
+  MD5 against the local copy (stronger than SHA-pinned raw fetches). Program 1 untouched; its audit
+  queue (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
 ## Pending push
 
 (none)
