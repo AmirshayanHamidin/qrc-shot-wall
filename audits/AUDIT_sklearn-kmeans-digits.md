@@ -69,5 +69,49 @@ Scored from the example source + sklearn API docs only. Same score applies to al
 
 ## Results
 
-(EMPTY — to be filled in a separate commit AFTER this pre-registration commit is on the remote.
-Nothing below this line exists at pre-registration time.)
+**Verdict: CONFIRMED** — all three rows inside the pre-registered ±2.0 pp bar at master seed 0
+(and at every master seed: v-meas is bit-identical across master seeds, as pre-registered).
+
+| init | published v-meas (pp) | reproduced (pp, all seeds) | drift (pp) |
+|---|---|---|---|
+| k-means++ | 62.1 | 62.056 | 0.044 |
+| random | 70.1 | 70.104 | 0.004 |
+| PCA-based | 62.2 | 62.224 | 0.024 |
+
+- **Standardized drift (3-master-seed mean): 0.04 / 0.00 / 0.02 pp** → three Program 2b points
+  (2, 0.04), (2, 0.00), (2, 0.02).
+- **Secondary prediction HELD:** all three drifts ≤ 1.96 pp (the score-2 ceiling).
+- **Secondary metrics (descriptive): 18/18 deterministic printed cells identical at published
+  precision** across the 1.9.0 → 1.7.2 version gap — every homo/compl/v-meas/ARI/AMI cell
+  (15) and all three inertia values (e.g. k-means++: homo 0.5981→0.598, compl 0.6448→0.645,
+  ARI 0.4693→0.469, AMI 0.6166→0.617; inertia 69545.33→69545 exact at {:.0f}).
+- **Silhouette (no verdict weight):** reproduced across-master-seed ranges — k-means++
+  0.150–0.169, random 0.185–0.187, PCA-based 0.140–0.169 — vs published single draws
+  0.171 / 0.173 / 0.162. The only column that moves is exactly the one the blind rubric
+  charged with the randomization point; the deterministic 18 cells did not move at all.
+- Environment: Python 3.10.12, scikit-learn 1.7.2, numpy 2.2.6, scipy 1.15.3, CPU-only.
+- Raw per-seed rows: `audits/kmeans_digits_raw.json`; runner: `audits/audit_kmeans_digits_run.py`.
+
+## Honesty section
+
+1. **Prereg prose slip (disclosed, no effect on the measurand):** the prereg's claim section
+   described silhouette as computed "on the scaled data". The example code actually passes the
+   RAW `data` array to `silhouette_score` (the pipeline scales internally for fitting only).
+   The reproduction followed the example code verbatim (raw data); silhouette carries no
+   verdict weight and the code line itself was quoted correctly in the prereg.
+2. **Same-engine caveat (as exploratory audit #3):** claim and reproduction both run
+   scikit-learn (1.9.0 docs vs 1.7.2 sandbox). This is a version-gap point, not a
+   cross-implementation one: the ~0.00–0.04 pp drift prices two minor releases of
+   KMeans/metrics evolution, not an independent reimplementation.
+3. **Master-seed design:** the published silhouette values come from an unknowable global-RNG
+   process state, so they are compared only against the reproduced across-seed spread
+   (descriptive). All verdict-bearing numbers are seed-free by construction and came out
+   bit-identical across master seeds {0,1,2}.
+4. The `time` column was excluded as pure environment (pre-registered).
+5. **Interpretation for the drift study:** a score-2 target whose two rubric points were
+   (a) an unseeded auxiliary column and (b) version-default tolerances contributed ~0 drift on
+   the primary measurand — consistent with the emerging picture that at the low-discretion end
+   the drift floor is set by numerical/policy details rather than the rubric's headline items
+   (cf. audit #10's Filip finding).
+6. Publication incidents this session: none affecting files of record (session notes in the
+   RESEARCH_AGENDA.md log entry for run #11).
