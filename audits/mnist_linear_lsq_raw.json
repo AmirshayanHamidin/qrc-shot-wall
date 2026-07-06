@@ -1,0 +1,40 @@
+{
+ "published_error_pct": 12.0,
+ "model": "RidgeClassifier() - all sklearn defaults (alpha=1.0, fit_intercept=True, solver='auto'->cholesky)",
+ "preprocessing": "float64 pixels / 255.0",
+ "train_shape": [
+  60000,
+  784
+ ],
+ "test_shape": [
+  10000,
+  784
+ ],
+ "env": {
+  "python": "3.10.12",
+  "sklearn": "1.7.2",
+  "numpy": "2.2.6",
+  "os": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35"
+ },
+ "replicates": {
+  "0": {
+   "test_error_pct": 13.96,
+   "drift_pp": 1.96,
+   "fit_seconds": 3.4,
+   "solver_resolved": "cholesky (dense, auto)"
+  },
+  "1": {
+   "test_error_pct": 13.96,
+   "drift_pp": 1.96,
+   "fit_seconds": 1.6,
+   "solver_resolved": "cholesky (dense, auto)"
+  },
+  "2": {
+   "test_error_pct": 13.96,
+   "drift_pp": 1.96,
+   "fit_seconds": 1.1,
+   "solver_resolved": "cholesky (dense, auto)"
+  }
+ },
+ "mean_drift_pp_3rep": 1.96
+}

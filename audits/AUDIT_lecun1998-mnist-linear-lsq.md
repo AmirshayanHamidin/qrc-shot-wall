@@ -36,8 +36,21 @@ scikit-learn 1.7.2 `RidgeClassifier()` — ALL parameters library defaults (`alp
 
 ## Results
 
-(EMPTY at pre-registration — filled in a separate commit after the run.)
+Data check: idx files parsed to train (60000, 784) / test (10000, 784), classes 0–9; MD5s as pre-registered in audit #4's file.
+
+| Published | Reproduced (replicates 0/1/2, bit-identical) | Drift |
+|---|---|---|
+| 12.0% test error | **13.96%** (1,396 / 10,000 test errors) | **1.96 pp** |
+
+All three procedural replicates are bit-identical, as pre-registered for a deterministic pipeline (Cholesky solve; fit 1.1–3.4 s, far under the 45 s cap). **Program 2b standardized drift (3-run mean): 1.96 pp.**
+
+**Verdict: CONFIRMED** — |13.96 − 12.0| = 1.96 pp ≤ 2.0 pp (pre-registered bar, not moved). This audit contributes the point **(2, 1.96)** to the confirmatory set (n=4 audits toward 30; 8 (score, drift) points total).
 
 ## Honesty section
 
-(EMPTY at pre-registration.)
+- **The confirmation is marginal: drift is 98% of the bar.** A result 0.05 pp worse would have flipped the verdict to DISCREPANCY. The bar was fixed pre-run at ±2.0 pp (consistency with audits #1/#3/#4) and was not moved; the near-bar landing is reported with the same prominence as the verdict.
+- The pre-run prior stated in the pre-registration ("commonly reported around 13–15%, real chance of DISCREPANCY") is consistent with the observed 13.96%; the CONFIRMED verdict reflects bar mechanics, not strong portability of the 1998 number to modern defaults.
+- **Secondary reading (against the hypothesis at the low end):** 1.96 pp is the LARGEST score-2 drift in the confirmatory set (prior score-2 points: 0.00, 0.00, 0.59, 0.94). Under the pre-registered secondary note this counts as mild evidence AGAINST "discretion predicts drift" at the low-discretion end, and is logged as such in the tracker.
+- Route caveat: the paper's primary training route for this claim was gradient descent on MSE (audit #4, COULD-NOT-RUN here); this audit reproduces the paper's own equally-claimed alternative ("directly solving linear systems gave similar results"). The 1.96 pp prices the modern default-resolved least-squares route (ridge alpha=1.0, /255 scaling, ±1 OvR targets) against the paper's 12.0%; the paper's linear-systems variant was itself under-specified (no ridge term stated).
+- Environment: Python 3.10.12, scikit-learn 1.7.2, numpy 2.2.6, scipy 1.15.3, Ubuntu 22.04 sandbox, CPU only, 2 cores. Raw per-replicate rows in `audits/mnist_linear_lsq_raw.json`; runner script `audits/audit_mnist_linear_lsq_run.py` (executed inline this session with identical code; data paths as in audit #4).
+- The 1998 claim itself is not challenged: 12.0% was presumably correct for the paper's implementation. As with audit #2, the drift prices the claim's *portability* to a modern library's defaults.
