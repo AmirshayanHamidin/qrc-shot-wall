@@ -46,16 +46,36 @@ scikit-learn `RandomForestClassifier`: n_estimators=100, criterion=gini, bootstr
 
 ## Results
 
-*(empty at pre-registration commit — filled in a separate later commit)*
+Data check: OpenML data_id=40 → shape (208, 60), classes {111, 97}, X md5 `e5f03fedbe063c500c22a7be8c4fe878` — matches paper Table 1 (208 instances / 60 inputs / 2 classes).
+
+| Column | Published | Reproduced (master seed 0, primary) | Drift |
+|---|---|---|---|
+| Single Input (F=1) | 18.0 | **18.19** (SEM 0.83) | +0.19 pp |
+| Selection | 15.9 | **17.86** (SEM 0.86) | +1.96 pp |
+
+Seed sensitivity (identical 100-iteration procedure, master seeds 1 and 2): Single Input 17.52 / 16.90; Selection 16.71 / 15.95. Every seed × column combination is within the pre-registered ±2.0 pp bar.
+
+**Program 2b standardized drift (3-seed mean |reproduced − published|): Single Input 0.59 pp, Selection 0.94 pp.** With the blind rubric score of 2/5 recorded in the pre-registration commit, this audit contributes the points (2, 0.59) and (2, 0.94) to the confirmatory set (n=1 audit toward 30).
+
+Secondary observations: the paper's Selection < Single Input ordering reproduced on all three seeds. The OOB selection picked F=6 in 59–66 of 100 iterations (ties 4–10); the always-F=6 forest averaged 16.57–17.00%.
+
+Secondary pre-registered prediction: **held** — 3-seed |drift| 0.59–0.94 pp is above the docs-SVC anchor (~0.0), the same order as ionosphere (~0.8), and well below GaussianNB (5.9).
 
 ## Verdict
 
-*(empty at pre-registration commit)*
+**CONFIRMED.** Both audited columns reproduce within the pre-registered ±2.0 pp on the seed-0 primary numbers (+0.19 and +1.96 pp) and on both sensitivity seeds. Honest caveat: the seed-0 Selection drift (+1.96 pp) uses 98% of the bar — see honesty items 1–2.
 
 ## Environment
 
-*(empty at pre-registration commit)*
+Sandbox Linux (Ubuntu 22.04, CPU only), Python 3.10.12, scikit-learn 1.7.2, numpy 2.2.6, scipy 1.15.3. Reproduction script: `audits/audit_rf_sonar_run.py` (chunked for the 45 s per-process cap; ~31 s per master seed); raw per-iteration rows (3 seeds × 100 iterations): `audits/rf_sonar_raw.json`. Both committed in this session's batch.
 
 ## Honesty section
 
-*(empty at pre-registration commit)*
+1. The seed-0 Selection drift (+1.96 pp) is just inside the ±2.0 pp bar. Under the ±1.5 pp bar used for the ionosphere audit, seed 0 would have scored a DISCREPANCY on that column. The wider bar was pre-registered before any data specifically because n_test=21 roughly halves the effective sample of ionosphere's n_test=36; seeds 1 and 2 (16.71, 15.95) land much closer to the published 15.9, consistent with seed 0 being a noise draw. The bar was not moved after data.
+2. Drift direction at seed 0 is *unfavorable* (reproduced error higher than published) on both columns — the opposite of the ionosphere audit's uniformly favorable drift. Across the two audits of this table there is therefore no consistent direction, which supports pricing this as replication noise rather than systematic library improvement.
+3. The OOB tie convention (tie → F=1) was pre-registered this time (audit #4 had fixed it only in code). Sensitivity: tie → F=6 moves Selection by ≤ 0.38 pp (worst seed) — immaterial to the verdict.
+4. Test split is 21 samples (sklearn ceil convention) vs Breiman's likely 20 (10% of 208 = 20.8); declared pre-run.
+5. Class labels binarized against the first target value; error rates are invariant to the encoding.
+6. Session incident (cosmetic, disclosed): GitHub's Copilot commit-message autofill collided with typed text on the PREREG_DRIFT.md commit (`ad8aa31`), garbling that commit's message. The committed file content was verified byte-identical to the local copy via a fresh `git fetch` (MD5 match). Later commit messages in this session were set programmatically to prevent recurrence. A filename-field focus miss on this audit's pre-registration commit was caught by inspecting page state before committing; the editor document was verified intact (5056 chars) before the commit was made.
+7. Both commits of the two-commit rule occur in the same autonomous session; the ordering is provable from git history alone (pre-registration `babcc6a` precedes this results commit).
+8. Content was injected into the web editor via the editor's own document API with length verification (4881/4881 and 5056/5056 chars), avoiding the lazy-render paste hazard that affected runs #3 and #4.
