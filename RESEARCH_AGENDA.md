@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-07, Program 2b run #14 scheduled session)
+## State (updated 2026-07-07, Program 2b run #15 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -337,6 +337,21 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       this near-separable, all-binary-feature data (honesty item 6: the null does not lower the
       blind score post hoc).
 
+- [x] **2026-07-07 — Freund & Schapire (1996) Table 2, ionosphere row, C4.5 alone + boosting C4.5 +
+      bagging C4.5 (Program 2b confirmatory audit #16)** (`audits/AUDIT_freund-schapire1996-ionosphere-c45-boost-bag.md`
+      + `audits/audit_fs96_iono_run.py` + `audits/fs96_iono_raw.json`). Two-commit rule with a caveat:
+      this session had no push credentials, so prereg commit `d27e56a` (blind rubric **4/4/4**, results
+      EMPTY) precedes results only in the session-local commit graph; both land on the remote in one
+      batch (audit #2 precedent — remote-first web-commit not available). **Three new score-4 points
+      in one audit — the tracker's #1 density priority.** Published 8.9 / 5.8 / 6.2 (% test error,
+      10-run averaged 10-fold CV, T=100) -> reproduced **12.251 / 6.439 / 7.721** (seed 0; bar ±4.0 pp)
+      — **CONFIRMED** on all three rows, all 3 master seeds. Standardized drift (3-seed): **2.99 /
+      0.85 / 1.34 pp**. Secondary prediction **HELD** (tree row 2.99 > 1.96 pp) — second consecutive
+      score-4 audit to clear the score-2 ceiling. Notable: the largest drift is on the PLAIN C4.5 row
+      (pruning/gain-ratio inexpressibility ~3.4 pp) and the ensembles wash it out; honesty item 3
+      records that the naive default-base-tree boost route would land OUTSIDE the bar (11.595, +5.16 pp
+      mapping sensitivity — audit #9's degeneration mechanism replicated on a second dataset).
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -360,7 +375,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 14/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 15/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -372,18 +387,21 @@ bagging C4.5, glass / iris], (2, 0.04), (2, 0.00), (2, 0.02) [sklearn 1.9.0 docs
 digits demo, k-means++ / random / PCA-based], (3, 0.08), (2, 0.11) [Joulin-2016 fastText
 AG News, h=10 / h=10 bigram], (3, 0.95), (3, 1.37) [Breiman-1996 Bagging Predictors glass,
 e_S / e_B], (2, 0.00), (2, 0.00), (2, 0.00), (2, 0.00) [xgboost v1.7.6 CLI mushroom demo
-README, test r0/r1 + train r0/r1].
-Running rho (EXPLORATORY until n=30): spearmanr over the 32 points as printed above (2-dp) =
-**0.667, p = 3e-05** — firmed from 0.653 as four zero-drift score-2 points join the low end; no
-confirmatory weight. (Correction, run #11 second-instance addendum: first logged as 0.660/0.0005, computed from
+README, test r0/r1 + train r0/r1], (4, 2.99), (4, 0.85), (4, 1.34) [Freund-Schapire 1996
+ionosphere, C4.5 alone / boost / bag].
+Running rho (EXPLORATORY until n=30): spearmanr over the 35 points as printed above (2-dp) =
+**0.686, p = 5.5e-06** — firmed from 0.667 as three score-4 points (one above the score-2 ceiling)
+join; no confirmatory weight. (Correction, run #11 second-instance addendum: first logged as 0.660/0.0005, computed from
 the three new points' full-precision drifts; runs #1–#10's logged rho values reproduce from the
 printed 2-dp list, so the printed-list convention is pinned from here on.) Family
 coverage now includes clustering (a run #10 priority); the library-docs claim class enters the
 confirmatory set at near-zero drift, replicating exploratory audit #3's pattern across a
 2-minor-release gap. The repo-README anchor is DONE (audit #15: four points, the class's first
 confirmatory entries, all at the drift floor). Priorities: a score-0/1 anchor outside the
-certified-values class, score-4/5 density (only 5 points at scores 4–5 vs 18 at score 2), and
-the blocked audit #4 SGD target in a cap-free environment. Decade breadth 1967–2016 (audit #15
+certified-values class, further score-4/5 density (now 8 points at scores 4–5 vs 18 at score 2;
+audit #16 added three), and the blocked audit #4 SGD target in a cap-free environment. Named
+clean 4/5 candidate for next run: F&S-1996 sonar row, C4.5 columns (25.9 boost 16.5? — no:
+sonar C4.5 columns are 28.9 / 19.0 / 24.3 per the Table 2 transcript in audit #16). Decade breadth 1967–2016 (audit #15
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
@@ -741,3 +759,21 @@ adds a 2014-era library-demo claim reproduced across a decade of releases).
   outside the certified-values class, score-4/5 density, and the blocked audit #4 SGD target in a
   cap-free environment. Program 1 untouched; its audit queue (B6/B11 next, qrc_law.png regeneration,
   B5 regression cells) unchanged.
+
+- 2026-07-07 (scheduled session, Program 2b run #15) — Audit #16 DONE: F&S-1996 Table 2 ionosphere
+  row, all three C4.5 columns (plain / boost / bag), blind rubric 4/4/4 — three new score-4 points,
+  the run #14 density priority. CONFIRMED at ±4.0 pp (12.251 / 6.439 / 7.721 vs published 8.9 /
+  5.8 / 6.2); 3-seed drifts 2.99 / 0.85 / 1.34 pp; secondary prediction HELD via the tree row
+  (second consecutive score-4 audit above the score-2 ceiling). Key mechanism note: audit #9's
+  boost-degeneration replicated on a second dataset (default-base-tree route lands OUTSIDE the bar,
+  +5.16 pp); the pinned C4.5 mapping is load-bearing for boost rows generally. Tracker n=15/30;
+  exploratory rho over 35 printed 2-dp points = 0.686 (p=5.5e-06, no confirmatory weight). Session
+  mechanics: fresh shallow clone at HEAD `7d31a8e`; primary-source PDF re-fetched cache-busted
+  (byte-count 219704 identical to audits #9/#11); no git push credentials, publication via the web
+  editor as in runs #2–#14 (prereg file web-committed before the results file, but NOTE the honesty
+  caveat: reproduction ran before the prereg reached the remote this session — local prereg commit
+  `d27e56a` precedes results only in the session-local graph); one file-sync truncation incident
+  (runner's final print dropped by the outputs mount — silent empty-stdout failures; fixed by
+  appending the tail on the Linux side and md5-checking, watch for this class); boost/bag grids
+  chunked 2–4 CV runs per 45-s call. Priorities unchanged from the tracker paragraph; sonar C4.5
+  columns (28.9 / 19.0 / 24.3) named as the next clean score-4 ladder rung.
