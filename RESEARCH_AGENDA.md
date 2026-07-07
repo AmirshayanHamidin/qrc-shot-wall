@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-06, Program 2b run #13 scheduled session)
+## State (updated 2026-07-07, Program 2b run #14 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -322,6 +322,21 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       the seed-0 e_B point alone (2.07 pp) would have cleared it, but the registered measure is the
       3-seed mean (honesty item 6: small systematic upward offset on both rows, all seeds).
 
+- [x] **2026-07-07 — dmlc/xgboost CLI demo README (pinned v1.7.6), mushroom, printed eval log, 4
+      numbers (Program 2b confirmatory audit #15)** (`audits/AUDIT_xgboost-cli-mushroom-demo.md` +
+      `audits/audit_xgb_mushroom_run.py` + `audits/xgb_mushroom_raw.json`). Two-commit rule: prereg
+      `f85c810` web-committed and byte-verified (git fetch + md5) BEFORE any reproduction code
+      existed. **The open repo-README queue item, landed** — first confirmatory points from the
+      repo-README claim class (the exploratory Fashion-MNIST class). Blind rubric **2/5, all four
+      numbers**. Published test-error 1.6139/0.0000 + train-error 1.4433/0.1228 pp (README
+      "Monitoring Progress" log; shipped conf + shipped LIBSVM data, md5-pinned to the tag) →
+      reproduced **exactly to every printed digit** on xgboost-cpu 3.2.0 defaults (bar ±1.0 pp) —
+      **CONFIRMED**, bit-identical across master seeds 0/1/2. Standardized drift (3-seed):
+      **0.00 × 4**. Secondary prediction HELD. The pre-registered mechanism table
+      ({tree_method} × {base_score}) came back null — neither scored discretion item fires on
+      this near-separable, all-binary-feature data (honesty item 6: the null does not lower the
+      blind score post hoc).
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -334,8 +349,8 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       amendment). Needs an environment without the per-process cap.
 - [x] ~~A published UCI-scale ablation row from a widely cited repo README.~~ — DONE run #4, with a
       widely cited *paper* table instead of a repo README (Breiman 2001 Table 2, ionosphere; see
-      Completed audits). Still open from this bullet: a row sourced from an actual repo README;
-      also LFW eigenfaces (run #3 bullet) and other Breiman Table 2 rows (sonar, glass, diabetes)
+      Completed audits). Repo-README row DONE run #14 (xgboost CLI mushroom demo, audit #15).
+      Still open from this bullet: LFW eigenfaces (run #3 bullet) and other Breiman Table 2 rows (sonar, glass, diabetes)
       if a cross-implementation *ladder within one paper* is wanted.
 
 ## Program 2b — pre-registered drift study (discretion predicts drift)
@@ -345,7 +360,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 13/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 14/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -356,18 +371,20 @@ wine LOO, LDA/QDA/1NN], (5, 1.11), (2, 0.05) [Sigillito-1989 ionosphere perceptr
 bagging C4.5, glass / iris], (2, 0.04), (2, 0.00), (2, 0.02) [sklearn 1.9.0 docs k-means
 digits demo, k-means++ / random / PCA-based], (3, 0.08), (2, 0.11) [Joulin-2016 fastText
 AG News, h=10 / h=10 bigram], (3, 0.95), (3, 1.37) [Breiman-1996 Bagging Predictors glass,
-e_S / e_B].
-Running rho (EXPLORATORY until n=30): spearmanr over the 28 points as printed above (2-dp) =
-**0.653, p = 0.0002** — firmed from 0.642 with two score-3 points at ~1 pp; no confirmatory
-weight. (Correction, run #11 second-instance addendum: first logged as 0.660/0.0005, computed from
+e_S / e_B], (2, 0.00), (2, 0.00), (2, 0.00), (2, 0.00) [xgboost v1.7.6 CLI mushroom demo
+README, test r0/r1 + train r0/r1].
+Running rho (EXPLORATORY until n=30): spearmanr over the 32 points as printed above (2-dp) =
+**0.667, p = 3e-05** — firmed from 0.653 as four zero-drift score-2 points join the low end; no
+confirmatory weight. (Correction, run #11 second-instance addendum: first logged as 0.660/0.0005, computed from
 the three new points' full-precision drifts; runs #1–#10's logged rho values reproduce from the
 printed 2-dp list, so the printed-list convention is pinned from here on.) Family
 coverage now includes clustering (a run #10 priority); the library-docs claim class enters the
 confirmatory set at near-zero drift, replicating exploratory audit #3's pattern across a
-2-minor-release gap. Priorities: score-0/1 anchors from OTHER claim classes (a repo-README
-table row remains the open queue item), score-4/5 density (only 5 points at scores 4–5 vs 14 at
-score 2), and the blocked audit #4 SGD target in a cap-free environment. Decade breadth now spans
-1967–2016 in the confirmatory set (2010s covered by audit #13).
+2-minor-release gap. The repo-README anchor is DONE (audit #15: four points, the class's first
+confirmatory entries, all at the drift floor). Priorities: a score-0/1 anchor outside the
+certified-values class, score-4/5 density (only 5 points at scores 4–5 vs 18 at score 2), and
+the blocked audit #4 SGD target in a cap-free environment. Decade breadth 1967–2016 (audit #15
+adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
 
@@ -706,3 +723,21 @@ score 2), and the blocked audit #4 SGD target in a cap-free environment. Decade 
   viable route), score-4/5 density, and the blocked audit #4 SGD target in a cap-free environment.
   Program 1 untouched; its audit queue (B6/B11 next, qrc_law.png regeneration, B5 regression cells)
   unchanged.
+
+- 2026-07-07 (scheduled session, Program 2b run #14) — Fifteenth confirmatory audit landed:
+  dmlc/xgboost CLI demo README (v1.7.6 tag), mushroom printed eval log, 4 numbers (see Completed
+  audits) — **CONFIRMED**, exact to every printed digit at all 3 master seeds (drifts 0.00×4 at
+  blind rubric 2/5; bar ±1.0 pp). The long-open repo-README anchor is DONE — the claim class
+  enters the confirmatory set at the extreme low end, consistent with the shipped-artifact pattern
+  (exploratory audit #3, confirmatory audit #12): when data + config ship inside the repo, a decade
+  of library releases changes nothing the printed digits can see. Tracker n=14/30; exploratory rho
+  over 32 printed 2-dp points = 0.667 (p=3e-05, no confirmatory weight). Session mechanics: fresh
+  shallow clone as ground truth at HEAD `a6267d2`; no git push credentials (as runs #2–#13) so
+  publication via the web editor's CodeMirror document API with doc-vs-source equality asserted
+  before each commit (run #13 recipe worked unchanged); Copilot autofill cleared on the commit
+  description and readback-verified (recurring class); the plain `xgboost` wheel blew the sandbox
+  disk (bundled CUDA/NCCL) — `xgboost-cpu` used instead, noted for future runs; the whole audit fit
+  in single 45-s calls (2-round GBT on 6.5k rows is trivial). Priorities now: a score-0/1 anchor
+  outside the certified-values class, score-4/5 density, and the blocked audit #4 SGD target in a
+  cap-free environment. Program 1 untouched; its audit queue (B6/B11 next, qrc_law.png regeneration,
+  B5 regression cells) unchanged.
