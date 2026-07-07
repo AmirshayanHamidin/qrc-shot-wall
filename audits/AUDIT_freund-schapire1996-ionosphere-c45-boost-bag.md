@@ -69,4 +69,35 @@ Per master seed m in {0, 1, 2} (seed 0 primary for the verdict; drift for the tr
 
 ## Results
 
-(EMPTY at pre-registration — filled only by the results commit.)
+Data check (re-asserted inside every runner invocation): `ionosphere.data` md5 `85649e5fb5b15fb9dab726c400be61fe`, 351 rows, {g: 225, b: 126} — identical to the pre-commit counting checks. Environment: scikit-learn 1.7.2, numpy 2.2.6, CPU only. Execution note: chunked one (column x master-seed x run-subset) per tool call under the 45 s cap; chunk log in `audits/fs96_iono_raw.json`.
+
+Primary configurations (library defaults per the pinned plan, master seed 0):
+
+| Row | Published | Reproduced | Drift |
+|---|---|---|---|
+| C4.5 alone | 8.9 | **12.251** | +3.351 pp |
+| boosting C4.5 | 5.8 | **6.439** | +0.639 pp |
+| bagging C4.5 | 6.2 | **7.721** | +1.521 pp |
+
+Master seeds 1 and 2: tree 11.567 / 11.852; boost 6.838 / 6.667; bag 7.407 / 7.493. **Standardized drift for the tracker (3-seed mean |reproduced − published|): C4.5-alone 2.99 pp, boost 0.85 pp, bag 1.34 pp.**
+
+Labelled sensitivity checks (master seed 0 only, never the verdict):
+
+- (a) paper-faithful routes: AdaBoost.M1-with-resampling boost row **6.239** (0.20 pp closer to the published 5.8 than the library SAMME route); hard-simple-voting bag row **7.692** (−0.03 pp vs soft vote — voting discretion inert here).
+- (b) pure-default base tree (gini, min_samples_leaf=1): tree row **12.308** (+0.06 — the single-tree row is mapping-insensitive); bag row **8.405** (+0.68); boost row **11.595** (+5.16 pp — the committee degenerates, same mechanism as audit #9's glass finding: unpruned perfect-fit base trees trigger sklearn's perfect-fit early stop and the boost collapses toward the single tree).
+- (c) unstratified KFold(shuffle=True): tree **12.336**, boost **7.066** (+0.63), bag **7.664** (−0.06) — stratification discretion worth ≤ 0.6 pp on this 64/36 two-class data.
+
+## Verdict
+
+**CONFIRMED.** All three rows land within the pre-registered ±4.0 pp at master seed 0 (+3.351 / +0.639 / +1.521), robust across all 3 master seeds (worst case: tree +3.351, boost +1.038, bag +1.521). The paper's ensemble-beats-tree ordering reproduces qualitatively (12.25 → 6.44 / 7.72 vs published 8.9 → 5.8 / 6.2) and boost-beats-bag also reproduces (observation only, not scored — the bar cannot certify orderings, as recorded at pre-registration).
+
+Secondary pre-registered prediction: **HELD.** The C4.5-alone row's 3-seed drift (2.99 pp) exceeds 1.96 pp (the largest score-2 drift in the confirmatory set) — the second score-4+ audit in a row to clear the score-2 ceiling (after audit #11's glass 2.43), though the boost (0.85) and bag (1.34) rows land below it.
+
+## Honesty section
+
+1. **Two-commit caveat (ordering):** this scheduled session had no push credentials, so the pre-registration commit (`d27e56a`, rubric + bars + EMPTY results) exists in the session-local clone BEFORE any reproduction code ran, but both commits land on the remote in the same session batch — the audit #2 precedent, with prereg provably first in the commit graph. The remote-first web-commit discipline of audits #8–#15 could not be followed.
+2. The largest drift sits on the PLAIN C4.5 row, not the ensembles: pruned-C4.5-vs-unpruned-CART costs ~3.4 pp on ionosphere, while boosting/bagging wash most of that gap out (0.6–1.5 pp). Default attribution: implementation differences (pessimistic pruning and gain ratio inexpressible in sklearn), not an error in the 1996 table. The published numbers are not challenged; their library-defaults portability is what the drift prices.
+3. The CONFIRMED verdict is mapping-conditional for the boost row: sensitivity (b) shows a pure-default base tree degenerates the boost committee (+5.16 pp, would still be inside the ±4.0 bar at 11.595 vs 5.8? — NO: |11.595 − 5.8| = 5.795 pp EXCEEDS the bar). A reproducer taking the naive AdaBoostClassifier-around-default-tree route lands OUTSIDE the bar; the pinned C4.5 mapping (entropy, min_samples_leaf=2) is load-bearing, exactly as in audit #9. The tree and bag rows are robust to the mapping (≤ 0.7 pp).
+4. The three (score, drift) points share the paper, dataset, protocol, and CV harness, so they are not independent — same caveat as every prior multi-row audit; cross-audit they share the table and harness with audits #9/#11 (glass/iris) and the dataset with audits #1/#8 lineage (ionosphere).
+5. The published numbers are means over the authors' own 100 randomized 1996 runs with an unlogged RNG; our 3 × (10-run mean) band is the closest achievable comparison. One pooled test case = 0.285 pp; rows are printed to one decimal (±0.05 pp rounding), immaterial at this bar.
+6. The seed-0 tree row uses 84% of its bar — the verdict does not hinge on seed choice (drift shrinks at seeds 1–2), but it is the closest primary-configuration call since audit #5.
