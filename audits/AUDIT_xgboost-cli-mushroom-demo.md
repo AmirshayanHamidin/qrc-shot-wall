@@ -1,7 +1,6 @@
 # AUDIT — dmlc/xgboost CLI demo README (pinned v1.7.6): mushroom binary classification, printed eval log (4 numbers)
 
-**Program 2b confirmatory audit #15 · 2026-07-07 · status at this commit: PRE-REGISTERED, results EMPTY**
-Two-commit rule: this file is web-committed to the remote BEFORE any reproduction code exists.
+**Program 2b confirmatory audit #15 · 2026-07-07 · status: RESULTS PUBLISHED (prereg commit `f85c810`, byte-verified on the remote via git fetch + md5 before any reproduction code existed)**
 
 ## Claim
 
@@ -76,4 +75,51 @@ Scored from the README + shipped `mushroom.conf` + xgboost 3.x parameter docs on
 
 ## Results
 
-*(empty at pre-registration commit)*
+**Verdict: CONFIRMED** — all four numbers reproduce the published log **exactly, to every printed
+digit**, at every master seed (bit-identical across seeds 0/1/2, as pre-registered), trivially
+inside the ±1.0 pp bar.
+
+| number | published (pp) | reproduced (pp, all 3 seeds) | drift (pp, 3-seed mean) |
+|---|---|---|---|
+| test, round 0 | 1.6139 | 1.613904 (= 26/1611) | 0.0000 |
+| test, round 1 | 0.0000 | 0.000000 | 0.0000 |
+| train, round 0 | 1.4433 | 1.443268 (= 94/6513) | 0.0000 |
+| train, round 1 | 0.1228 | 0.122831 (= 8/6513) | 0.0000 |
+
+(Full-precision drifts are rounding residue of the README's own 6-dp printing, ≤ 4.5e-05 pp;
+under the tracker's printed-2-dp convention all four points enter as **(2, 0.00)**.)
+
+- **Secondary prediction HELD:** all four drifts ≤ 1.96 pp.
+- **Mechanism table (pre-registered): null result.** All four cells of
+  {`tree_method`: hist-default vs `exact`} × {`base_score`: 3.x auto-estimate vs pinned 0.5}
+  print the identical four numbers. Neither scored discretion item manifests on this data:
+  mushroom is nearly separable, the all-binary one-hot features bin losslessly at `max_bin=256`
+  (hist ≡ exact here), and at eta=1.0 the round-0 leaf values dominate any base-score shift at
+  the 0.5 decision threshold.
+- Raw per-seed values and the mechanism grid: `audits/xgb_mushroom_raw.json`; runner:
+  `audits/audit_xgb_mushroom_run.py`.
+
+## Honesty section
+
+1. `eval_metric="error"` was set explicitly. The modern default for `binary:logistic` is
+   logloss (changed since the CLI era, whose default eval was error). This is not counted as
+   scored discretion: PREREG_DRIFT.md defines drift *on the paper's own metric*, and error is
+   the metric the README prints — the setting selects the measurand, it cannot move the model.
+2. The LIBSVM files are parsed manually to CSR so absent entries stay *missing* (the CLI
+   DMatrix semantics); the deprecated `DMatrix("file?format=libsvm")` URI path was avoided.
+   Feature count inferred as max index + 1 = 127 across both files.
+3. Data files were downloaded (md5-pinned to the v1.7.6 tag) BEFORE the pre-registration
+   commit as a feasibility probe; row counts appeared in the prereg. No model was trained
+   before the prereg was byte-verified on the remote.
+4. Four points at (2, 0.00) from one audit share one environment and are correlated — same
+   caveat as every multi-row audit in the set. They also sit at the score-2 low end, echoing
+   the library-shipped-artifact pattern (exploratory audit #3, confirmatory audit #12): claims
+   whose data + config ship inside the repo reproduce near-exactly even a decade later.
+5. Installed `xgboost-cpu` 3.2.0 (the plain `xgboost` wheel bundles CUDA/NCCL and exceeded
+   the sandbox disk); CPU-only either way. `nthread=1` throughout.
+6. The mechanism table's null result does NOT retroactively lower the blind rubric score:
+   scores are pre-run by construction and never revised after data. If anything the null
+   illustrates the rubric's role as an *upper bound* on discretion that can fire.
+7. The verdict is a number, not an endorsement: it says the v1.7.6 demo log is exactly
+   recoverable from the shipped artifacts under xgboost 3.2.0 defaults on this dataset —
+   nothing more.
