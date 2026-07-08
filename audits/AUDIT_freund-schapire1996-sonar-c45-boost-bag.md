@@ -69,5 +69,40 @@ Per master seed m in {0, 1, 2} (seed 0 primary for the verdict; drift for the tr
 
 ## Results
 
-*(empty at pre-registration — to be filled only after the runs complete)*
+Data check (re-asserted inside every runner invocation): OpenML data_id=40, X md5 `e5f03fedbe063c500c22a7be8c4fe878`, 208 rows, {Mine: 111, Rock: 97} — identical to the pre-commit counting checks. Environment: scikit-learn 1.7.2, numpy 2.2.6, scipy 1.15.3, CPU only. Execution note: chunked one (column × master-seed × run-subset) per tool call under the 45 s cap; chunk log in `audits/fs96_sonar_raw.json`.
 
+Primary configurations (library defaults per the pinned plan, master seed 0):
+
+| Row | Published | Reproduced | Drift |
+|---|---|---|---|
+| C4.5 alone | 28.9 | **26.731** | −2.169 pp |
+| boosting C4.5 | 19.0 | **17.356** | −1.644 pp |
+| bagging C4.5 | 24.3 | **17.740** | **−6.560 pp** |
+
+Seeds 1 / 2 (row values): tree 25.144 / 24.760; boost 18.269 / 18.413; bag 16.779 / 17.788. **Program 2b standardized drift (3-seed mean |reproduced − published|): tree 3.36 pp, boost 0.99 pp, bag 6.86 pp.**
+
+**VERDICT: DISCREPANCY.** The bagging row lands at −6.560 pp, outside the pre-registered ±4.0 pp bar at seed 0 (and outside on all three master seeds: −6.56 / −7.52 / −6.51); the C4.5-alone and boosting rows are in-bar. Per the pre-registered rule (any row exceeding ⇒ DISCREPANCY), the bar is not moved. This is the program's first DISCREPANCY at rubric score 4.
+
+Secondary pre-registered prediction: **HELD** — two of the three 3-seed drifts exceed the 1.96 pp score-2 ceiling (tree 3.36, bag 6.86).
+
+Observation (never scored, per prereg): the paper's boost-beats-bag gap (5.3 pp) collapses to 0.4 pp in reproduction (17.36 vs 17.74) — modern bagging catches up to boosting on this dataset; the boost-beats-tree ordering is preserved.
+
+Labelled sensitivity checks (master seed 0, 10 runs each; reported, never the verdict):
+
+| Route | tree | boost | bag |
+|---|---|---|---|
+| primary (pinned mapping) | 26.731 | 17.356 | 17.740 |
+| (a) paper-faithful: M1-resample boost / hard-vote bag | — | 13.317 | 16.827 |
+| (b) pure-default base tree (gini, leaf=1) | 27.548 | 27.260 | 19.856 |
+| (c) unstratified KFold | 24.856 | 17.692 | 18.029 |
+
+## Honesty section
+
+1. **Verdicts are numbers, never accusations.** The 1996 claim itself is not challenged; per protocol, irreproducibility defaults to environment/implementation differences. The candidate mechanism is the C4.5-pruning inexpressibility flagged by rubric point 2: bagging *pruned* C4.5 trees (1996) reduced sonar error modestly (28.9 → 24.3), while bagging modern unpruned trees behaves like a proto-random-forest (→ 17.7). Anchor consistent with this reading: Breiman-2001 Forest-RI on the same dataset reproduced at 18.19 / 17.86 (audit #1) — modern bagged/randomized tree committees on sonar sit at 16–18 %, right where this reproduction lands.
+2. **The discrepancy is not a knob artifact of our pinning.** No pre-registered sensitivity route reaches the bar: hard simple voting (the paper's combiner) moves the bag row AWAY (16.83), the pure-default base tree gets closest but is still outside (19.86, −4.44 pp), unstratified folds 18.03. Every route reproduces the qualitative finding that modern bagging on sonar lands in the 16–20 % band, ≥4.4 pp below the published 24.3.
+3. The pure-default-base-tree boosting degeneration replicates on a third dataset (27.26, +8.26 pp vs in-bar 17.36 with the pinned mapping) — the audits #9/#16 mechanism; the naive route would flip the boost row's verdict. Bagging is far less sensitive to that same choice (2.1 pp), consistent with audit #11's insulation finding.
+4. The C4.5-alone row is in-bar at the verdict-governing seed 0 (−2.17 pp) but its seed-2 value (24.760, −4.14 pp) sits just outside; recorded here because a different (not pre-registered) seed convention could have flipped that row. The bag row has no such fragility — all seeds are far outside.
+5. Paper-faithful M1-resample boosting lands at 13.32 %, below both the published 19.0 and the sklearn route 17.36 — boosting sonar is robustly *better* than published under every route tried; only bagging disagrees with its published value.
+6. Primary-source caveat: the paper PDF was re-fetched this session through a text-extraction pipeline, so its byte-level md5 could not be re-asserted (audits #9/#11/#16 recorded `cdbaa305c6cf034dea09bb268e4a5ce2`); the Table 2 sonar row was transcribed from this session's extracted text and matches audit #16's session record exactly.
+7. Two-commit rule: the pre-registration commit was web-committed to the remote and verified byte-identical modulo GitHub's known appended trailing newline (remote = local + `\n`, 10110 vs 10109 bytes — the audit #1 precedent) BEFORE any reproduction code existed in this session.
+8. The bag sensitivity hard-vote route breaks 50/50 ties toward class 0 (Rock); ties are possible with 100 voters but rare, and the route is reported only as a sensitivity.
