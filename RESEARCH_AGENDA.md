@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-07, Program 2b run #15 scheduled session)
+## State (updated 2026-07-09, Program 2b run #17 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -369,6 +369,20 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       1996 value priced bagging of *pruned* C4.5 — the rubric-point-2 inexpressibility doing real work.
       Default-base-tree boost degeneration replicates on a THIRD dataset (+8.26 pp, would flip that row).
 
+- [x] **2026-07-09 — Breiman (2001) Table 2, glass row, Forest-RI Single Input + Selection
+      (Program 2b confirmatory audit #18)** (`audits/AUDIT_breiman2001-rf-glass.md` +
+      `audits/audit_rf_glass_run.py` + `audits/rf_glass_raw.json`). Two-commit rule: prereg `80faaa4`
+      web-committed REMOTE-FIRST and raw-verified byte-identical BEFORE any reproduction code ran;
+      results `bfdab0d`, runner+raw `1f4332a`. The run #16 tracker's named candidate: extends the
+      within-paper cross-dataset ladder (ionosphere / sonar / glass) at score 2/5; first Forest-RI
+      point on a multi-class row. Published 21.2 / 20.6 -> reproduced **22.591 / 22.500** (seed 0;
+      pre-registered bar ±2.5 pp) — **CONFIRMED** on both columns. Standardized drift (3-seed):
+      **0.83 / 1.81 pp**; secondary prediction HELD (both ≤ the 1.96 pp score-2 ceiling; Selection
+      uses 92% of it, now the second-largest score-2 drift). Honest notes: the published
+      Selection < Single-Input ordering does NOT reproduce (OOB selection on 192 training cases adds
+      variance, not value — it picked F=1 in only 54–61% of iterations); drift direction unfavorable
+      at all 3 seeds on both columns.
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -392,7 +406,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 16/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 17/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -406,10 +420,11 @@ AG News, h=10 / h=10 bigram], (3, 0.95), (3, 1.37) [Breiman-1996 Bagging Predict
 e_S / e_B], (2, 0.00), (2, 0.00), (2, 0.00), (2, 0.00) [xgboost v1.7.6 CLI mushroom demo
 README, test r0/r1 + train r0/r1], (4, 2.99), (4, 0.85), (4, 1.34) [Freund-Schapire 1996
 ionosphere, C4.5 alone / boost / bag], (4, 3.36), (4, 0.99), (4, 6.86) [Freund-Schapire 1996
-sonar, C4.5 alone / boost / bag].
-Running rho (EXPLORATORY until n=30): spearmanr over the 38 points as printed above (2-dp) =
-**0.706, p = 7.2e-07** — firmed from 0.686 as three more score-4 points join, among them the
-program's first score-4 DISCREPANCY (bag 6.86 pp); no confirmatory weight. (Correction, run #11 second-instance addendum: first logged as 0.660/0.0005, computed from
+sonar, C4.5 alone / boost / bag], (2, 0.83), (2, 1.81) [Breiman-2001 glass Forest-RI,
+Single Input / Selection].
+Running rho (EXPLORATORY until n=30): spearmanr over the 40 points as printed above (2-dp) =
+**0.666, p = 2.7e-06** — softened from 0.706 as two mid-drift score-2 points join (glass Selection
+1.81 pp sits just under the score-2 ceiling); no confirmatory weight. (Correction, run #11 second-instance addendum: first logged as 0.660/0.0005, computed from
 the three new points' full-precision drifts; runs #1–#10's logged rho values reproduce from the
 printed 2-dp list, so the printed-list convention is pinned from here on.) Family
 coverage now includes clustering (a run #10 priority); the library-docs claim class enters the
@@ -419,8 +434,8 @@ confirmatory entries, all at the drift floor). Priorities: a score-0/1 anchor ou
 certified-values class, further score-4/5 density (now 11 points at scores 4–5 vs 18 at score 2;
 audit #17 added three and score 4 now carries the program's first high-score DISCREPANCY), and the
 blocked audit #4 SGD target in a cap-free environment. Named candidates for next run: Breiman-2001
-Table 2 glass or diabetes rows (extends the within-paper cross-dataset ladder at score ~2), or the
-LFW eigenfaces docs table (open queue item). Decade breadth 1967–2016 (audit #15
+Table 2 diabetes row (completes the within-paper cross-dataset ladder at score ~2; glass DONE
+audit #18), or the LFW eigenfaces docs table (open queue item). Decade breadth 1967–2016 (audit #15
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
@@ -816,3 +831,24 @@ adds a 2014-era library-demo claim reproduced across a decade of releases).
   unchanged.
 
 - 2026-07-07 (run #16 SECOND INSTANCE, same-day addendum) — Duplicate scheduled session (second occurrence; first was run #11). This instance independently selected the same named target, scored the same blind rubric (4/4/4), and pinned a substantively identical reproduction plan; its remote-first prereg web-commit collided with `b2a5106` ("a file with the same name already exists") and it STOOD DOWN — no double-registration; audit file, raw JSON and tracker untouched by this instance. Verification banked: (a) independent rerun in a fresh sandbox (UCI raw `sonar.all-data`, md5 `77f5ca97c7b87b3edd3639a4ebc24e5c`, a different artifact than the primary's OpenML matrix; same sklearn 1.7.2/numpy 2.2.6) matches `audits/fs96_sonar_raw.json` on ALL 90 primary-configuration cells bit-identically — the audit #17 DISCREPANCY verdict (bag −6.56 pp, all 3 seeds out-of-bar) is independently reproduced end-to-end, the strongest cross-instance replication so far (run #11: 54 cells); (b) the paper artifact's byte-level md5 WAS re-asserted this session (219704 B, `cdbaa305c6cf034dea09bb268e4a5ce2`, byte-identical to audits #9/#11/#16), closing the gap noted in the primary's prereg and run #16 log entry. Convergent blind pre-registration by two instances is itself evidence the discretion rubric is mechanical. Guardrail for future scheduled runs: BEFORE scoring a rubric, check the commits page for a same-day prereg of the same target; if present, stand down to verification mode immediately (rerun the pinned plan, compare raw cells, log an addendum like this one; touch no files of record).
+
+- 2026-07-09 (scheduled session, Program 2b run #17) — Audit #18 DONE: Breiman-2001 Table 2 glass
+  row, Forest-RI Single Input + Selection, blind rubric 2/5 (the run #16 named candidate).
+  **CONFIRMED** — 22.591/22.500 vs 21.2/20.6 (seed 0, bar ±2.5 pp); 3-seed drifts 0.83/1.81 pp;
+  secondary HELD twice. Honest finding: the paper's Selection < Single-Input ordering does not
+  reproduce — forest-level OOB selection on 192 training cases adds variance, not value. Tracker
+  n=17/30; exploratory rho over 40 printed 2-dp points = 0.666 (p=2.7e-06, no confirmatory weight).
+  Session mechanics: fresh shallow clone at HEAD `af410e1`, freshness confirmed against the
+  commits API; paper PDF re-fetched, glass row transcribed (Adaboost 22.0 | Selection 20.6 |
+  Single Input 21.2 | One Tree 36.9); prereg web-committed REMOTE-FIRST (`80faaa4`) and
+  raw-verified byte-identical before any reproduction code ran; results `bfdab0d`; runner + raw
+  JSON published via the repo upload page (`1f4332a`) — first use of direct multi-file upload;
+  one earlier upload submit silently no-opped (redirected to the profile page, message field had
+  not registered) and was caught by the commits-API SHA check and retried — verify uploads by SHA,
+  not by redirect. Editor incident, same class as run #11: a first results paste APPENDED instead
+  of replacing (Ctrl-A had not reached the CodeMirror editor); caught in-editor by the duplicated
+  header before commit, fixed by an in-editor select-all + re-paste, and the committed file
+  raw-verified. Copilot commit-dialog autofill replaced (recurring class). Note: the prereg header
+  mislabels this session "run #16" — flagged in the audit's honesty section item 5; the registered
+  file was not edited. Program 1 untouched; its audit queue (B6/B11 re-audit, qrc_law.png
+  regeneration, B5 regression cells) unchanged.
