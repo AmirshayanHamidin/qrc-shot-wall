@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-10, Program 2b run #21 scheduled session)
+## State (updated 2026-07-10, Program 2b run #22 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -482,6 +482,24 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       (22.116) than the sklearn route. Fourth audit under the planner/executor split (54 chunks
       delegated; planner re-aggregated and duplicate-checked all parts before publishing).
 
+- [x] **2026-07-10 — Breiman (1996) "Bagging Predictors", Table 2, diabetes rows e_S + e_B
+      (Program 2b confirmatory audit #24)** (`audits/AUDIT_breiman1996-bagging-cart-diabetes.md` +
+      `audits/audit_breiman96_bag_diabetes_run.py` + `audits/breiman96_bag_diabetes_raw.json`).
+      Two-commit rule: prereg `564d3d2` web-committed REMOTE-FIRST and md5-verified byte-identical
+      (6636 B, no trailing-newline delta) BEFORE any reproduction code ran; results `a84a656`.
+      The run-#21 agenda's first named candidate: two more score-3 points via an audit-#14/#22
+      dataset swap — the Breiman-1996 CART-bagging ladder's third dataset. Blind rubric **3/5 both
+      rows**. Published 25.3 / 23.9 (% misclassification, 100× random 90/10 splits) -> reproduced
+      **25.805 / 23.831** (seed 0; pre-registered bar ±2.5 pp, the family's tightest) — **CONFIRMED**
+      on both rows, all 3 master seeds. Standardized drift (3-seed): **0.64 / 0.28 pp**; per-seed
+      empirical SEs (0.46–0.54) bracket the published 0.4/0.4 from just above. The paper's smallest
+      decrease (6%) reproduces as 6.1–7.6%, consistent with Breiman's near-floor conjecture.
+      Secondary prediction FAILED again at score 3 (seventh failure in ten audits carrying it).
+      Wrong-version trap documented: the Berkeley TR-421 PDF reports a different diabetes protocol
+      (1036 duplicated cases, e_S 23.4 / e_B 18.8) — the Springer journal version was pinned in the
+      prereg before scoring. Fifth audit under the planner/executor split: all 51 chunks delegated
+      (zero retries); planner re-ran one chunk bit-identical and re-verified all 300 raw rows.
+
 ## Program 2b — pre-registered drift study (discretion predicts drift)
 
 Registered 2026-07-05 in `audits/PREREG_DRIFT.md` (commit `ad8aa31`) BEFORE any confirmatory audit:
@@ -489,7 +507,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 22/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 23/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -508,9 +526,12 @@ Single Input / Selection], (2, 0.46), (2, 0.33) [Breiman-2001 diabetes Forest-RI
 Selection], (1, 1.09), (1, 1.03) [sklearn-1.9.0 docs LFW eigenfaces, accuracy / weighted-F1], (0, 0.00),
 (0, 0.00) [sklearn-1.7.2 docs fully-seeded ensemble doctests, GBC hastie test acc / AdaBoost
 train acc], (3, 0.32), (3, 0.39) [Breiman-1996 Bagging Predictors ionosphere, e_S / e_B],
-(4, 2.61), (4, 0.88), (4, 0.70) [Freund-Schapire 1996 vehicle, C4.5 alone / boost / bag].
-Running rho (EXPLORATORY until n=30): spearmanr over the 51 points as printed above (2-dp) =
-**0.607, p = 2.4e-06** (audit #23; the 48-point value 0.604/5.5e-06 was reproduced from the printed
+(4, 2.61), (4, 0.88), (4, 0.70) [Freund-Schapire 1996 vehicle, C4.5 alone / boost / bag],
+(3, 0.64), (3, 0.28) [Breiman-1996 Bagging Predictors diabetes, e_S / e_B].
+Running rho (EXPLORATORY until n=30): spearmanr over the 53 points as printed above (2-dp) =
+**0.604, p = 1.7e-06** (audit #24; the 51-point value 0.607/2.4e-06 was reproduced from the
+printed list before appending — two sub-median score-3 drifts nudge rho down 0.003 while
+sharpening significance). Previous note (audit #23, superseded): rho 0.607, p = 2.4e-06 ( the 48-point value 0.604/5.5e-06 was reproduced from the printed
 list before appending — three new score-4 points spanning both drift regimes leave rho essentially
 unchanged while sharpening significance). Previous note (audit #22, superseded): rho 0.604,
 p = 5.5e-06 — the 46-point value 0.614/5.6e-06 was reproduced from the printed
@@ -534,9 +555,10 @@ blocked audit #4 SGD target in a cap-free environment. The score-0 anchor outsid
 sklearn-1.7.2 ensemble doctest rows, both 0.00 pp, the program's first version-gap-free target).
 Score-3 density opened (audit #22: two Breiman-1996 ionosphere points; score 3 now at 9 points).
 Score-4/5 density extended (audit #23: three FS96 vehicle points; 15 points at 4–5 vs 18 at
-score 2). Named candidates for next run: further score-3 density via the remaining Breiman-1996
-Table 2 rows (breast cancer / diabetes / waveform — same pinned convention, two runners already
-committed), the last clean FS96 no-test-set candidate row (segmentation, 7-class — verify its
+score 2). Score-3 density extended again (audit #24: two Breiman-1996 diabetes points at the
+drift floor; score 3 now at 11 points). Named candidates for next run: further score-3 density via the remaining Breiman-1996
+Table 2 rows (breast cancer / waveform — same pinned convention, three runners already
+committed; diabetes DONE audit #24), the last clean FS96 no-test-set candidate row (segmentation, 7-class — verify its
 Table 1 profile before scoring), or the blocked audit #4 SGD target in a cap-free environment. LFW DONE audit #20; diabetes DONE audit #19 — the Breiman-2001 Forest-RI ladder is complete. Decade breadth 1967–2016 (audit #15
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
@@ -681,6 +703,24 @@ adds a 2014-era library-demo claim reproduced across a decade of releases).
   `.cm-content.cmTile.view` CodeMirror path from run #20's note still works for web edits.
   Freshness verified against the commits page at session start (HEAD e08fee3). Program 1
   untouched; its audit queue unchanged.
+
+- 2026-07-10 (scheduled session, Program 2b run #22) — Twenty-third confirmatory audit landed:
+  Breiman (1996) Table 2 diabetes rows e_S/e_B (see Completed audits and
+  `audits/AUDIT_breiman1996-bagging-cart-diabetes.md`) — **CONFIRMED 2/2** at rubric 3/3, drifts
+  0.64/0.28 pp; tracker n=23/30, exploratory rho 0.604 (p=1.7e-06). The Breiman-1996 CART-bagging
+  ladder now spans glass / ionosphere / diabetes at drifts 0.95–1.37 / 0.32–0.39 / 0.28–0.64 pp —
+  systematically more portable than FS96's C4.5 ensembles at equal-or-higher rubric scores.
+  Wrong-version trap caught before registration: the Berkeley TR-421 and Springer journal PDFs
+  disagree on this row's protocol AND numbers; the prereg pinned the journal version. Fifth audit
+  under the planner/executor split (51/51 chunks delegated, zero retries; one chunk independently
+  re-run bit-identical, all 300 raw rows re-verified). Session incidents: the home mount was 100%
+  full at start (sklearn installed to a /tmp target dir, same 1.7.2/2.2.6 versions); a stale
+  unreadable /tmp/diabetes.arff forced the runner's data path to /tmp/diabetes37.arff (md5 pin
+  unchanged); the outputs mount served a stale copy of an edited file once (rebuilt sandbox-local,
+  run-#21 incident class); GitHub's web commit appended a trailing newline to the raw JSON
+  (12202 vs 12201 B, JSON-identical — run-#1/#10 incident class). Commit messages DOM-verified
+  before committing (Copilot autofill active). Freshness verified against the commits API at
+  session start (HEAD 797172e). Program 1 untouched; its audit queue unchanged.
 
 ## Pending push
 
