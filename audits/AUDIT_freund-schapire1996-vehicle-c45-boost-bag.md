@@ -69,4 +69,38 @@ Per master seed m in {0, 1, 2} (seed 0 primary for the verdict; drift for the tr
 
 ## Results
 
-*(empty — to be filled by a separate results commit, per the two-commit rule)*
+Data check (re-asserted inside every runner invocation): OpenML data_id=54, X md5 `cfcd8d8b777b3dada6fcb4d2f4620951`, 846 rows, {van: 199, saab: 217, bus: 218, opel: 212} — identical to the pre-commit counting checks. Environment: scikit-learn 1.7.2, numpy 2.2.6, scipy 1.15.3, CPU only. Execution note: chunked (route × master-seed × run-subset) invocations under the 45 s cap; this session used the planner/executor split — chunk execution was delegated to a subagent running the committed script verbatim, and all 54 part files were re-aggregated, completeness-checked and duplicate-checked by the planning instance before this commit (per-run cells in `audits/fs96_vehicle_raw.json`).
+
+Primary configurations (library defaults per the pinned plan, master seed 0):
+
+| Row | Published | Reproduced | Drift |
+|---|---|---|---|
+| C4.5 alone | 29.9 | **27.258** | −2.642 pp |
+| boosting C4.5 | 22.6 | **23.274** | +0.674 pp |
+| bagging C4.5 | 26.1 | **25.449** | −0.651 pp |
+
+Seeds 1 / 2 (row values): tree 27.352 / 27.258; boost 23.369 / 23.783; bag 25.095 / 25.650. **Program 2b standardized drift (3-seed mean |reproduced − published|): tree 2.61 pp, boost 0.88 pp, bag 0.70 pp.**
+
+**VERDICT: CONFIRMED.** All three rows land inside the pre-registered ±4.0 pp bar at seed 0 (and on all three master seeds). The paper's full ordering tree > bag > boost reproduces (27.26 > 25.45 > 23.27 vs published 29.9 > 26.1 > 22.6) — reported as an observation only, per the pre-registration note that in-bar results did not guarantee it.
+
+Secondary pre-registered prediction: **HELD** — the tree row's 3-seed drift (2.61 pp) exceeds the 1.96 pp score-2 ceiling (boost 0.88 and bag 0.70 do not).
+
+Labelled sensitivity checks (master seed 0, 10 runs each; reported, never the verdict):
+
+| Route | tree | boost | bag |
+|---|---|---|---|
+| primary (pinned mapping) | 27.258 | 23.274 | 25.449 |
+| (a) paper-faithful: M1-resample boost / hard-vote bag | — | 22.116 | 25.142 |
+| (b) pure-default base tree (gini, leaf=1) | 29.019 | 29.291 | 25.142 |
+| (c) unstratified KFold | 27.317 | 24.054 | 24.917 |
+
+## Honesty section
+
+1. **The audit #17 bag mechanism did NOT repeat here.** On sonar, bagging modern unpruned trees landed 6.6 pp below the published value (the proto-random-forest reading); on vehicle the same pinned route lands 0.65 pp below published, comfortably in-bar. Consistent reading: vehicle's published bag gain was modest (29.9 → 26.1) and modern bagging delivers a similarly modest gain (27.26 → 25.45), whereas on sonar the 1996 committee under-performed what modern bagged trees achieve on that dataset. One audit cannot separate dataset-specific from protocol-specific explanations — recorded as an open contrast, not a conclusion.
+2. The pure-default-base-tree boosting degeneration replicates on a FOURTH dataset (29.291, +6.69 pp vs published, where the pinned mapping gives an in-bar 23.274) — the audits #9/#16/#17 mechanism again; the naive route would flip the boost row's verdict. Bagging is again far less sensitive to the same choice (0.3 pp from the primary route) — audit #11's insulation finding, third replication.
+3. The paper-faithful M1-resample boost route (22.116) lands closer to the published 22.6 than the primary sklearn SAMME route (23.274) — color for the "discretion TYPE" question raised at audit #20, but a sensitivity only, never scored. Caveat: this script's M1-resample convention (per-fold RandomState seeded fs; per-round tree seed fs*1000+t) was fixed in the pre-registered plan's spirit but implemented fresh this session; audit #9's M1 code was not re-executed, so cross-audit M1 comparability is approximate.
+4. The hard-vote bag sensitivity and the default-tree bag sensitivity coincidentally aggregate to the same 2-dp value (25.142 = 2127 pooled errors each over 10 runs); their per-run error counts differ (verified in the raw JSON) — noted so the coincidence is not misread as a copy-paste error. Hard-vote ties break toward the first class in sorted order (`bus`); ties are possible with 100 voters on 4 classes but rare.
+5. The tree row is in-bar on all seeds but carries the largest drift (2.61 pp) — the single-tree row is the most drift-prone C4.5 column in all three FS96 dataset audits (ionosphere 2.99, sonar 3.36, vehicle 2.61), consistent with the C4.5-pruning inexpressibility (rubric point 2) acting mainly on the unaggregated tree.
+6. Primary-source caveat: the paper PDF was re-fetched this session through a text-extraction pipeline, so its byte-level md5 could not be re-asserted (audits #9/#11/#16 recorded `cdbaa305c6cf034dea09bb268e4a5ce2`); the Table 2 vehicle row was transcribed directly from this session's extracted text.
+7. Two-commit rule: the pre-registration commit (`aa18d35`) was web-committed and verified byte-identical to the local file (md5 `06cf76ac2da871d449327ea93902787a`, 10354 bytes remote = local exactly, no trailing-newline delta this time) BEFORE any reproduction code existed in this session. Disclosed: GitHub's commit-message autofill prepended "Add audit for Freund & Schapire" to the intended prereg message — cosmetic only; the committed bytes are governed by the md5 verification.
+8. Planner/executor split (fourth audit under the program's efficiency rule): target choice, rubric, pre-registration, aggregation, verdict and this section are the planning instance's; the subagent only executed the committed script in pinned chunks (54 part files, no errors, no retries). Their errors would be ours once pushed — hence the independent re-aggregation and the per-run duplicate check before this commit.
