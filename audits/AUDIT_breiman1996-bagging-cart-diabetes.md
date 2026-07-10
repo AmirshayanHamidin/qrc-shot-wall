@@ -1,8 +1,9 @@
 # AUDIT: Breiman (1996) "Bagging Predictors", Table 2, diabetes rows — e_S and e_B
 ## Program 2b confirmatory audit #24 — PRE-REGISTRATION FIRST, per audits/PREREG_DRIFT.md
 
-**Status: PRE-REGISTERED, results pending.** This file is committed with an EMPTY results
-section BEFORE any reproduction code runs (two-commit rule + run #2 guardrail).
+**Status: COMPLETE — verdict CONFIRMED on both rows.** Pre-registration commit `564d3d2`
+landed on the remote (verified byte-identical, md5 8e9c999e, 6636 B) BEFORE any reproduction
+code ran; results below were added in a separate commit (two-commit rule + run #2 guardrail).
 
 ## Claim
 
@@ -94,8 +95,55 @@ Scored from the paper + scikit-learn 1.7.2 docs only. Same discretion profile as
 
 ## Results
 
-(EMPTY at pre-registration — to be filled in a separate commit after the runs.)
+Published (Table 2) vs reproduced (100-iteration means, per master seed):
+
+| Row | Published | seed 0 | seed 1 | seed 2 | 3-seed drift (pp) | bar | verdict |
+|---|---|---|---|---|---|---|---|
+| A: e_S single CV-pruned tree | 25.3 | 25.805 | 25.974 | 26.026 | **0.64** | ±2.5 | **CONFIRMED** |
+| B: e_B bagged 50 trees | 23.9 | 23.831 | 24.403 | 24.182 | **0.28** | ±2.5 | **CONFIRMED** |
+
+- All 3 master seeds inside the pre-registered bar on both rows; seed-0 (primary) drifts
+  +0.51 / −0.07 pp. Largest single-seed excursion: seed-2 e_S at +0.73 pp (29% of the bar).
+- Per-seed empirical SEs over the 100 iterations: 0.46–0.49 (e_S), 0.43–0.54 (e_B) —
+  bracketing the published 0.4 / 0.4 (Table 3) from just above: the reproduction's
+  iteration noise is consistent with the paper's, as on glass (#14) and ionosphere (#22).
+- The published bagging improvement — 6%, the paper's smallest, attributed by Breiman to
+  bagging "pushing close to the minimal attainable error rate" — reproduces as 6.1–7.6%
+  across seeds; the e_B < e_S ordering holds at every seed. The reproduced e_B (23.8–24.4)
+  is consistent with the near-floor conjecture (the paper cites 22.3% as the best of 22
+  classifiers on this data).
+- **Secondary prediction FAILED** (reported, bar untouched): both score-3 drifts sit well
+  below the 1.96 pp score-2 ceiling — the seventh failure of the mid/high-score secondary
+  in ten audits carrying it.
+- Standardized drift points for the Program 2b tracker: **(3, 0.64), (3, 0.28)** → n = 23/30.
+- Environment: Python 3.10.12, scikit-learn 1.7.2, numpy 2.2.6, CPU sandbox; runner
+  `audits/audit_breiman96_bag_diabetes_run.py`, per-seed raw cells in
+  `audits/breiman96_bag_diabetes_raw.json`.
 
 ## Honesty section
 
-(EMPTY at pre-registration — to be filled with the results commit.)
+1. **Wrong-version trap (pre-run, disclosed in the prereg):** the widely mirrored Berkeley
+   TR-421 PDF reports a DIFFERENT diabetes experiment (cases duplicated to 1036, 250-case
+   test set, e_S 23.4 / e_B 18.8). The prereg pinned the Springer journal version (768 raw
+   cases, 90/10 splits, 25.3 / 23.9) before scoring; mixing the two versions would have
+   produced a spurious ~2 pp "drift" on Row A and ~5 pp on Row B.
+2. **Data provenance:** the original UCI Pima entry is withdrawn; the OpenML id 37 ARFF is
+   used under audit #19's md5 pin (3cbaa3e54586aa88cf6aacb4033e4470), verified at download
+   and asserted at every load. A stale, unreadable `/tmp/diabetes.arff` left by an unknown
+   earlier process squatted on the conventional path, so this runner's pinned path is
+   `/tmp/diabetes37.arff` — a cosmetic path difference; the md5 governs identity.
+3. **Same-dataset overlap:** diabetes now contributes points via two papers (Breiman-2001
+   audit #19, this audit), as glass and ionosphere already do; non-independence across
+   shared datasets remains a standing scope caveat for the n=30 test.
+4. **Systematic direction:** e_S drifts upward at all 3 seeds (+0.51/+0.67/+0.73) — the
+   same small-systematic-offset class audit #14 noted on glass; e_B is centered
+   (−0.07/+0.50/+0.28). A modern-CART-vs-1996-CART pruning difference plausibly costs the
+   single tree a fraction of a point that bagging then washes out.
+5. **Planner/executor split (fifth audit under it):** all 51 chunk runs were delegated to a
+   subordinate executor (zero retries, zero gaps); the auditing session independently
+   re-ran chunk m1[42,48) (bit-identical md5 81a4ff7c), re-verified the data md5 inside all
+   51 chunk files, and revalidated coverage and lengths of all 300 raw rows before
+   publishing.
+6. **Environment incident (pre-run, outcome-independent):** the session home mount was 100%
+   full at start; scikit-learn was installed to a /tmp target directory instead. Versions
+   are identical to every prior audit in the program (sklearn 1.7.2, numpy 2.2.6).
