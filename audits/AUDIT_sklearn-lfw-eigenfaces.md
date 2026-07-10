@@ -46,8 +46,27 @@ Secondary (non-verdict) prediction, logged for the discretion-drift hypothesis: 
 
 ## Results
 
-(EMPTY at pre-registration — filled only in the results commit.)
+Environment: sandboxed Ubuntu 22.04, CPU only, Python 3.10.12, scikit-learn 1.7.2, numpy 2.2.6, scipy 1.15.3, Pillow 12.2.0. Data: figshare file 5976015 downloaded this session in 2 resumable chunks (243,346,528 bytes), sha256 **verified** equal to sklearn's `FUNNELED_ARCHIVE` pin (`b47c8422…100a`). All pre-registered deterministic anchors matched EXACTLY: 1288 samples / 1850 features / 7 classes; 966 train / 322 test; per-class supports (13, 60, 27, 146, 25, 15, 36). Runner: `audits/audit_lfw_eigenfaces_run.py`; raw per-seed cells (accuracy, weighted F1, the 10 drawn (C, gamma) candidates, best params, full report text): `audits/lfw_eigenfaces_raw.json`.
+
+| Column | Published | Reproduced (master seed 0, primary) | Drift |
+|---|---|---|---|
+| Accuracy | 84 | **83.540** | −0.46 pp |
+| Weighted-avg F1 | 84 | **83.641** | −0.36 pp |
+
+Sensitivity seeds — accuracy: 86.646 (seed 1), 84.161 (seed 2); weighted F1: 86.651 (seed 1), 83.917 (seed 2).
+
+**Verdict: CONFIRMED** — both columns inside the pre-registered ±3.0 pp bar at seed 0. The bar was not moved.
+
+**Program 2b standardized drift (3-seed mean |reproduced − published|): accuracy 1.09 pp, weighted F1 1.03 pp.** With the blind rubric score of 1/5 recorded in the pre-registration commit `a81500f`, this audit contributes the points **(1, 1.09)** and **(1, 1.03)** to the confirmatory set (n=19/30).
+
+Secondary prediction **HELD** (both ≤ the 1.96 pp score-2 ceiling) — but these are now the largest score-≤1 drifts in the set by an order of magnitude (previous score-1 point: 0.00 pp), exactly the "live randomization" behaviour the pre-registration flagged. Effect on the exploratory correlation: rho moves 0.663 → 0.574 (p = 4.7e-05, over 44 points) — one unseeded search contributes as much drift as typical seeded-but-unspecified-RNG targets at score 2–3, evidence that WHAT the discretion is may matter as much as HOW MUCH of it there is.
 
 ## Honesty section
 
-(EMPTY at pre-registration — filled only in the results commit.)
+1. **Version gap, pre-declared.** The claim was produced by the 1.9.0 docs build; the reproduction runs 1.7.2 (sandbox Python 3.10 caps the pip index). Pillow 12.2.0 decoded the JPEGs; the docs builder's decoder version is unknown, and pixel-level decoding differences would shift features invisibly. Any of these could contribute to the ~0.4 pp seed-0 offset; none can be isolated here.
+2. **Undocumented dependency, mechanically resolved.** `fetch_lfw_people(download_if_missing=False)` requires three LFW metadata files (pairsDevTrain.txt, pairsDevTest.txt, pairs.txt) not mentioned in the pre-registered download plan; the executor fetched them from sklearn's pinned figshare URLs and each matched sklearn's own hard-coded sha256 exactly. Unblocking, not methodology.
+3. **Executor delegation (run-#18 rule).** Download, extraction, cache warm-up and the three seed runs were performed by a subordinate executor agent. The auditing session verified before publication: full independent re-run of primary seed 0 (bit-identical on accuracy, F1, all 10 candidates, best params and the report text) and independent recomputation of both drifts from the raw JSON. Judgment steps were not delegated.
+4. **The printed best estimator does not reproduce; the report does.** None of the three seeds drew the published (C=76823, gamma=0.00342) — best-params varied by an order of magnitude across seeds (C 3.5k–14.7k) — yet accuracy stayed within 0.46–2.65 pp of the printed value. The docs table is robust to the search draw; the printed best-estimator line is a one-off. Registering the report (not the C/gamma) as the measurand was decided at pre-registration.
+5. **`n_jobs=-1` was used** for the CV fits, as the pre-registration allowed; the bit-identical single-process re-run in item 3 confirms it changed nothing but wall-time.
+6. **Drift direction varies by seed** (seed 0 and 2 below published, seed 1 above by +2.65 pp — the largest single-seed excursion, 88% of the bar). Per PREREG_DRIFT.md the tracker quantity is the 3-seed mean; the spread is on the record in the raw JSON.
+7. **Session note.** This audit ran in an interactive session with A.H. present (continuation of run #18), not on the overnight schedule; the procedure and the two-commit rule were unchanged.
