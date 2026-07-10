@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-10, Program 2b run #19 scheduled session)
+## State (updated 2026-07-10, Program 2b run #20 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -445,6 +445,25 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       prediction HELD. Second audit under the planner/executor split (executor ran the pinned runner;
       planner re-ran seed 0 independently and validated the raw JSON before publishing).
 
+- [x] **2026-07-10 — Breiman (1996) "Bagging Predictors", Table 2, ionosphere rows e_S + e_B
+      (Program 2b confirmatory audit #22)** (`audits/AUDIT_breiman1996-bagging-cart-ionosphere.md` +
+      `audits/audit_breiman96_bag_iono_run.py` + `audits/breiman96_bag_iono_raw.json`). Two-commit
+      rule: prereg `d327f44` web-committed REMOTE-FIRST and md5-verified byte-identical BEFORE any
+      reproduction code ran; results `581f6bf`. The run-#19 agenda's first named candidate (score-3
+      density, the thinnest populated score): two new score-3 points via an audit-#14 dataset swap,
+      completing the cross-paper bagging contrast with FS96 on ionosphere (audit #16). Blind rubric
+      **3/5 both rows**. Published 11.2 / 7.9 (% misclassification, 100× random 90/10 splits) ->
+      reproduced **10.914 / 8.029** (seed 0; pre-registered bar ±3.0 pp) — **CONFIRMED** on both
+      rows, all 3 master seeds. Standardized drift (3-seed): **0.32 / 0.39 pp**; per-seed empirical
+      SEs (0.49–0.53 / 0.39–0.47) bracket the published 0.5 / 0.4 — the reproduction's noise floor
+      matches the paper's, as on glass (audit #14). Secondary prediction FAILED again at score 3
+      (both ≤ 1.96 pp). Notable: the md5-pinned UCI file holds 225 g / 126 b vs the paper's stated
+      226 / 125 — a one-case labeling difference caught by a pre-run assert and disclosed (honesty
+      item 1); Breiman's own CART bagging is systematically more portable than FS96's C4.5 bagging
+      on the same data (0.39 vs 1.34 pp here; glass 1.37 vs 2.43 pp). Third audit under the
+      planner/executor split: 23/24 chunks delegated, one chunk independently re-run bit-identical,
+      all 300 raw rows re-verified by the auditing session.
+
 ## Program 2b — pre-registered drift study (discretion predicts drift)
 
 Registered 2026-07-05 in `audits/PREREG_DRIFT.md` (commit `ad8aa31`) BEFORE any confirmatory audit:
@@ -452,7 +471,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 20/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 21/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -470,11 +489,13 @@ sonar, C4.5 alone / boost / bag], (2, 0.83), (2, 1.81) [Breiman-2001 glass Fores
 Single Input / Selection], (2, 0.46), (2, 0.33) [Breiman-2001 diabetes Forest-RI, Single Input /
 Selection], (1, 1.09), (1, 1.03) [sklearn-1.9.0 docs LFW eigenfaces, accuracy / weighted-F1], (0, 0.00),
 (0, 0.00) [sklearn-1.7.2 docs fully-seeded ensemble doctests, GBC hastie test acc / AdaBoost
-train acc].
-Running rho (EXPLORATORY until n=30): spearmanr over the 46 points as printed above (2-dp) =
-**0.614, p = 5.6e-06** (audit #21; the 44-point value 0.574/4.7e-05 was reproduced from the printed
-list before appending — the score-0 anchor pair lands on the drift floor and pulls rho back up,
-supporting the hypothesis at the low end exactly where audit #20 had cut against it). Previous note
+train acc], (3, 0.32), (3, 0.39) [Breiman-1996 Bagging Predictors ionosphere, e_S / e_B].
+Running rho (EXPLORATORY until n=30): spearmanr over the 48 points as printed above (2-dp) =
+**0.604, p = 5.5e-06** (audit #22; the 46-point value 0.614/5.6e-06 was reproduced from the printed
+list before appending — two ~0.35 pp score-3 points land below the score-3 median and nudge rho
+slightly down while leaving significance unchanged). Previous note (audit #21, superseded): rho
+0.614, p = 5.6e-06 — the score-0 anchor pair lands on the drift floor and pulls rho back up,
+supporting the hypothesis at the low end exactly where audit #20 had cut against it. Previous note
 (audit #20, superseded): rho 0.574, p = 4.7e-05 — the largest single-audit move yet (from 0.663), driven by ~1 pp of pure
 randomization drift at score 1 (LFW's unseeded search out-drifts most score-2/3/4 points): evidence
 against the hypothesis at the low-score end, suggesting the discretion TYPE (live randomization vs
@@ -489,9 +510,11 @@ certified-values class, further score-4/5 density (now 11 points at scores 4–5
 audit #17 added three and score 4 now carries the program's first high-score DISCREPANCY), and the
 blocked audit #4 SGD target in a cap-free environment. The score-0 anchor outside the certified-values class is DONE (audit #21: two fully-seeded
 sklearn-1.7.2 ensemble doctest rows, both 0.00 pp, the program's first version-gap-free target).
-Named candidates for next run: score-3 density (still the thinnest populated score at 7 points),
-further score-4/5 density (11 points at 4–5), or the blocked audit #4 SGD target in a cap-free
-environment. LFW DONE audit #20; diabetes DONE audit #19 — the Breiman-2001 Forest-RI ladder is complete. Decade breadth 1967–2016 (audit #15
+Score-3 density opened (audit #22: two Breiman-1996 ionosphere points; score 3 now at 9 points).
+Named candidates for next run: further score-3 density via the remaining Breiman-1996 Table 2 rows
+(breast cancer / diabetes / waveform — same pinned convention, two runners already committed),
+further score-4/5 density via the remaining FS96 Table 2 rows (vehicle / segmentation etc., 12
+points at 4–5), or the blocked audit #4 SGD target in a cap-free environment. LFW DONE audit #20; diabetes DONE audit #19 — the Breiman-2001 Forest-RI ladder is complete. Decade breadth 1967–2016 (audit #15
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
@@ -941,4 +964,19 @@ adds a 2014-era library-demo claim reproduced across a decade of releases).
   hard-coded sha256 pins exactly (audit honesty item 2); (b) trailing-newline append on the raw
   JSON web commit (run #1 class); (c) Copilot commit-message autofill handled as usual. All pushes
   verified by SHA-pinned raw fetch + md5/byte checks. Program 1 untouched; its audit queue
+  (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
+
+- 2026-07-10 (scheduled session, Program 2b run #20) — Twenty-first confirmatory audit landed:
+  Breiman (1996) Table 2 ionosphere e_S + e_B (see Completed audits) — **CONFIRMED** both rows,
+  3-seed drift 0.32/0.39 pp at blind rubric 3/5. Tracker n=21/30; exploratory rho over 48 points =
+  0.604 (p = 5.5e-06, no confirmatory weight). Third run under the planner/executor split (23/24
+  chunks delegated; one chunk re-run bit-identically by the auditor; all 300 rows re-verified).
+  Incidents, minor and disclosed: (a) UCI ionosphere class counts differ from the paper's Appendix
+  by one case (225/126 vs 226/125) — caught by a pre-run assert, honesty item 1; (b) the
+  session-outputs mount served a truncated runner copy after an edit (run #1/#2 class) — /tmp copy
+  canonical, published bytes verified; (c) trailing-newline append on the raw JSON web commit
+  (run #1 class); (d) Copilot commit-message autofill replaced+verified as usual; (e) /sessions
+  mount arrived 100% full and /tmp held ~800 MB of leftovers from this morning's runs (LFW archive)
+  — cleaned before work; sklearn again loaded from /tmp/pylibs (1.7.2, same as every prior audit).
+  All pushes verified by SHA-pinned raw fetch + md5. Program 1 untouched; its audit queue
   (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
