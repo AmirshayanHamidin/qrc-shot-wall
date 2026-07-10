@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-09, Program 2b run #17 scheduled session)
+## State (updated 2026-07-10, Program 2b run #18 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -383,6 +383,23 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       variance, not value — it picked F=1 in only 54–61% of iterations); drift direction unfavorable
       at all 3 seeds on both columns.
 
+- [x] **2026-07-10 — Breiman (2001) Table 2, diabetes row, Forest-RI Single Input + Selection
+      (Program 2b confirmatory audit #19)** (`audits/AUDIT_breiman2001-rf-diabetes.md` +
+      `audits/audit_rf_diabetes_run.py` + `audits/rf_diabetes_raw.json`). Two-commit rule: prereg `37200fe`
+      web-committed REMOTE-FIRST and verified byte-identical (md5) BEFORE any reproduction code ran;
+      results `e2e73fa`. The run #17 tracker's named candidate: completes the within-paper cross-dataset
+      Forest-RI ladder (ionosphere / sonar / glass / diabetes) at score 2/5, on the ladder's largest
+      holdout (77 test cases). Data provenance: original UCI Pima entry withdrawn — OpenML id 37
+      (licence Public) used, md5-pinned in the prereg. Published 24.3 / 24.2 -> reproduced
+      **23.701 / 23.636** (seed 0; pre-registered bar ±2.0 pp) — **CONFIRMED** on both columns, all
+      3 seeds. Standardized drift (3-seed): **0.46 / 0.33 pp**; secondary prediction HELD in both
+      clauses (≤ the 1.96 pp score-2 ceiling AND ≤ the glass counterparts) — drift shrank with
+      test-set size exactly as the prereg's sampling-noise reasoning predicted. The published
+      Selection < Single Input ordering reproduces here (unlike glass; OOB picked F=4 in 67–73% of
+      iterations). First audit under the planner/executor split: chunk execution delegated to a
+      subordinate executor, all 300 raw rows re-verified independently by the auditing session
+      (see the audit's honesty item 3).
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
@@ -406,7 +423,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 17/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 18/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -421,10 +438,11 @@ e_S / e_B], (2, 0.00), (2, 0.00), (2, 0.00), (2, 0.00) [xgboost v1.7.6 CLI mushr
 README, test r0/r1 + train r0/r1], (4, 2.99), (4, 0.85), (4, 1.34) [Freund-Schapire 1996
 ionosphere, C4.5 alone / boost / bag], (4, 3.36), (4, 0.99), (4, 6.86) [Freund-Schapire 1996
 sonar, C4.5 alone / boost / bag], (2, 0.83), (2, 1.81) [Breiman-2001 glass Forest-RI,
-Single Input / Selection].
-Running rho (EXPLORATORY until n=30): spearmanr over the 40 points as printed above (2-dp) =
-**0.666, p = 2.7e-06** — softened from 0.706 as two mid-drift score-2 points join (glass Selection
-1.81 pp sits just under the score-2 ceiling); no confirmatory weight. (Correction, run #11 second-instance addendum: first logged as 0.660/0.0005, computed from
+Single Input / Selection], (2, 0.46), (2, 0.33) [Breiman-2001 diabetes Forest-RI, Single Input /
+Selection].
+Running rho (EXPLORATORY until n=30): spearmanr over the 42 points as printed above (2-dp) =
+**0.663, p = 1.7e-06** — near-flat from 0.666 as two low-drift score-2 points join (diabetes, the
+fourth Forest-RI row, lands at the score-2 pack's low-drift floor); no confirmatory weight. (Correction, run #11 second-instance addendum: first logged as 0.660/0.0005, computed from
 the three new points' full-precision drifts; runs #1–#10's logged rho values reproduce from the
 printed 2-dp list, so the printed-list convention is pinned from here on.) Family
 coverage now includes clustering (a run #10 priority); the library-docs claim class enters the
@@ -433,9 +451,10 @@ confirmatory set at near-zero drift, replicating exploratory audit #3's pattern 
 confirmatory entries, all at the drift floor). Priorities: a score-0/1 anchor outside the
 certified-values class, further score-4/5 density (now 11 points at scores 4–5 vs 18 at score 2;
 audit #17 added three and score 4 now carries the program's first high-score DISCREPANCY), and the
-blocked audit #4 SGD target in a cap-free environment. Named candidates for next run: Breiman-2001
-Table 2 diabetes row (completes the within-paper cross-dataset ladder at score ~2; glass DONE
-audit #18), or the LFW eigenfaces docs table (open queue item). Decade breadth 1967–2016 (audit #15
+blocked audit #4 SGD target in a cap-free environment. Named candidates for next run: the LFW
+eigenfaces docs table (open queue item; download size vs the 45-s cap is the pre-run risk to probe),
+or a score-0/1 anchor outside the certified-values class (the top coverage gap). Diabetes DONE
+audit #19 — the Breiman-2001 Forest-RI within-paper ladder is complete. Decade breadth 1967–2016 (audit #15
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
@@ -852,3 +871,21 @@ adds a 2014-era library-demo claim reproduced across a decade of releases).
   mislabels this session "run #16" — flagged in the audit's honesty section item 5; the registered
   file was not edited. Program 1 untouched; its audit queue (B6/B11 re-audit, qrc_law.png
   regeneration, B5 regression cells) unchanged.
+
+- 2026-07-10 (scheduled session, Program 2b run #18) — Eighteenth confirmatory audit landed:
+  Breiman (2001) Table 2 diabetes Forest-RI (see Completed audits) — **CONFIRMED**, 3-seed drift
+  0.46/0.33 pp at blind rubric 2/5; the four-dataset within-paper ladder is complete, and drift
+  shrank with holdout size exactly as the pre-registration predicted. Tracker n=18/30; exploratory
+  rho over 42 points = 0.663 (p = 1.7e-06, no confirmatory weight). First run under the
+  planner/executor efficiency rule: dataset download, chunk execution and the merge were delegated
+  to a subordinate executor agent; judgment steps (target choice, rubric, bars, write-up,
+  verification) stayed with the auditing session, which re-verified all 300 raw rows independently
+  (recomputed both column means + the OOB-selection rule; 3 bit-identical spot re-runs). Incidents,
+  minor and disclosed: (a) Copilot commit-message autofill recurred on web commits and was
+  replaced+DOM-verified before submitting (run #10 class); (b) GitHub's web commit appended a
+  trailing newline to rf_diabetes_raw.json (35,377 vs 35,376 B, JSON-identical — run #1 class);
+  (c) sklearn was not preinstalled in this sandbox and pip first hit ENOSPC on the session mount —
+  installed to /tmp instead (resolved 1.7.2, the same version as every prior Program 2b audit;
+  audit honesty item 2). All pushes verified by SHA-pinned raw fetch + md5; freshness verified
+  against the commits API at session start (HEAD 1be45e64). Program 1 untouched; its audit queue
+  (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
