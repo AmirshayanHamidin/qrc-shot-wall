@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-10, Program 2b run #18 scheduled session)
+## State (updated 2026-07-10, Program 2b run #19 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -432,6 +432,19 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       LFW eigenfaces DONE audit #20; Breiman Table 2 rows sonar/glass/diabetes all DONE (audits #1/#18/#19)
       if a cross-implementation *ladder within one paper* is wanted.
 
+- [x] **2026-07-10 — scikit-learn 1.7.2 docs, fully-seeded ensemble doctest rows: GradientBoostingClassifier
+      (make_hastie_10_2, test acc 0.913) + AdaBoostClassifier (make_classification, train acc 0.96)
+      (Program 2b confirmatory audit #21)** (`audits/AUDIT_sklearn-ensemble-doctests.md` +
+      `audits/audit_ensemble_doctests_run.py` + `audits/ensemble_doctests_raw.json`). Two-commit rule:
+      prereg `2cb4a52` web-committed REMOTE-FIRST and sha256-verified BEFORE any reproduction code
+      existed. The run-#20 agenda's TOP priority: first score-0 anchor outside the certified-values
+      class, and the program's first version-gap-free target (claim verified identical in 1.7.2 and
+      stable/1.9.0 docs; executing library 1.7.2). Blind rubric **0/5 both rows**. Published 91.3 / 96.0 pp
+      -> reproduced **91.30 / 96.00** — bit-exact float match on every master seed; **CONFIRMED** at the
+      program's tightest bar (±0.5 pp). Standardized drift (3-seed): **0.00 / 0.00 pp**; secondary
+      prediction HELD. Second audit under the planner/executor split (executor ran the pinned runner;
+      planner re-ran seed 0 independently and validated the raw JSON before publishing).
+
 ## Program 2b — pre-registered drift study (discretion predicts drift)
 
 Registered 2026-07-05 in `audits/PREREG_DRIFT.md` (commit `ad8aa31`) BEFORE any confirmatory audit:
@@ -439,7 +452,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 19/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 20/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -455,9 +468,14 @@ README, test r0/r1 + train r0/r1], (4, 2.99), (4, 0.85), (4, 1.34) [Freund-Schap
 ionosphere, C4.5 alone / boost / bag], (4, 3.36), (4, 0.99), (4, 6.86) [Freund-Schapire 1996
 sonar, C4.5 alone / boost / bag], (2, 0.83), (2, 1.81) [Breiman-2001 glass Forest-RI,
 Single Input / Selection], (2, 0.46), (2, 0.33) [Breiman-2001 diabetes Forest-RI, Single Input /
-Selection], (1, 1.09), (1, 1.03) [sklearn-1.9.0 docs LFW eigenfaces, accuracy / weighted-F1].
-Running rho (EXPLORATORY until n=30): spearmanr over the 44 points as printed above (2-dp) =
-**0.574, p = 4.7e-05** — the largest single-audit move yet (from 0.663), driven by ~1 pp of pure
+Selection], (1, 1.09), (1, 1.03) [sklearn-1.9.0 docs LFW eigenfaces, accuracy / weighted-F1], (0, 0.00),
+(0, 0.00) [sklearn-1.7.2 docs fully-seeded ensemble doctests, GBC hastie test acc / AdaBoost
+train acc].
+Running rho (EXPLORATORY until n=30): spearmanr over the 46 points as printed above (2-dp) =
+**0.614, p = 5.6e-06** (audit #21; the 44-point value 0.574/4.7e-05 was reproduced from the printed
+list before appending — the score-0 anchor pair lands on the drift floor and pulls rho back up,
+supporting the hypothesis at the low end exactly where audit #20 had cut against it). Previous note
+(audit #20, superseded): rho 0.574, p = 4.7e-05 — the largest single-audit move yet (from 0.663), driven by ~1 pp of pure
 randomization drift at score 1 (LFW's unseeded search out-drifts most score-2/3/4 points): evidence
 against the hypothesis at the low-score end, suggesting the discretion TYPE (live randomization vs
 pinned-but-unspecified choices) may matter as much as the count; no confirmatory weight. (Correction, run #11 second-instance addendum: first logged as 0.660/0.0005, computed from
@@ -469,10 +487,11 @@ confirmatory set at near-zero drift, replicating exploratory audit #3's pattern 
 confirmatory entries, all at the drift floor). Priorities: a score-0/1 anchor outside the
 certified-values class, further score-4/5 density (now 11 points at scores 4–5 vs 18 at score 2;
 audit #17 added three and score 4 now carries the program's first high-score DISCREPANCY), and the
-blocked audit #4 SGD target in a cap-free environment. Named candidates for next run: a score-0
-anchor outside the certified-values class (still the top coverage gap — a fully-seeded library-docs
-doctest row would qualify), or further score-3 density (7 points, the thinnest populated score).
-LFW DONE audit #20; diabetes DONE audit #19 — the Breiman-2001 Forest-RI ladder is complete. Decade breadth 1967–2016 (audit #15
+blocked audit #4 SGD target in a cap-free environment. The score-0 anchor outside the certified-values class is DONE (audit #21: two fully-seeded
+sklearn-1.7.2 ensemble doctest rows, both 0.00 pp, the program's first version-gap-free target).
+Named candidates for next run: score-3 density (still the thinnest populated score at 7 points),
+further score-4/5 density (11 points at 4–5), or the blocked audit #4 SGD target in a cap-free
+environment. LFW DONE audit #20; diabetes DONE audit #19 — the Breiman-2001 Forest-RI ladder is complete. Decade breadth 1967–2016 (audit #15
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
