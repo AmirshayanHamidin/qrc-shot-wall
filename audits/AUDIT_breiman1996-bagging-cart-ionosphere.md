@@ -1,9 +1,9 @@
 # AUDIT: Breiman (1996) "Bagging Predictors", Table 2, ionosphere rows — e_S and e_B
 ## Program 2b confirmatory audit #22 — PRE-REGISTRATION FIRST, per audits/PREREG_DRIFT.md
 
-**Status: PRE-REGISTERED, results pending.** This file is committed with an EMPTY results
-section BEFORE any reproduction code runs (two-commit rule + run #2 guardrail:
-remote-first web commit).
+**Status: COMPLETE — verdict CONFIRMED on both rows.** Pre-registration commit `d327f44`
+landed on the remote (verified byte-identical, md5 3a48c537) BEFORE any reproduction code
+ran; results below were added in a separate commit (two-commit rule + run #2 guardrail).
 
 ## Claim
 
@@ -82,8 +82,56 @@ Scored from the paper + scikit-learn 1.7.2 docs only. Same discretion profile as
 
 ## Results
 
-(EMPTY at pre-registration. To be filled in a separate commit AFTER the runs.)
+Published (Table 2) vs reproduced (100-iteration means, per master seed):
+
+| Row | Published | seed 0 | seed 1 | seed 2 | 3-seed drift (pp) | bar | verdict |
+|---|---|---|---|---|---|---|---|
+| A: e_S single CV-pruned tree | 11.2 | 10.914 | 10.829 | 10.886 | **0.32** | ±3.0 | **CONFIRMED** |
+| B: e_B bagged 50 trees | 7.9 | 8.029 | 8.914 | 7.914 | **0.39** | ±3.0 | **CONFIRMED** |
+
+- All 3 master seeds inside the pre-registered bar on both rows; seed-0 (primary) drifts
+  −0.29 / +0.13 pp. Largest single-seed excursion: seed-1 e_B at +1.01 pp (34% of the bar).
+- Per-seed empirical SEs over the 100 iterations: 0.49–0.53 (e_S), 0.39–0.47 (e_B) —
+  bracketing the published SEs of 0.5 / 0.4 (Table 3): the reproduction's iteration noise
+  matches the paper's, exactly as audit #14 found on glass.
+- The published bagging improvement (29% decrease) reproduces as 17.7–27.3% across seeds;
+  the e_B < e_S ordering holds at every seed.
+- **Secondary prediction FAILED** (reported, bar untouched): both score-3 drifts sit well
+  below the 1.96 pp score-2 ceiling — the sixth failure of the mid/high-score secondary in
+  eight audits carrying it.
+- Standardized drift points for the Program 2b tracker: **(3, 0.32), (3, 0.39)** → n = 21/30.
+- Environment: Python 3.10.12, scikit-learn 1.7.2, numpy 2.2.6, CPU sandbox; runner
+  `audits/audit_breiman96_bag_iono_run.py`, per-seed raw cells in
+  `audits/breiman96_bag_iono_raw.json`.
 
 ## Honesty section
 
-(EMPTY at pre-registration. To be filled with the results commit.)
+1. **Data provenance discrepancy (pre-run, disclosed):** the paper's Appendix states
+   good 226 / bad 125, but the md5-pinned UCI file (identical file to audits #4/#8/#16)
+   contains 225 'g' / 126 'b'. The runner's class-count assert was corrected to the file's
+   actual counts BEFORE any iteration ran (the assert fired at load; no reproduced number
+   existed). A one-case labeling difference bounds the effect at ~0.3 pp per split and does
+   not touch the pre-registered expected values or bar. The prereg's parenthetical
+   "counts stated in the paper's Appendix and verified at load" is therefore wrong about
+   the archived copy — recorded here rather than edited there.
+2. **Same-engine/same-dataset overlap:** ionosphere now contributes points via four papers
+   (Sigillito-1989, Breiman-2001, FS96, Breiman-1996). The drift study treats each
+   (claim, implementation) pair as a point; non-independence across shared datasets is a
+   standing scope caveat for the n=30 test, flagged since the FS96 ladder.
+3. **Cross-paper contrast delivered:** Breiman's own CART bagging on ionosphere lands at
+   0.39 pp drift where FS96's C4.5 bagging on the same data (audit #16) landed 1.34 pp and
+   FS96 sonar bagging (audit #17) broke the bar at 6.86 pp — within this program, the 1996
+   paper's bagging rows have been systematically more portable than FS96's, on both
+   datasets tried (glass 1.37, ionosphere 0.39).
+4. **Planner/executor split (third audit under it):** 23 of 24 chunk runs were executed by
+   a subordinate executor agent; the auditing session independently re-ran chunk
+   s1[42,56) (bit-identical md5), re-verified the data md5 in all 24 chunk files, and
+   revalidated coverage/lengths of all 300 raw rows before publishing.
+5. **Stale-mount incident (recurred, contained):** the session-outputs mount served a
+   truncated copy of the runner after an edit (incident class from runs #1/#2); the
+   sandbox-local /tmp copy — the one that actually ran — is canonical and is what is
+   published here, byte-verified after push.
+6. **Seed sensitivity:** seed-1 e_B (8.914) carries most of Row B's drift; seeds 0/2 land
+   within 0.13 pp of the published value. With published SE 0.4 and reproduction SEs ~0.45,
+   a ~1 pp excursion in one 100-iteration mean is within ~2σ of the published estimator's
+   own noise — consistent with pure split/bootstrap randomization, the rubric's point 1.
