@@ -44,8 +44,26 @@ Secondary (non-verdict) prediction, logged for the discretion-drift hypothesis: 
 
 ## Results
 
-(EMPTY at pre-registration — filled only in the results commit.)
+Environment: sandboxed Ubuntu 22.04, CPU only, Python 3.10.12, scikit-learn 1.7.2, numpy 2.2.6. Data: OpenML id 37 `diabetes.arff` downloaded from openml.org this session, md5 **verified** `3cbaa3e54586aa88cf6aacb4033e4470` (37,419 bytes; 768×8, classes 500/268, as pre-registered). Runner: `audits/audit_rf_diabetes_run.py` (chunked ≤30 iterations per process under the 45-s cap; per-iteration seeding makes chunking irrelevant to the numbers). Raw per-iteration cells (err_f1, err_f4, oob_f1, oob_f4, err_sel, picked): `audits/rf_diabetes_raw.json`.
+
+| Column | Published | Reproduced (master seed 0, primary) | Drift |
+|---|---|---|---|
+| Single Input (F=1) | 24.3 | **23.701** | −0.60 pp |
+| Selection | 24.2 | **23.636** | −0.56 pp |
+
+Sensitivity seeds — Single Input: 24.662 (seed 1), 23.883 (seed 2); Selection: 24.039 (seed 1), 23.948 (seed 2).
+
+**Verdict: CONFIRMED** — both columns inside the pre-registered ±2.0 pp bar at seed 0. The bar was not moved.
+
+**Program 2b standardized drift (3-seed mean |reproduced − published|): Single Input 0.46 pp, Selection 0.33 pp.** With the blind rubric score of 2/5 recorded in the pre-registration commit `37200fe`, this audit contributes the points **(2, 0.46)** and **(2, 0.33)** to the confirmatory set (n=18/30).
+
+Secondary prediction **HELD in both clauses**: both 3-seed drifts sit below the running score-2 ceiling (1.96 pp, audit #5), and each column lands below its glass counterpart (0.46 ≤ 0.83; 0.33 ≤ 1.81) — the ladder's drift shrank with test-set size exactly as the pre-registration's sampling-noise reasoning predicted.
 
 ## Honesty section
 
-(EMPTY at pre-registration — filled only in the results commit.)
+1. **Data provenance.** The reproduction cannot be byte-verified against the withdrawn UCI original. The OpenML id-37 mirror matches Table 1's dimensions (768/8/2), the canonical class balance (500/268), and the canonical first row; its licence field reads "Public". If Breiman's 2001 file differed from this mirror in any cell, that difference is invisible here.
+2. **Environment.** scikit-learn was not preinstalled in this session's sandbox and was installed from PyPI (resolved to 1.7.2 — the same version as every prior Program 2b audit, so ladder comparability holds). The install initially failed on a nearly-full session mount (ENOSPC) and was redirected to `/tmp`; the workaround affects only the install path, not the pipeline.
+3. **Executor delegation (new this run).** Per the run-#18 efficiency rule, chunk execution and the merge step were performed by a subordinate executor agent; the auditing session verified the output before publication: independent recomputation of both column means and the OOB-selection rule across all 300 raw rows, plus bit-identical independent re-runs of three spot iterations (m=0 i=0, m=1 i=37, m=2 i=99). Judgment steps (target choice, rubric, bars, this write-up) were not delegated.
+4. **The published within-row ordering reproduces here** (Selection 23.87 < Single Input 24.08 on 3-seed means, and at 2 of 3 seeds) — in contrast to glass (audit #18), where selection added variance instead of value. On 691 training cases the forest-level OOB estimate is informative enough for the Selection rule to help; it picked F=4 in 67–73% of iterations.
+5. **Drift direction is favorable (reproduced below published) on both columns at seeds 0 and 2, and unfavorable on Single Input at seed 1** — no consistent direction, consistent with the replication-noise reading across the four audited rows of Table 2.
+6. The same-engine caveat of audit #3 does NOT apply: Fortran CART (2001) vs scikit-learn 1.7.2 are genuinely independent implementations.
