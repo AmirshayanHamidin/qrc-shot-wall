@@ -58,4 +58,14 @@ Scored from the two doc pages + the 1.7.2 API defaults only.
 
 ## Results
 
-(EMPTY at pre-registration commit; filled by a later commit in the same session.)
+**Verdict: CONFIRMED — exact reproduction on both rows, all 3 master seeds; drift 0.00 pp / 0.00 pp.**
+
+| Row | published | reproduced (master seeds 0/1/2) | drift |
+|---|---|---|---|
+| A — GBC hastie test accuracy | 91.3 pp | 91.30 / 91.30 / 91.30 (9130/10000 correct, bit-exact 0.913 float) | 0.00 pp |
+| B — AdaBoost train accuracy | 96.0 pp | 96.00 / 96.00 / 96.00 (960/1000 correct, bit-exact 0.96 float) | 0.00 pp |
+
+- Primary verdict **CONFIRMED** at the ±0.5 pp bar (margin 0.00 on both rows at master seed 0). Secondary prediction (both drifts = 0.00 pp) **HELD**; scores bit-identical across master seeds, as pre-registered.
+- Program 2b contribution: **(0, 0.00) ×2** → tracker **n = 20/30**, 46 points. Running EXPLORATORY rho over the printed 2-dp list: **0.614, p = 5.6e-06** (from 0.574) — the first score-0 points outside the certified-values class land exactly on the drift floor, supporting the hypothesis at the low-score end where audit #20's score-1 points had cut against it.
+- Artifacts: runner `audits/audit_ensemble_doctests_run.py` + raw `audits/ensemble_doctests_raw.json` (committed after this file, same session batch).
+- Honesty section: (1) the target is maximally easy by design — that is its role: it anchors the rubric's zero end with a claim class whose zero drift is an empirical outcome of a real training pipeline, not definitional as for certified reference values; (2) executing version equals claim version (1.7.2), so these points measure pure pinned-claim reproducibility with zero version drift mixed in; (3) division of labor per the session's planner/executor rule: a subagent executed the pinned runner and assembled the raw JSON mechanically; the planning session re-ran master seed 0 independently and validated the raw JSON against per-seed stdout before publishing; (4) the 46-point rho was recomputed from the tracker's printed 2-dp list per the pinned convention, and the 44-point value 0.574 was reproduced from that list before appending; (5) publication mechanics: an aborted in-browser edit of this file (focus stolen by a search overlay mid-keystroke) was discarded without touching the remote — verified by SHA before retrying via byte-exact file upload; this results version was written as a whole file and byte-verified against the pushed blob.
