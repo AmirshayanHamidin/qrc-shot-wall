@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-10, Program 2b run #20 scheduled session)
+## State (updated 2026-07-10, Program 2b run #21 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -464,6 +464,24 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       planner/executor split: 23/24 chunks delegated, one chunk independently re-run bit-identical,
       all 300 raw rows re-verified by the auditing session.
 
+- [x] **2026-07-10 — Freund & Schapire (1996) Table 2, vehicle row, C4.5 alone + boosting C4.5 +
+      bagging C4.5 (Program 2b confirmatory audit #23)**
+      (`audits/AUDIT_freund-schapire1996-vehicle-c45-boost-bag.md` +
+      `audits/audit_fs96_vehicle_run.py` + `audits/fs96_vehicle_raw.json`). Two-commit rule: prereg
+      `aa18d35` web-committed and md5-verified byte-identical BEFORE any reproduction code existed;
+      results in this session's batch. The run-#20 tracker's score-4/5 density priority: three more
+      score-4 points, extending the FS96 C4.5 ladder to a third dataset (the first mid-size 4-class
+      one). Blind rubric **4/5 all three rows**. Published 29.9 / 22.6 / 26.1 (% test error, 10-fold
+      CV x 10 runs) -> reproduced **27.258 / 23.274 / 25.449** (seed 0; pre-registered bar ±4.0 pp) —
+      **CONFIRMED** on all three rows, all 3 master seeds; the paper's tree > bag > boost ordering
+      reproduces. Standardized drift (3-seed): **2.61 / 0.88 / 0.70 pp**; secondary prediction HELD
+      via the tree row (2.61 > 1.96). Notable: audit #17's bag DISCREPANCY mechanism did NOT repeat
+      (vehicle bag −0.65 pp vs sonar −6.56 pp — an open dataset-vs-protocol contrast); the
+      default-base-tree boosting degeneration replicated on a fourth dataset (+6.69 pp vs published,
+      would flip the boost verdict); paper-faithful M1-resample boosting lands closer to published
+      (22.116) than the sklearn route. Fourth audit under the planner/executor split (54 chunks
+      delegated; planner re-aggregated and duplicate-checked all parts before publishing).
+
 ## Program 2b — pre-registered drift study (discretion predicts drift)
 
 Registered 2026-07-05 in `audits/PREREG_DRIFT.md` (commit `ad8aa31`) BEFORE any confirmatory audit:
@@ -471,7 +489,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 21/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 22/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -489,9 +507,13 @@ sonar, C4.5 alone / boost / bag], (2, 0.83), (2, 1.81) [Breiman-2001 glass Fores
 Single Input / Selection], (2, 0.46), (2, 0.33) [Breiman-2001 diabetes Forest-RI, Single Input /
 Selection], (1, 1.09), (1, 1.03) [sklearn-1.9.0 docs LFW eigenfaces, accuracy / weighted-F1], (0, 0.00),
 (0, 0.00) [sklearn-1.7.2 docs fully-seeded ensemble doctests, GBC hastie test acc / AdaBoost
-train acc], (3, 0.32), (3, 0.39) [Breiman-1996 Bagging Predictors ionosphere, e_S / e_B].
-Running rho (EXPLORATORY until n=30): spearmanr over the 48 points as printed above (2-dp) =
-**0.604, p = 5.5e-06** (audit #22; the 46-point value 0.614/5.6e-06 was reproduced from the printed
+train acc], (3, 0.32), (3, 0.39) [Breiman-1996 Bagging Predictors ionosphere, e_S / e_B],
+(4, 2.61), (4, 0.88), (4, 0.70) [Freund-Schapire 1996 vehicle, C4.5 alone / boost / bag].
+Running rho (EXPLORATORY until n=30): spearmanr over the 51 points as printed above (2-dp) =
+**0.607, p = 2.4e-06** (audit #23; the 48-point value 0.604/5.5e-06 was reproduced from the printed
+list before appending — three new score-4 points spanning both drift regimes leave rho essentially
+unchanged while sharpening significance). Previous note (audit #22, superseded): rho 0.604,
+p = 5.5e-06 — the 46-point value 0.614/5.6e-06 was reproduced from the printed
 list before appending — two ~0.35 pp score-3 points land below the score-3 median and nudge rho
 slightly down while leaving significance unchanged). Previous note (audit #21, superseded): rho
 0.614, p = 5.6e-06 — the score-0 anchor pair lands on the drift floor and pulls rho back up,
@@ -511,10 +533,11 @@ audit #17 added three and score 4 now carries the program's first high-score DIS
 blocked audit #4 SGD target in a cap-free environment. The score-0 anchor outside the certified-values class is DONE (audit #21: two fully-seeded
 sklearn-1.7.2 ensemble doctest rows, both 0.00 pp, the program's first version-gap-free target).
 Score-3 density opened (audit #22: two Breiman-1996 ionosphere points; score 3 now at 9 points).
-Named candidates for next run: further score-3 density via the remaining Breiman-1996 Table 2 rows
-(breast cancer / diabetes / waveform — same pinned convention, two runners already committed),
-further score-4/5 density via the remaining FS96 Table 2 rows (vehicle / segmentation etc., 12
-points at 4–5), or the blocked audit #4 SGD target in a cap-free environment. LFW DONE audit #20; diabetes DONE audit #19 — the Breiman-2001 Forest-RI ladder is complete. Decade breadth 1967–2016 (audit #15
+Score-4/5 density extended (audit #23: three FS96 vehicle points; 15 points at 4–5 vs 18 at
+score 2). Named candidates for next run: further score-3 density via the remaining Breiman-1996
+Table 2 rows (breast cancer / diabetes / waveform — same pinned convention, two runners already
+committed), the last clean FS96 no-test-set candidate row (segmentation, 7-class — verify its
+Table 1 profile before scoring), or the blocked audit #4 SGD target in a cap-free environment. LFW DONE audit #20; diabetes DONE audit #19 — the Breiman-2001 Forest-RI ladder is complete. Decade breadth 1967–2016 (audit #15
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
@@ -639,6 +662,25 @@ adds a 2014-era library-demo claim reproduced across a decade of releases).
   JSON-identical — same class as the run #1 incident). All
   pushes verified by SHA-pinned raw fetch with exact byte counts; freshness verified against the
   commits page at session start (HEAD 2eb1f5c). Program 1 untouched; its audit queue unchanged.
+
+- 2026-07-10 (scheduled session, Program 2b run #21) — Twenty-second confirmatory audit landed:
+  Freund & Schapire (1996) Table 2 vehicle row, C4.5/boost/bag (see Completed audits and
+  `audits/AUDIT_freund-schapire1996-vehicle-c45-boost-bag.md`) — **CONFIRMED 3/3** at rubric
+  4/4/4, drifts 2.61/0.88/0.70 pp; tracker n=22/30, exploratory rho 0.607 (p=2.4e-06). Audit #17's
+  bag mechanism did NOT repeat on vehicle (−0.65 vs sonar's −6.56 pp; open contrast), while the
+  default-base-tree boosting degeneration replicated on a fourth dataset. Fourth audit under the
+  planner/executor split: 54 chunks delegated to a sonnet executor (no errors, no retries);
+  planner re-aggregated, completeness- and duplicate-checked all parts before publishing.
+  Two-commit rule kept: prereg `aa18d35` md5-verified byte-identical (10354 B, no trailing-newline
+  delta) before any reproduction code; disclosed that GitHub's commit-message autofill prepended
+  text to the intended prereg message (cosmetic; content governed by the md5 check). One
+  sandbox incident: the session workspace disk filled mid-batch and the mounted copy of the
+  results file truncated at its old byte size — caught by a byte-count check before any push;
+  the push used a deterministically reconstructed copy (verified prereg bytes + results
+  section), per VAR rule 5. The
+  `.cm-content.cmTile.view` CodeMirror path from run #20's note still works for web edits.
+  Freshness verified against the commits page at session start (HEAD e08fee3). Program 1
+  untouched; its audit queue unchanged.
 
 ## Pending push
 
