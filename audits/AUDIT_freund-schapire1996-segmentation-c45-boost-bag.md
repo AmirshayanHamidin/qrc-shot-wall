@@ -69,8 +69,40 @@ Per master seed m in {0, 1, 2} (seed 0 primary for the verdict; drift for the tr
 
 ## Results
 
-*(empty at pre-registration commit — two-commit rule)*
+Data check (re-asserted inside every runner invocation): OpenML data_id=36, X md5 `6bde54879753df9c397f892f6621ed6e`, 2310 rows, 7 × 330 classes — identical to the pre-commit counting checks. Environment: scikit-learn 1.7.2, numpy 2.2.6, scipy 1.15.3, CPU only. Execution: chunked one (column × master-seed × run-subset) per tool call under the 45 s cap; 93 of the 96 production chunks were delegated to two mechanical executor agents per the planner/executor split (the auditor ran the first three probe chunks itself, re-ran two delegated cells bit-identically, and re-aggregated all 170 raw cells from the executors' JSON logs — zero duplicates, zero retries, zero skips); flat chunk log in `audits/fs96_segmentation_raw.json`.
+
+Primary configurations (library defaults per the pinned plan, master seed 0):
+
+| Row | Published | Reproduced | Drift |
+|---|---|---|---|
+| C4.5 alone | 3.6 | **3.294** | −0.306 pp |
+| boosting C4.5 | 1.4 | **1.437** | +0.037 pp |
+| bagging C4.5 | 2.7 | **2.281** | −0.419 pp |
+
+Seeds 1 / 2 (row values): tree 3.537 / 3.394; boost 1.498 / 1.446; bag 2.247 / 2.338. **Program 2b standardized drift (3-seed mean |reproduced − published|): tree 0.19 pp, boost 0.06 pp, bag 0.41 pp.**
+
+**VERDICT: CONFIRMED.** All three rows land inside the pre-registered ±4.0 pp bar at seed 0 (and on all three master seeds). Largest deviation anywhere: −0.42 pp.
+
+Secondary pre-registered prediction: **FAILED** — no row's 3-seed drift exceeds 1.96 pp; the largest is 0.41 pp, more than a factor of 4 below the score-2 ceiling. Three score-4 points land essentially on the drift floor.
+
+Observation (never scored, per prereg note (i)): the paper's orderings survive anyway — boost < bag < tree reproduces as 1.44 < 2.28 < 3.29, and boosting's published 61 % relative improvement over C4.5 alone reproduces as 56 %.
+
+Labelled sensitivity checks (master seed 0, 10 runs each; reported, never the verdict):
+
+| Route | tree | boost | bag |
+|---|---|---|---|
+| primary (pinned mapping) | 3.294 | 1.437 | 2.281 |
+| (a) paper-faithful: M1-resample boost / hard-vote bag | — | 1.394 | 2.355 |
+| (b) pure-default base tree (gini, leaf=1) | 3.498 | 3.597 | 2.277 |
+| (c) unstratified KFold | 3.641 | 1.524 | 2.394 |
 
 ## Honesty section
 
-*(empty at pre-registration commit)*
+1. **Verdicts are numbers, never accusations** — and this one is a clean CONFIRMED: a 1996 C4.5-ensemble claim reproduces on a modern library to within half a percentage point on every column.
+2. **The interesting result is the failed secondary prediction.** Three blind-rubric score-4 points land at 0.19 / 0.06 / 0.41 pp — the drift floor — pulling the running exploratory rho from 0.604 (p = 1.7e-06, 53 points) to **0.547 (p = 1.3e-05, 56 points)**, the second-largest single-audit move in the program (after audit #20's) and, like #20, AGAINST the hypothesis — this time at the high-score end. Candidate mechanism, recorded for post-n=30 exploratory analysis only: the prereg's floor-asymmetry note (i) anticipated that published values 1.4–3.6 pp above the 0 % floor bound downward drift; the observation suggests |drift| headroom (how far the published value sits from the floor) may confound the discretion–drift relation. Segmentation is also the program's most separable score-4 target — high discretion may only translate into drift where the decision problem leaves room for implementations to disagree.
+3. The 7-class boost row substitutes sklearn's SAMME for the paper's error-based AdaBoost.M1 (rubric point 4). The paper-faithful M1-with-resampling sensitivity lands at 1.394, within 0.05 pp of the primary 1.437 — the substitution is immaterial on this dataset.
+4. The pure-default-base-tree boosting degeneration replicates on a fourth dataset (3.597 vs 1.437 with the pinned mapping — unpruned gini trees fit each resample perfectly and the committee collapses toward a single tree, the audits #9/#16/#17 mechanism). New wrinkle: for the first time the naive route would NOT have flipped the verdict (|3.597 − 1.4| = 2.20 pp, in-bar), because the published value itself is tiny — the same floor-headroom effect as item 2.
+5. Primary-source caveat: the paper PDF was fetched this session through a text-extraction pipeline, so its byte-level md5 could not be re-asserted (audits #9/#11/#16 recorded `cdbaa305c6cf034dea09bb268e4a5ce2`); the Table 1 profile and full Table 2 segmentation row were transcribed from this session's extracted text and are quoted verbatim in the claim section.
+6. Two-commit rule: the pre-registration was committed via the GitHub web uploader (`2beb905b`) and verified byte-identical against the local copy by SHA-pinned raw fetch + md5 (`ec933d9d…`, 11616 B — no trailing-newline delta with the upload flow) BEFORE any reproduction code existed in this session; the real-data probe chunks ran only after that verification.
+7. Planner/executor infrastructure note: the first attempt launched two executors in parallel and the second executor could not execute anything — this sandbox's shell is single-process ("process already running"). The second executor's list was re-dispatched sequentially and completed with zero retries. Future runs: executors must run one at a time.
+8. The auditor's only pre-registration-phase compute was a synthetic timing probe on uniform-random data of the same shape (run #3 precedent); no real-data estimator ran before commit `2beb905b` was verified.
