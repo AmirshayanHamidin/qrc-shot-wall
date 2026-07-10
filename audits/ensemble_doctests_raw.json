@@ -1,0 +1,61 @@
+{
+ "audit": "Program 2b confirmatory audit #21 - sklearn 1.7.2 docs ensemble doctests (GBC hastie test acc, AdaBoost train acc)",
+ "prereg_commit": "2cb4a52",
+ "published": {
+  "row_a": 0.913,
+  "row_b": 0.96
+ },
+ "runs": [
+  {
+   "master_seed": 0,
+   "row_a_gbc_hastie_test_accuracy": 0.913,
+   "row_b_adaboost_train_accuracy": 0.96,
+   "row_a_correct_of_10000": 9130,
+   "row_b_correct_of_1000": 960,
+   "published": {
+    "row_a": 0.913,
+    "row_b": 0.96
+   },
+   "env": {
+    "python": "3.10.12",
+    "sklearn": "1.7.2",
+    "numpy": "2.2.6",
+    "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35"
+   }
+  },
+  {
+   "master_seed": 1,
+   "row_a_gbc_hastie_test_accuracy": 0.913,
+   "row_b_adaboost_train_accuracy": 0.96,
+   "row_a_correct_of_10000": 9130,
+   "row_b_correct_of_1000": 960,
+   "published": {
+    "row_a": 0.913,
+    "row_b": 0.96
+   },
+   "env": {
+    "python": "3.10.12",
+    "sklearn": "1.7.2",
+    "numpy": "2.2.6",
+    "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35"
+   }
+  },
+  {
+   "master_seed": 2,
+   "row_a_gbc_hastie_test_accuracy": 0.913,
+   "row_b_adaboost_train_accuracy": 0.96,
+   "row_a_correct_of_10000": 9130,
+   "row_b_correct_of_1000": 960,
+   "published": {
+    "row_a": 0.913,
+    "row_b": 0.96
+   },
+   "env": {
+    "python": "3.10.12",
+    "sklearn": "1.7.2",
+    "numpy": "2.2.6",
+    "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35"
+   }
+  }
+ ]
+}
