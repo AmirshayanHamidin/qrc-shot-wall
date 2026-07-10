@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-10, Program 2b run #22 scheduled session)
+## State (updated 2026-07-10, Program 2b run #23 scheduled session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -500,6 +500,27 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       prereg before scoring. Fifth audit under the planner/executor split: all 51 chunks delegated
       (zero retries); planner re-ran one chunk bit-identical and re-verified all 300 raw rows.
 
+- [x] **2026-07-10 — Freund & Schapire (1996) Table 2, segmentation row, C4.5 alone + boosting C4.5 +
+      bagging C4.5 (Program 2b confirmatory audit #25)**
+      (`audits/AUDIT_freund-schapire1996-segmentation-c45-boost-bag.md` +
+      `audits/audit_fs96_segmentation_run.py` + `audits/fs96_segmentation_raw.json`).
+      Two-commit rule: prereg `2beb905b` web-uploaded and md5-verified byte-identical (11616 B,
+      no trailing-newline delta) BEFORE any real-data reproduction code ran. The run-#22 tracker's
+      named candidate: the last clean FS96 no-test-set row (segmentation, 7-class), Table 1 profile
+      verified from the primary source before scoring (2310 examples, no test set, 19 continuous,
+      no missing). Blind rubric **4/5 all three columns**. Published 3.6 / 1.4 / 2.7 (% test error,
+      10-fold CV × 10 runs, T=100) -> reproduced **3.294 / 1.437 / 2.281** (seed 0; pre-registered
+      bar ±4.0 pp) — **CONFIRMED** on all rows, all 3 master seeds; largest deviation −0.42 pp.
+      Standardized drift (3-seed): **0.19 / 0.06 / 0.41 pp** — three score-4 points on the drift
+      floor. Secondary prediction FAILED (eighth failure in eleven audits carrying it) — the
+      program's lowest-error score-4 target produced its lowest score-4 drifts; the prereg's
+      floor-headroom note flags a candidate confounder (|drift| bounded by distance to the 0 %
+      floor) for post-n=30 exploratory analysis. The defaulttree boosting degeneration replicates
+      on a fourth dataset (3.60 vs 1.44) but for the first time would NOT have flipped the verdict.
+      Sixth audit under the planner/executor split (93/96 chunks delegated; parallel executors
+      failed — the sandbox shell is single-process, re-dispatched sequentially, zero retries; two
+      delegated cells re-run bit-identically; all 170 raw cells re-aggregated by the auditor).
+
 ## Program 2b — pre-registered drift study (discretion predicts drift)
 
 Registered 2026-07-05 in `audits/PREREG_DRIFT.md` (commit `ad8aa31`) BEFORE any confirmatory audit:
@@ -507,7 +528,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 23/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 24/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -527,10 +548,16 @@ Selection], (1, 1.09), (1, 1.03) [sklearn-1.9.0 docs LFW eigenfaces, accuracy / 
 (0, 0.00) [sklearn-1.7.2 docs fully-seeded ensemble doctests, GBC hastie test acc / AdaBoost
 train acc], (3, 0.32), (3, 0.39) [Breiman-1996 Bagging Predictors ionosphere, e_S / e_B],
 (4, 2.61), (4, 0.88), (4, 0.70) [Freund-Schapire 1996 vehicle, C4.5 alone / boost / bag],
-(3, 0.64), (3, 0.28) [Breiman-1996 Bagging Predictors diabetes, e_S / e_B].
-Running rho (EXPLORATORY until n=30): spearmanr over the 53 points as printed above (2-dp) =
-**0.604, p = 1.7e-06** (audit #24; the 51-point value 0.607/2.4e-06 was reproduced from the
-printed list before appending — two sub-median score-3 drifts nudge rho down 0.003 while
+(3, 0.64), (3, 0.28) [Breiman-1996 Bagging Predictors diabetes, e_S / e_B], (4, 0.19), (4, 0.06),
+(4, 0.41) [Freund-Schapire 1996 segmentation, C4.5 alone / boost / bag].
+Running rho (EXPLORATORY until n=30): spearmanr over the 56 points as printed above (2-dp) =
+**0.547, p = 1.3e-05** (audit #25; the 53-point value 0.604/1.7e-06 was reproduced from the
+printed list before appending — three score-4 points on the drift floor produce the second-largest
+single-audit rho move in the program, AGAINST the hypothesis at the high-score end; candidate
+floor-headroom confounder recorded in the audit's honesty section for post-n=30 exploratory
+analysis). Previous note (audit #24, superseded): rho 0.604, p = 1.7e-06 (the 51-point value
+0.607/2.4e-06 was reproduced from the printed list before appending — two sub-median score-3
+drifts nudge rho down 0.003 while
 sharpening significance). Previous note (audit #23, superseded): rho 0.607, p = 2.4e-06 ( the 48-point value 0.604/5.5e-06 was reproduced from the printed
 list before appending — three new score-4 points spanning both drift regimes leave rho essentially
 unchanged while sharpening significance). Previous note (audit #22, superseded): rho 0.604,
@@ -556,10 +583,14 @@ sklearn-1.7.2 ensemble doctest rows, both 0.00 pp, the program's first version-g
 Score-3 density opened (audit #22: two Breiman-1996 ionosphere points; score 3 now at 9 points).
 Score-4/5 density extended (audit #23: three FS96 vehicle points; 15 points at 4–5 vs 18 at
 score 2). Score-3 density extended again (audit #24: two Breiman-1996 diabetes points at the
-drift floor; score 3 now at 11 points). Named candidates for next run: further score-3 density via the remaining Breiman-1996
-Table 2 rows (breast cancer / waveform — same pinned convention, three runners already
-committed; diabetes DONE audit #24), the last clean FS96 no-test-set candidate row (segmentation, 7-class — verify its
-Table 1 profile before scoring), or the blocked audit #4 SGD target in a cap-free environment. LFW DONE audit #20; diabetes DONE audit #19 — the Breiman-2001 Forest-RI ladder is complete. Decade breadth 1967–2016 (audit #15
+drift floor; score 3 now at 11 points). Score-4/5 density extended again (audit #25: three FS96
+segmentation points at the drift floor; 18 points at scores 4–5 vs 18 at score 2 — parity reached;
+the FS96 C4.5 no-test-set ladder is COMPLETE: glass / iris / ionosphere / sonar / vehicle /
+segmentation, spanning drifts 0.06–6.86 pp at constant rubric 4). Named candidates for next run:
+further score-3 density via the remaining Breiman-1996 Table 2 rows (breast cancer / waveform —
+same pinned convention, runners already committed; diabetes DONE audit #24), a low-published-error
+score-2/3 target to help separate the floor-headroom confounder from the discretion score
+(audit #25 honesty item 2), or the blocked audit #4 SGD target in a cap-free environment. LFW DONE audit #20; diabetes DONE audit #19 — the Breiman-2001 Forest-RI ladder is complete. Decade breadth 1967–2016 (audit #15
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
@@ -721,6 +752,29 @@ adds a 2014-era library-demo claim reproduced across a decade of releases).
   (12202 vs 12201 B, JSON-identical — run-#1/#10 incident class). Commit messages DOM-verified
   before committing (Copilot autofill active). Freshness verified against the commits API at
   session start (HEAD 797172e). Program 1 untouched; its audit queue unchanged.
+
+- 2026-07-10 (scheduled session, Program 2b run #23) — Twenty-fourth confirmatory audit landed:
+  Freund & Schapire (1996) Table 2 segmentation row, C4.5 alone / boost / bag (see Completed
+  audits and `audits/AUDIT_freund-schapire1996-segmentation-c45-boost-bag.md`) — **CONFIRMED 3/3**
+  at rubric 4/4/4, drifts 0.19/0.06/0.41 pp; tracker n=24/30, exploratory rho 0.547 (p=1.3e-05) —
+  the second-largest single-audit rho move (0.604 → 0.547), AGAINST the hypothesis at the
+  high-score end: the program's lowest-published-error score-4 target produced its lowest score-4
+  drifts, and the audit's honesty section records a candidate floor-headroom confounder for
+  post-n=30 exploratory analysis. Secondary prediction FAILED (eighth failure in eleven audits
+  carrying it). The FS96 C4.5 no-test-set ladder is complete (six datasets, rubric-constant 4,
+  drifts 0.06–6.86 pp). Sixth audit under the planner/executor split, first with the intended
+  two-executor parallelism attempted: it FAILED (this sandbox's shell is single-process — the
+  second executor's first instance executed nothing and was re-dispatched sequentially; new
+  infrastructure rule: executors must run one at a time); 93/96 production chunks delegated, zero
+  retries, two delegated cells re-run bit-identically by the auditor, all 170 raw cells
+  re-aggregated from the executors' JSON logs. Session incidents, minor and disclosed: sklearn
+  again absent (loaded from the surviving /tmp/pylibs target install, same 1.7.2/2.2.6/1.15.3
+  triple); a stale /tmp/work dir from an earlier session was unwritable (fresh ~/w used); the
+  FS96 paper PDF was read through a text-extraction pipeline so its byte md5 could not be
+  re-asserted (audit honesty item 5). All pushes verified by SHA-pinned raw fetch + md5;
+  freshness verified against the commits API at session start (HEAD c861da50). Program 1
+  untouched; its audit queue (B6/B11 next, qrc_law.png regeneration, B5 regression cells)
+  unchanged.
 
 ## Pending push
 
