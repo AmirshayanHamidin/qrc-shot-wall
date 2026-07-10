@@ -44,8 +44,26 @@ Secondary (non-verdict) prediction, logged for the discretion-drift hypothesis: 
 
 ## Results
 
-*(empty at pre-registration — filled in a separate commit after the runs)*
+Environment: sandboxed Ubuntu 22.04, CPU only, Python 3.10.12, scikit-learn 1.7.2, numpy 2.2.6. Data: UCI `glass.data` downloaded from archive.ics.uci.edu this session, md5 **verified** `2732c9170bf8c483f33da3c58929c067` (= audits #9/#11/#14; the OpenML fallback was not needed). Runner: `audits/audit_rf_glass_run.py` (chunked 2 x 50 iterations per master seed under the 45-s cap; per-iteration seeding makes chunking irrelevant to the numbers). Raw per-iteration cells (err_f1, err_f4, oob_f1, oob_f4, err_sel, picked): `audits/rf_glass_raw.json`.
+
+| Column | Published | Reproduced (master seed 0, primary) | Drift |
+|---|---|---|---|
+| Single Input (F=1) | 21.2 | **22.591** | +1.39 pp |
+| Selection | 20.6 | **22.500** | +1.90 pp |
+
+Sensitivity seeds — Single Input: 21.500 (seed 1), 22.000 (seed 2); Selection: 22.000 (seed 1), 22.727 (seed 2).
+
+**Verdict: CONFIRMED** — both columns inside the pre-registered +/-2.5 pp bar at seed 0. The bar was not moved.
+
+**Program 2b standardized drift (3-seed mean |reproduced - published|): Single Input 0.83 pp, Selection 1.81 pp.** With the blind rubric score of 2/5 recorded in the pre-registration commit `80faaa4`, this audit contributes the points **(2, 0.83)** and **(2, 1.81)** to the confirmatory set (n=17/30).
+
+Secondary prediction **HELD**: both 3-seed drifts land at or below the running score-2 ceiling (1.96 pp, audit #5) — though Selection uses 92% of it and becomes the second-largest score-2 drift in the set.
 
 ## Honesty section
 
-*(empty at pre-registration)*
+1. **The published within-row ordering does not reproduce.** Breiman reports Selection *better* than Single Input (20.6 < 21.2); in this reproduction Selection is *worse* at 2 of 3 seeds and on the 3-seed means (22.41 vs 22.03). The OOB choice picked F=1 in only 54-61% of iterations, and on 192 training cases the forest-level OOB estimate is noisy enough that selection adds variance rather than value. Most of the Selection column's drift (1.81 vs the F=1 forest's 0.83) is this selection-rule noise, not forest quality.
+2. **Drift direction is unfavorable (reproduced error higher than published) on both columns at all 3 seeds.** Same direction as audit #1's sonar seed 0, opposite to the ionosphere audit's uniformly favorable drift — across the three audited rows of Table 2 there is still no consistent direction, supporting the replication-noise reading. Candidate mechanisms for the glass-specific upward shift, stated without accusation: (a) the unstratified 22-case holdout frequently draws few or no cases of the rare classes (classes 3/5/6 have 17/13/9 cases), inflating error variance and possibly the mean vs whatever split construction the paper used; (b) 6-class plurality voting on 100 trees has more tie exposure than the binary rows.
+3. Individual-seed Selection drifts span 1.40-2.13 pp; seed 2 alone (2.13) sits within the bar but above the score-2 ceiling. Per PREREG_DRIFT.md the tracker quantity is the 3-seed mean (1.81); stated so the single-seed spread is on the record.
+4. The same-engine caveat of audit #3 does NOT apply: Fortran CART (2001) vs scikit-learn 1.7.2 are genuinely independent implementations.
+5. Label correction, typo-class: the pre-registration header says "Program 2b run #16"; per the agenda log this scheduled session is run #17 (2026-07-07 was run #16). The registered file is not edited; flagged here instead.
+6. Guardrail compliance note (run #16 addendum rule): the same-day-duplicate check was effectively performed by the prereg new-file web-commit itself, which would have collided ("file already exists") had another instance registered this target today; it did not. The commits page was checked after the prereg landed (`80faaa4` at HEAD) rather than before rubric scoring — order noted for the record.
