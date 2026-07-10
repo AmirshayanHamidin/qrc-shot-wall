@@ -400,20 +400,36 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       subordinate executor, all 300 raw rows re-verified independently by the auditing session
       (see the audit's honesty item 3).
 
+- [x] **2026-07-10 — scikit-learn 1.9.0 docs, LFW eigenfaces example, printed classification report,
+      accuracy + weighted-F1 (Program 2b confirmatory audit #20)** (`audits/AUDIT_sklearn-lfw-eigenfaces.md` +
+      `audits/audit_lfw_eigenfaces_run.py` + `audits/lfw_eigenfaces_raw.json`). Two-commit rule: prereg
+      `a81500f` web-committed REMOTE-FIRST and md5-verified BEFORE any reproduction code ran; results
+      `0e10d1c`. BOTH named candidates in one: the run-#3 LFW queue item AND the first score-1 point whose
+      single rubric point is live (unseeded) randomization; largest dataset in the program (243 MB archive,
+      sha256 == sklearn's own FUNNELED_ARCHIVE pin). Blind rubric **1/5 both columns**. Published 84 / 84
+      (accuracy / weighted-F1, pp) -> reproduced **83.540 / 83.641** (seed 0; bar ±3.0 pp) — **CONFIRMED**;
+      all deterministic anchors exact (1288/1850/7, 966/322, supports). Standardized drift (3-seed):
+      **1.09 / 1.03 pp**. Secondary prediction HELD (both ≤ 1.96 pp) — but these are the largest score-≤1
+      drifts in the set by an order of magnitude: pure randomization variance at score 1 out-drifts most
+      score-2/3/4 points, moving exploratory rho 0.663 → 0.574. Sharpest finding: the printed best
+      estimator (C=76823, gamma=0.0034) reproduces in NONE of the 3 seeds (best-C spread 3.5k–14.7k)
+      while the report stays within 0.5–2.7 pp — the docs table is robust to the search draw; the
+      best-params line is a one-off. Version gap 1.9.0→1.7.2 pre-declared (Python 3.10 pip ceiling).
+
 ### Queue (candidate targets for future runs)
 
 - [x] ~~Another Table 3 row from the same paper with a different discretion profile~~ — DONE
       run #2 (LogisticRegression C=1 ovr l1, see Completed audits). Still open from this bullet:
       DecisionTree entropy/depth-10 → 0.798 (adds *seed* discretion, a profile not yet tested).
 - [x] ~~scikit-learn's own documented example numbers~~ — digits SVC report DONE run #3
-      (see Completed audits). Still open from this bullet: LFW eigenfaces table.
+      (see Completed audits). ~~LFW eigenfaces table~~ — DONE audit #20 (see Completed audits).
 - [ ] Fashion-MNIST DecisionTree entropy/depth-10 -> 0.798 — **infra-blocked in this sandbox**
       (run #3 synthetic probe: >=2 min single-process fit vs hard 45 s cap; no claim-preserving
       amendment). Needs an environment without the per-process cap.
 - [x] ~~A published UCI-scale ablation row from a widely cited repo README.~~ — DONE run #4, with a
       widely cited *paper* table instead of a repo README (Breiman 2001 Table 2, ionosphere; see
       Completed audits). Repo-README row DONE run #14 (xgboost CLI mushroom demo, audit #15).
-      Still open from this bullet: LFW eigenfaces (run #3 bullet) and other Breiman Table 2 rows (sonar, glass, diabetes)
+      LFW eigenfaces DONE audit #20; Breiman Table 2 rows sonar/glass/diabetes all DONE (audits #1/#18/#19)
       if a cross-implementation *ladder within one paper* is wanted.
 
 ## Program 2b — pre-registered drift study (discretion predicts drift)
@@ -423,7 +439,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 18/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 19/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -439,10 +455,12 @@ README, test r0/r1 + train r0/r1], (4, 2.99), (4, 0.85), (4, 1.34) [Freund-Schap
 ionosphere, C4.5 alone / boost / bag], (4, 3.36), (4, 0.99), (4, 6.86) [Freund-Schapire 1996
 sonar, C4.5 alone / boost / bag], (2, 0.83), (2, 1.81) [Breiman-2001 glass Forest-RI,
 Single Input / Selection], (2, 0.46), (2, 0.33) [Breiman-2001 diabetes Forest-RI, Single Input /
-Selection].
-Running rho (EXPLORATORY until n=30): spearmanr over the 42 points as printed above (2-dp) =
-**0.663, p = 1.7e-06** — near-flat from 0.666 as two low-drift score-2 points join (diabetes, the
-fourth Forest-RI row, lands at the score-2 pack's low-drift floor); no confirmatory weight. (Correction, run #11 second-instance addendum: first logged as 0.660/0.0005, computed from
+Selection], (1, 1.09), (1, 1.03) [sklearn-1.9.0 docs LFW eigenfaces, accuracy / weighted-F1].
+Running rho (EXPLORATORY until n=30): spearmanr over the 44 points as printed above (2-dp) =
+**0.574, p = 4.7e-05** — the largest single-audit move yet (from 0.663), driven by ~1 pp of pure
+randomization drift at score 1 (LFW's unseeded search out-drifts most score-2/3/4 points): evidence
+against the hypothesis at the low-score end, suggesting the discretion TYPE (live randomization vs
+pinned-but-unspecified choices) may matter as much as the count; no confirmatory weight. (Correction, run #11 second-instance addendum: first logged as 0.660/0.0005, computed from
 the three new points' full-precision drifts; runs #1–#10's logged rho values reproduce from the
 printed 2-dp list, so the printed-list convention is pinned from here on.) Family
 coverage now includes clustering (a run #10 priority); the library-docs claim class enters the
@@ -451,10 +469,10 @@ confirmatory set at near-zero drift, replicating exploratory audit #3's pattern 
 confirmatory entries, all at the drift floor). Priorities: a score-0/1 anchor outside the
 certified-values class, further score-4/5 density (now 11 points at scores 4–5 vs 18 at score 2;
 audit #17 added three and score 4 now carries the program's first high-score DISCREPANCY), and the
-blocked audit #4 SGD target in a cap-free environment. Named candidates for next run: the LFW
-eigenfaces docs table (open queue item; download size vs the 45-s cap is the pre-run risk to probe),
-or a score-0/1 anchor outside the certified-values class (the top coverage gap). Diabetes DONE
-audit #19 — the Breiman-2001 Forest-RI within-paper ladder is complete. Decade breadth 1967–2016 (audit #15
+blocked audit #4 SGD target in a cap-free environment. Named candidates for next run: a score-0
+anchor outside the certified-values class (still the top coverage gap — a fully-seeded library-docs
+doctest row would qualify), or further score-3 density (7 points, the thinnest populated score).
+LFW DONE audit #20; diabetes DONE audit #19 — the Breiman-2001 Forest-RI ladder is complete. Decade breadth 1967–2016 (audit #15
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
@@ -888,4 +906,20 @@ adds a 2014-era library-demo claim reproduced across a decade of releases).
   installed to /tmp instead (resolved 1.7.2, the same version as every prior Program 2b audit;
   audit honesty item 2). All pushes verified by SHA-pinned raw fetch + md5; freshness verified
   against the commits API at session start (HEAD 1be45e64). Program 1 untouched; its audit queue
+  (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
+
+- 2026-07-10 (interactive session, continuation of run #18) — Nineteenth confirmatory audit landed at
+  A.H.'s request: sklearn-1.9.0 docs LFW eigenfaces report (see Completed audits) — **CONFIRMED**,
+  3-seed drift 1.09/1.03 pp at blind rubric 1/5. Tracker n=19/30; exploratory rho over 44 points =
+  0.574 (p = 4.7e-05) — the largest single-audit rho move yet (0.663 → 0.574), logged as evidence
+  AGAINST the hypothesis at the low-score end: one unseeded search + unseeded randomized-SVD PCA
+  contribute ~1 pp of drift, more than most pinned-seed score-2/3/4 targets. LFW feasibility was
+  probed BEFORE pre-registration (4.5 MB/s measured; resumable chunked download pre-declared —
+  audit #3 precedent). Executor delegation per the run-#18 rule; the auditing session re-ran primary
+  seed 0 end-to-end BIT-IDENTICALLY (accuracy, F1, all 10 candidate draws, report text) and
+  recomputed both drifts from raw. Incidents, minor and disclosed: (a) fetch_lfw_people required
+  three metadata files absent from the pre-registered download plan — each matched sklearn's own
+  hard-coded sha256 pins exactly (audit honesty item 2); (b) trailing-newline append on the raw
+  JSON web commit (run #1 class); (c) Copilot commit-message autofill handled as usual. All pushes
+  verified by SHA-pinned raw fetch + md5/byte checks. Program 1 untouched; its audit queue
   (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
