@@ -1,0 +1,26 @@
+{
+ "audit": "B6 gate-noise law full 420-cell re-run from committed src/qrc_gatenoise.py",
+ "date": "2026-07-11",
+ "environment": {
+  "python": "3.10",
+  "numpy": "2.2.6",
+  "sklearn": "1.7.2",
+  "qiskit": "2.5.0",
+  "platform": "linux sandbox, CPU"
+ },
+ "chunking": "one (arch,gamma) slice per process via audits/audit_b6_rerun.py, committed functions unmodified",
+ "n_cells_compared": 420,
+ "max_abs_diff_acc": 0.0,
+ "max_abs_diff_c": 0.0,
+ "max_abs_diff_exact_sep": 0.0,
+ "published_summary": {
+  "collapse_r2": 0.9270908103967723,
+  "collapse_mae": 0.02892575332055628,
+  "naive_r2": 0.8512221920580241,
+  "naive_mae": 0.0416458622283865
+ },
+ "rerun_summary_matches": "bit-identical (all 420 cells, hence identical aggregates)",
+ "stored_pred_collapse_check": "recomputed from raw cells, max abs diff 1.1e-16",
+ "writeup_inconsistency": "RESULTS_GATENOISE.md honest-residual item 2 claims the readout is held fixed at its noiseless solution; committed code retrains LogisticRegression(C=1) on noisy features per cell (docstring agrees with code). Numbers are retrained-readout numbers.",
+ "verdict": "CONFIRMED (numeric); one write-up mischaracterization flagged"
+}
