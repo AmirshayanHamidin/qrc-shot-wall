@@ -572,6 +572,35 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       probe), one delegated chunk re-run bit-identically, all 300 registered raw rows
       re-verified by the auditor.
 
+- [x] **2026-07-11 — StatLog (Michie, Spiegelhalter & Taylor 1994) Backprop rows: diabetes
+      Table 9.20 + Australian credit Table 9.3 (Program 2b confirmatory audit #28)**
+      (`audits/AUDIT_statlog1994-backprop-diabetes-australian.md` +
+      `audits/audit_statlog_backprop_run.py` + `audits/statlog_backprop_raw.json`).
+      Two-commit rule clean in ONE session: prereg `28213ee` (rubric, bars, BOTH secondary
+      predictions, EMPTY results) verified byte-identical on the remote (10 846 B) before any
+      reproduction code existed; results + runner + raw in this session's batch. Published via
+      GitHub's FILE-UPLOAD path rather than the web editor — deliberate, after the editor's
+      auto-indent mangled audit #27's prereg; no editor incident this session. Blind rubric
+      **5/5 both rows** — only the SECOND score-5 target in the program and the first since
+      audit #8, taking the thinnest bucket from 1 point to 3. New claim class (1994 multi-lab
+      benchmark-consortium table) and new decade anchor; the book is legally public (out of
+      print, copyright reverted to the editors, full text posted by them). Published 24.8 / 15.4
+      (% test error, 12-fold / 10-fold CV) -> reproduced **23.047 / 13.623** (seed 0; bar ±5.0 pp)
+      — **CONFIRMED both rows**, all 3 master seeds; the 2026 default MLP lands ~1.8 pp BETTER
+      than the 1994 original on both. Standardized drift (3-seed): **1.93 / 1.83 pp**.
+      Secondary A **FAILED both clauses** (neither drift exceeds the 1.96 pp score-2 ceiling;
+      diabetes misses by 0.03 pp) — a second/third strike against the hypothesis at the
+      high-discretion end. Secondary B **HELD decisively**: the same targets reproduced WITHOUT
+      the book's unstated scaling choice drift **4.89 / 9.72 pp** (2.5x / 5.3x). A and B together
+      are this audit's real finding and they cut at the program's headline: the discretion is
+      real and large, the measured drift is small, and the gap is how carefully the reproducer
+      resolved it — the **competence confounder**, now logged for the post-n=30 analysis.
+      Reported honestly and NOT fixed: 100% of folds hit `max_iter=200` without meeting `tol` in
+      the primary configuration (raising it would have moved a defaulted choice after data).
+      Ninth audit under the planner/executor split: 24 chunks delegated, two re-run bit-identically
+      by the auditor, every drift recomputed from raw per-fold rates, and the published 61-point
+      rho (0.532) reproduced from the printed list before appending.
+
 ## Program 2b — pre-registered drift study (discretion predicts drift)
 
 Registered 2026-07-05 in `audits/PREREG_DRIFT.md` (commit `ad8aa31`) BEFORE any confirmatory audit:
@@ -579,7 +608,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 27/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing; includes the audit-#26 repair — the previously untracked PCA-quadratic audit — and audits #26–#27).
+**Tracker: n = 28/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing; includes the audit-#26 repair — the previously untracked PCA-quadratic audit — and audits #26–#28).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -603,10 +632,21 @@ train acc], (3, 0.32), (3, 0.39) [Breiman-1996 Bagging Predictors ionosphere, e_
 (4, 0.41) [Freund-Schapire 1996 segmentation, C4.5 alone / boost / bag], (3, 0.46)
 [LeCun-1998 MNIST 40-PCA+quadratic, audit-#26 tracker repair], (3, 0.21), (3, 0.45)
 [Breiman-1996 Bagging Predictors breast cancer, e_S / e_B], (3, 0.32), (3, 0.44)
-[Breiman-1996 Bagging Predictors waveform, e_S / e_B].
-Running rho (EXPLORATORY until n=30): spearmanr over the 61 points as printed above (2-dp) =
-**0.532, p = 1.0e-05** (audit #27; the 59-point value 0.538/1.1e-05 was reproduced from the
-printed list before appending — two more near-floor score-3 points continue the drift-floor
+[Breiman-1996 Bagging Predictors waveform, e_S / e_B], (5, 1.93), (5, 1.83)
+[StatLog 1994 Backprop, diabetes Table 9.20 / Australian credit Table 9.3].
+Running rho (EXPLORATORY until n=30): spearmanr over the 63 points as printed above (2-dp) =
+**0.562, p = 1.7e-06** (audit #28; the 61-point value 0.532/1.0e-05 was reproduced from the
+printed list before appending - the two new points are the program's FIRST score-5 additions since
+audit #8, taking score 5 from 1 point to 3. rho RISES 0.030 because both land above the global median
+drift, yet the score-5 bucket is now the set's most-compressed: 3 points spanning 1.11-1.93 pp, with a
+CEILING (1.93) BELOW the score-3 max (10.35) and the score-4 max (6.86). The monotone rho is being
+carried by the low end, not the high end. Both rows FAILED pre-registered secondary A (drift > 1.96 pp,
+the largest score-2 drift) - diabetes by 0.03 pp - while secondary B HELD decisively: the same targets
+reproduced WITHOUT the unstated scaling choice drift 4.89 / 9.72 pp, i.e. 2.5x / 5.3x the primary.
+Discretion on this target is real and large; the recorded drift is small; the difference is entirely how
+carefully the reproducer resolved it. This "competence confounder" is logged alongside floor-headroom for
+the post-n=30 analysis). Previous note (audit #27, superseded): rho 0.532, p = 1.0e-05 (the 59-point
+value 0.538/1.1e-05 was reproduced from the printed list before appending — two more near-floor score-3 points continue the drift-floor
 squeeze at mid scores; score 3 now has 16 points. Note: the audit-#27 prereg's tracker-context
 paragraph said score 3 "moves to 15" — an arithmetic slip, 14 + 2 = 16; flagged here rather
 than by editing the registered file). Previous note (audit #26, superseded): rho 0.538,
@@ -648,14 +688,38 @@ score 2). Score-3 density extended again (audit #24: two Breiman-1996 diabetes p
 drift floor; score 3 now at 11 points). Score-4/5 density extended again (audit #25: three FS96
 segmentation points at the drift floor; 18 points at scores 4–5 vs 18 at score 2 — parity reached;
 the FS96 C4.5 no-test-set ladder is COMPLETE: glass / iris / ionosphere / sonar / vehicle /
-segmentation, spanning drifts 0.06–6.86 pp at constant rubric 4). Named candidates for next run:
-further score-3 density via the remaining Breiman-1996 Table 2 rows (breast cancer / waveform —
-same pinned convention, runners already committed; diabetes DONE audit #24), a low-published-error
+segmentation, spanning drifts 0.06–6.86 pp at constant rubric 4). Score-5 density OPENED (audit #28: two StatLog-1994 Backprop
+points; score 5 goes 1 -> 3 points, still the thinnest bucket). Named candidates for next run:
+MORE score-5 targets — the one-shot n=30 test is 2 audits away and score 5 carries only 3 of the 63
+points, so a third high-discretion audit would materially firm the high end before the test fires;
+a low-published-error
 score-2/3 target to help separate the floor-headroom confounder from the discretion score
-(audit #25 honesty item 2), or the blocked audit #4 SGD target in a cap-free environment. LFW DONE audit #20; diabetes DONE audit #19 — the Breiman-2001 Forest-RI ladder is complete. Decade breadth 1967–2016 (audit #15
+(audit #25 honesty item 2), or the blocked audit #4 SGD target in a cap-free environment.
+NOTE FOR THE n=30 ANALYSIS: two confounders are now on the record — floor-headroom (audits #25/#26,
+contradicted by #27) and the COMPETENCE confounder (audit #28: secondaries A and B holding together
+show that |drift| = discretion available x how well the reproducer resolves it, while the rubric
+scores only the first factor). Neither may be used to adjust the pre-registered test; both belong in
+the honesty section of RESULTS_DRIFT.md. LFW DONE audit #20; diabetes DONE audit #19 — the Breiman-2001 Forest-RI ladder is complete. Decade breadth 1967–2016 (audit #15
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
+
+- 2026-07-11 (scheduled run, Program 2b run #28) — **Audit #28 landed clean, n=28/30.** First
+  session in three to complete a full two-commit increment with no publish incident: the sandbox
+  still has no git credential, so both commits went through the user's authenticated browser, but
+  via GitHub's **file-upload** path instead of the web editor — byte-exact by construction, which
+  retires the editor-mangling failure mode that cost audits #4/#26/#27 extra repair commits. Target:
+  the StatLog book's Backprop rows (diabetes 0.248, Australian credit 0.154), chosen to attack the
+  program's thinnest cell — score 5 held exactly ONE point. Both rows CONFIRMED (23.047 / 13.623 vs
+  24.8 / 15.4, bar ±5.0 pp); tracker n=28/30, 63 points, exploratory rho **0.562 / p=1.7e-06**.
+  The finding that matters is not the verdict but the pair of secondary predictions: A FAILED (score-5
+  drift does NOT exceed the score-2 ceiling) while B HELD (dropping the one unstated preprocessing
+  choice inflates drift 2.5-5.3x). Same claim, same rubric score, 5x the drift — so |drift| is a
+  function of discretion AND of how well the reproducer closes it, and the rubric only scores the
+  former. Logged as the **competence confounder** for the n=30 honesty section; it is NOT used to
+  adjust anything, and the rubric was NOT amended post hoc. Two audits remain before the one-shot
+  confirmatory test fires; the standing recommendation is that at least one of them be another
+  score-5 target, since score 5 still carries only 3 of 63 points.
 
 - 2026-07-11 (scheduled run) — **Audit #26 verified, still UNPUBLISHED (push blocker, 2nd
   session).** No new audit started: the queue's real blocker is publication, not production.
