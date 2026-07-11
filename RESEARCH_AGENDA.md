@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-10, Program 2b runs #25–#26 scheduled sessions)
+## State (updated 2026-07-11, Program 2b audit #27 session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -548,6 +548,30 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       before any probe number existed; one registered chunk re-run bit-identically; all 500 raw
       rows re-aggregated by the auditor).
 
+- [x] **2026-07-11 — Breiman (1996) "Bagging Predictors", Table 2, waveform rows e_S + e_B
+      (Program 2b confirmatory audit #27)** (`audits/AUDIT_breiman1996-bagging-cart-waveform.md` +
+      `audits/audit_breiman96_bag_waveform_run.py` + `audits/breiman96_bag_waveform_raw.json`).
+      Two-commit rule with a disclosed session boundary: prereg `f5d1c72` + byte-fix `b7af1a5f`
+      web-committed by the PREVIOUS session (2026-07-11 10:52/10:55 UTC), which died before any
+      results were published; this session found the prereg on the remote with EMPTY results and
+      completed it — the dead session's leftover publish package in the sandbox was unreadable
+      (mode 700, different uid) and never used (the audit's honesty item 1). Fifth dataset of the
+      Breiman-1996 CART-bagging ladder and the family's first SIMULATED-data target (faithful
+      full-precision port of the md5-pinned waveform.c model; 1800 fresh cases/iteration,
+      L=300 / T=1500). Blind rubric **3/5 both rows**. Published 29.1 / 19.3 -> reproduced
+      **29.277 / 19.589** (seed 0; pre-registered bar ±2.5 pp) — **CONFIRMED** on both rows, all
+      3 master seeds. Standardized drift (3-seed): **0.32 / 0.44 pp**; e_S per-seed SEs
+      (0.19–0.22) bracket the published 0.2 (the paper's smallest); the published 34% decrease
+      reproduces as 32.2–33.4%. Secondary A FAILED again; **secondary B — the high-headroom
+      converse of audit #26's floor-headroom probe — FAILED on both clauses**: the family's
+      maximal-headroom target (15.1 pp above the Bayes floor) drifts near the family floor,
+      evidence AGAINST distance-to-floor as the drift confounder and FOR the paper's own
+      sampling SE as the better predictor. Sensitivity probe: the cited C code's u-quantization
+      + 2-dp rounding is numerically inert (Δ ≤ 0.08 pp; blind score not lowered post hoc).
+      Eighth audit under the planner/executor split: 52 chunks delegated (39 registered + 13
+      probe), one delegated chunk re-run bit-identically, all 300 registered raw rows
+      re-verified by the auditor.
+
 ## Program 2b — pre-registered drift study (discretion predicts drift)
 
 Registered 2026-07-05 in `audits/PREREG_DRIFT.md` (commit `ad8aa31`) BEFORE any confirmatory audit:
@@ -555,7 +579,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 26/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing; includes the audit-#26 repair — the previously untracked PCA-quadratic audit — and audit #26 itself).
+**Tracker: n = 27/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing; includes the audit-#26 repair — the previously untracked PCA-quadratic audit — and audits #26–#27).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -578,9 +602,15 @@ train acc], (3, 0.32), (3, 0.39) [Breiman-1996 Bagging Predictors ionosphere, e_
 (3, 0.64), (3, 0.28) [Breiman-1996 Bagging Predictors diabetes, e_S / e_B], (4, 0.19), (4, 0.06),
 (4, 0.41) [Freund-Schapire 1996 segmentation, C4.5 alone / boost / bag], (3, 0.46)
 [LeCun-1998 MNIST 40-PCA+quadratic, audit-#26 tracker repair], (3, 0.21), (3, 0.45)
-[Breiman-1996 Bagging Predictors breast cancer, e_S / e_B].
-Running rho (EXPLORATORY until n=30): spearmanr over the 59 points as printed above (2-dp) =
-**0.538, p = 1.1e-05** (audit #26 + tracker repair; the 56-point value 0.547/1.3e-05 was reproduced
+[Breiman-1996 Bagging Predictors breast cancer, e_S / e_B], (3, 0.32), (3, 0.44)
+[Breiman-1996 Bagging Predictors waveform, e_S / e_B].
+Running rho (EXPLORATORY until n=30): spearmanr over the 61 points as printed above (2-dp) =
+**0.532, p = 1.0e-05** (audit #27; the 59-point value 0.538/1.1e-05 was reproduced from the
+printed list before appending — two more near-floor score-3 points continue the drift-floor
+squeeze at mid scores; score 3 now has 16 points. Note: the audit-#27 prereg's tracker-context
+paragraph said score 3 "moves to 15" — an arithmetic slip, 14 + 2 = 16; flagged here rather
+than by editing the registered file). Previous note (audit #26, superseded): rho 0.538,
+p = 1.1e-05 (audit #26 + tracker repair; the 56-point value 0.547/1.3e-05 was reproduced
 from the printed list before appending — three near-floor score-3 points continue the drift-floor
 squeeze at mid scores; score 3 now has 14 points). Previous note (audit #25, superseded): rho 0.547,
 p = 1.3e-05 (audit #25; the 53-point value 0.604/1.7e-06 was reproduced from the
