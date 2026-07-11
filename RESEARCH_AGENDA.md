@@ -1,8 +1,17 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-11, Program 2b audit #29 session)
+## State (updated 2026-07-11, Program 2b CONFIRMATORY TEST session — the drift study is ANSWERED)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
+
+**PROGRAM 2b VERDICT (2026-07-11): SUPPORTED.** The one-shot pre-registered test of
+`audits/PREREG_DRIFT.md` was executed per the audit-#30 binding hand-off, over exactly the 67
+closed points and no others: **Spearman rho = 0.587 (bar > 0.5), p = 1.7e-07 two-sided (bar
+< 0.01); permutation cross-check 0/10⁶ exceedances.** Full table, sensitivity checks and the four
+pre-logged confounders in **`results/RESULTS_DRIFT.md`**; runner + frozen dataset + raw output in
+`audits/drift_confirmatory_{test.py,points.json,result.json}`. No points were added, no rubric
+re-scored, PREREG_DRIFT.md untouched. The confirmatory set is closed; further drift work is
+exploratory or needs a NEW pre-registration.
 
 Benchmarks **B1–B13 complete and pushed** (see README + `results/`). Highlights: the shot wall (B2),
 the parameter-free measurement-wall law (B5, R²=0.991, QPU-validated), gate noise as effective
@@ -726,6 +735,18 @@ the **competence confounder** (audit #28, shown by #30 to have a sign), and the 
 trap** (audit #29). A fourth, also pre-test: the **source concentration** of the high end — 5 of the 6
 score-5 points come from one book and one algorithm (StatLog Backprop), and the 6th (Sigillito 1989)
 is also a gradient-trained neural net.
+
+**HAND-OFF DISCHARGED — TEST EXECUTED (2026-07-11, confirmatory-test session): VERDICT SUPPORTED.**
+rho = 0.5875, p = 1.7e-07 two-sided scipy (a registered option), Monte Carlo permutation
+cross-check 0/10⁶ exceedances (p < 1e-06, seed 0), over exactly the 67 points printed above,
+transcribed to `audits/drift_confirmatory_points.json` and machine-verified identical (order and
+values) to the printed list at `ff7af3bd`. Verdict published in `results/RESULTS_DRIFT.md` with
+the full table, the four pre-logged confounders (floor-headroom, competence, partial-specification
+trap, source concentration) plus cluster non-independence, and labeled-exploratory sensitivity
+checks (audit-level rho 0.638 / p 2.0e-04; source-cluster rho 0.756 / p 2.8e-03; Kendall tau
+0.458; drop-letters 0.570 / drop-shuttle 0.608 / drop-both 0.590 — the bar survives all of them).
+No points added, nothing re-scored, PREREG_DRIFT.md untouched. The paragraph below is retained
+as the closure record it was.
 Running rho: spearmanr over the 67 points as printed above (2-dp) = **0.587, p = 1.7e-07**
 (audit #30; the 65-point value 0.590/2.4e-07 was reproduced from the printed list before appending.
 This is the LAST exploratory rho — the set is now closed and the next run's value is the confirmatory
@@ -830,6 +851,24 @@ the honesty section of RESULTS_DRIFT.md. LFW DONE audit #20; diabetes DONE audit
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
+
+- 2026-07-11 (scheduled run, Program 2b CONFIRMATORY TEST) — **The one-shot pre-registered test
+  fired: VERDICT SUPPORTED (rho 0.587 > 0.5, p 1.7e-07 < 0.01).** Executed exactly per the
+  audit-#30 binding hand-off: the 67 printed points were transcribed to a frozen JSON, machine-
+  diffed against the tracker's printed list at `ff7af3bd` (identical, order and values), and the
+  registered statistic computed once (`audits/drift_confirmatory_test.py`; scipy 1.15.3 two-sided
+  primary + 10⁶-resample permutation cross-check, 0 exceedances). No audit run, no points added,
+  no rubric touched. `results/RESULTS_DRIFT.md` published with the full 67-point table, the four
+  pre-logged confounders, cluster non-independence (the bar survives audit-level and 13-cluster
+  aggregation: rho 0.638 / 0.756, both p < 0.01), and drop-extreme sensitivities (0.570–0.608).
+  Path note: prereg named the file without a directory; placed in `results/` per repo convention.
+  Publish incidents: none planned via file-upload path (byte-verified below). Session choices made
+  autonomously per scheduled-run rules: results path, MC permutation instead of infeasible exact
+  enumeration (registered alternative scipy p is primary). OPEN FOR NEXT RUNS: Program 2b is
+  complete — reverting the standing default to the main program's AUDIT MODE queue (B6/B11 next),
+  unless Amirshayan registers a new drift-study extension; README does not yet mention the drift
+  verdict (one-line addition, queued rather than done, to keep this increment exactly the
+  hand-off's scope).
 
 - 2026-07-11 (scheduled run, Program 2b run #28) — **Audit #28 landed clean, n=28/30.** First
   session in three to complete a full two-commit increment with no publish incident: the sandbox
@@ -1383,40 +1422,4 @@ adds a 2014-era library-demo claim reproduced across a decade of releases).
   (recomputed both column means + the OOB-selection rule; 3 bit-identical spot re-runs). Incidents,
   minor and disclosed: (a) Copilot commit-message autofill recurred on web commits and was
   replaced+DOM-verified before submitting (run #10 class); (b) GitHub's web commit appended a
-  trailing newline to rf_diabetes_raw.json (35,377 vs 35,376 B, JSON-identical — run #1 class);
-  (c) sklearn was not preinstalled in this sandbox and pip first hit ENOSPC on the session mount —
-  installed to /tmp instead (resolved 1.7.2, the same version as every prior Program 2b audit;
-  audit honesty item 2). All pushes verified by SHA-pinned raw fetch + md5; freshness verified
-  against the commits API at session start (HEAD 1be45e64). Program 1 untouched; its audit queue
-  (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
-
-- 2026-07-10 (interactive session, continuation of run #18) — Nineteenth confirmatory audit landed at
-  A.H.'s request: sklearn-1.9.0 docs LFW eigenfaces report (see Completed audits) — **CONFIRMED**,
-  3-seed drift 1.09/1.03 pp at blind rubric 1/5. Tracker n=19/30; exploratory rho over 44 points =
-  0.574 (p = 4.7e-05) — the largest single-audit rho move yet (0.663 → 0.574), logged as evidence
-  AGAINST the hypothesis at the low-score end: one unseeded search + unseeded randomized-SVD PCA
-  contribute ~1 pp of drift, more than most pinned-seed score-2/3/4 targets. LFW feasibility was
-  probed BEFORE pre-registration (4.5 MB/s measured; resumable chunked download pre-declared —
-  audit #3 precedent). Executor delegation per the run-#18 rule; the auditing session re-ran primary
-  seed 0 end-to-end BIT-IDENTICALLY (accuracy, F1, all 10 candidate draws, report text) and
-  recomputed both drifts from raw. Incidents, minor and disclosed: (a) fetch_lfw_people required
-  three metadata files absent from the pre-registered download plan — each matched sklearn's own
-  hard-coded sha256 pins exactly (audit honesty item 2); (b) trailing-newline append on the raw
-  JSON web commit (run #1 class); (c) Copilot commit-message autofill handled as usual. All pushes
-  verified by SHA-pinned raw fetch + md5/byte checks. Program 1 untouched; its audit queue
-  (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
-
-- 2026-07-10 (scheduled session, Program 2b run #20) — Twenty-first confirmatory audit landed:
-  Breiman (1996) Table 2 ionosphere e_S + e_B (see Completed audits) — **CONFIRMED** both rows,
-  3-seed drift 0.32/0.39 pp at blind rubric 3/5. Tracker n=21/30; exploratory rho over 48 points =
-  0.604 (p = 5.5e-06, no confirmatory weight). Third run under the planner/executor split (23/24
-  chunks delegated; one chunk re-run bit-identically by the auditor; all 300 rows re-verified).
-  Incidents, minor and disclosed: (a) UCI ionosphere class counts differ from the paper's Appendix
-  by one case (225/126 vs 226/125) — caught by a pre-run assert, honesty item 1; (b) the
-  session-outputs mount served a truncated runner copy after an edit (run #1/#2 class) — /tmp copy
-  canonical, published bytes verified; (c) trailing-newline append on the raw JSON web commit
-  (run #1 class); (d) Copilot commit-message autofill replaced+verified as usual; (e) /sessions
-  mount arrived 100% full and /tmp held ~800 MB of leftovers from this morning's runs (LFW archive)
-  — cleaned before work; sklearn again loaded from /tmp/pylibs (1.7.2, same as every prior audit).
-  All pushes verified by SHA-pinned raw fetch + md5. Program 1 untouched; its audit queue
-  (B6/B11 next, qrc_law.png regeneration, B5 regression cells) unchanged.
+  trailing newline to rf_diabetes_raw.json
