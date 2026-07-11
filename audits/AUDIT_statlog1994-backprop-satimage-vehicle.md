@@ -57,16 +57,53 @@ Tracker context at registration (n = 28, 63 points, exploratory rho 0.562 / p 1.
 
 ## Results
 
-(EMPTY at pre-registration — commit 1 of 2.)
+Data checks reproduced at run time: all 11 md5s as pinned above; satimage 4435/2000 x 36, vehicle 9 x 94 x 18.
+
+Primary configurations (master seed 0):
+
+| Row | Published | Reproduced (seed 0) | Drift | Bar | Verdict |
+|---|---|---|---|---|---|
+| Backprop, satimage (4435/2000 split) | 13.9 | **9.350** | **-4.550 pp** | +/-5.0 | CONFIRMED (in-bar by 0.45 pp) |
+| Backprop, vehicle (distributed 9-fold CV, 5 hidden nodes) | 20.7 | **33.924** | **+13.224 pp** | +/-4.0 | **DISCREPANCY** |
+
+All three master seeds, primary configurations:
+
+| Row | seed 0 | seed 1 | seed 2 | 3-seed mean \|drift\| |
+|---|---|---|---|---|
+| satimage | 9.350 | 9.700 | 10.100 | **4.18 pp** |
+| vehicle | 33.924 | 29.787 | 32.033 | **11.21 pp** |
+
+**Standardized drift for the tracker: satimage 4.18 pp at blind rubric 5/5, vehicle 11.21 pp at blind rubric 4/5.** 11.21 pp is the largest drift in the confirmatory set (previous maximum 10.35 at score 3); 4.18 pp is the largest score-5 drift (previous ceiling 1.93). The two rows drift in OPPOSITE directions: the 2026 default MLP beats the 1994 Backprop by 4.6 pp on satimage, while the book-faithful 5-hidden-node vehicle configuration is 13.2 pp WORSE than the 1994 number.
+
+Convergence, reported as pre-registered and NOT fixed: every vehicle primary fold hit `max_iter=200` without meeting `tol` (9/9 folds, all 3 seeds), and satimage primary hit it too (1/1/1 fits). Raising `max_iter` would have been moving a defaulted choice after seeing data.
+
+Secondary pre-registered predictions:
+
+- **A HELD — for the first time in the program.** Both rows' 3-seed drift exceeds 1.96 pp (satimage 4.18, vehicle 11.21). This exact clause failed in audit #8 (1.11) and twice in audit #28 (1.93/1.83); audit #29 finally delivers the large high-discretion drifts the hypothesis expects.
+- **B HELD, both rows, decisively.** Unscaled 3-seed drifts: satimage 11.68 pp (vs 4.18 scaled), vehicle 53.30 pp (vs 11.21) — vehicle collapses to ~74% error without scaling. Rubric point 5 is a live drift driver on this claim class, replicating audit #28's mechanism result.
+- **C FAILED — inverted.** The score-4 vehicle row (11.21 pp) out-drifted the score-5 satimage row (4.18 pp) by 2.7x. Within one implementation family, the rubric's 5-vs-4 ordering pointed the wrong way.
+
+Labelled sensitivity checks (never the verdict):
+
+- Vehicle with library-default `hidden_layer_sizes=(100,)`: 17.612 / 17.494 / 17.730 — 3-seed drift **3.09 pp, in-bar at every seed**. The book's disclosed 5-hidden-node architecture, honored without its undisclosed 4-hour training budget, is what produces the discrepancy; ignoring the disclosure and taking the modern default would have CONFIRMED the row.
+- Vehicle with `KFold(9, shuffle, random_state=m)` instead of the distributed folds: 34.634 / 30.378 / 32.270 (drift 11.73 pp) — fold-assignment discretion is inert (~0.5 pp).
+- Satimage unscaled: 26.100 / 21.950 / 28.700 — see secondary B.
 
 ## Verdict
 
-(EMPTY at pre-registration — commit 1 of 2.)
+**DISCREPANCY** (the program's second, both at rubric 4). Satimage is CONFIRMED at seed 0 (-4.550 pp vs +/-5.0); vehicle exceeds its pre-registered +/-4.0 pp bar at every seed (+13.224 / +9.087 / +11.333). Per the program's standing rule the verdict is a number, not an accusation: the 1994 number was produced by ~4 hours of training per fold on period hardware, and the reproduction's fixed modern budget (`max_iter=200`, all folds unconverged) cannot deliver what that budget did for a 5-hidden-node network. Irreproducibility here defaults to environment/budget difference, not error in the original.
 
 ## Environment
 
-(Recorded with results — commit 2 of 2.)
+Sandbox Linux (Ubuntu 22.04, CPU only), Python 3.10.12, scikit-learn 1.7.2, numpy 2.2.6, scipy 1.15.3 (identical to audits #27/#28). Reproduction script: `audits/audit_statlog_backprop2_run.py` (chunked one (dataset, config, seed) triple per invocation; 45 s cap never approached, max ~14 s). Raw output (6 configurations x 3 seeds, per-fold errors, convergence counts): `audits/statlog_backprop2_raw.json`. Both committed in this session's batch.
 
 ## Honesty section
 
-(Recorded with results — commit 2 of 2.)
+1. **The partial-specification trap (post-hoc diagnosis, labelled as such).** The audit's real finding: vehicle's DISCREPANCY is caused by honoring the book's ONLY disclosed Backprop detail (5 hidden nodes) without the training budget that made it work. The h100 sensitivity shows the row reproduces fine (drift 3.09 pp) if the disclosure is ignored. A disclosed detail, honored out of context, drove MORE drift than the fully-undisclosed satimage row - partial specification can be worse than none. This joins audit #28's competence confounder and audit #25's floor-headroom confounder on the post-n=30 exploratory list; it also means the rubric (which scored vehicle LOWER for the disclosure) can be anti-correlated with drift within an implementation family - exactly what secondary C's failure shows.
+2. The pinned primary honored the disclosure because program precedent (audits #8/#28) is "specified choices are honored, unspecified resolved by defaults"; that rule was applied blind, before any number existed, and is not softened now that it produced a discrepancy.
+3. The two rows share one book and one (unpublished) implementation, so the points are not independent - and with satimage landing, 3 of the 4 score-5 points in the set share the StatLog implementation (concentration flagged at registration; re-flagged here for the n=30 honesty section).
+4. Satimage's confirmation is NOT tight: -4.55 pp against a +/-5.0 bar (0.45 pp margin), and its drift direction (modern better) is the same as audit #28's rows. The score-5 bar absorbing a 4.55 pp drift is doing real work for the first time.
+5. Two-commit ordering: pre-registration was committed to the REMOTE (`9139fa3`, verified byte-identical at 10 229 B by cache-busted fetch) before any reproduction code existed; results were computed afterwards in this same session.
+6. Planner/executor split (tenth audit under it): 16 of 18 chunks were executed by a delegated subagent from exact registered commands; the auditor re-ran two delegated chunks bit-identically, recomputed every drift from the raw JSON, and reproduced the printed 63-point rho (0.562/1.7e-06) before appending the new points.
+7. The vehicle fold files (xaa-xai) were READ as the distributed CV partition; the book does not literally say StatLog's 9 folds were these 9 files. The KFold sensitivity shows the reading is immaterial (0.5 pp).
+8. The 1994 rows are single historical runs (no seed averaging stated); comparing a 3-seed band against a single draw is the same asymmetry as every audit in this claim class.
