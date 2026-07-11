@@ -1,7 +1,7 @@
 # AUDIT: Breiman (1996) "Bagging Predictors", Table 2, waveform rows — e_S and e_B
 ## Program 2b confirmatory audit #27 — PRE-REGISTRATION FIRST, per audits/PREREG_DRIFT.md
 
-**Status: PRE-REGISTERED, results EMPTY.** This file is committed to the remote BEFORE any
+**Status: COMPLETE — results filled in a separate, later commit (two-commit rule).** This file is committed to the remote BEFORE any
 reproduction code for this audit runs (two-commit rule, RESEARCH_AGENDA.md Program 2 method
 rules + run #2 guardrail). Feasibility probes run before this commit used SYNTHETIC JUNK data
 only (run #3 precedent): per-iteration timing of the pruning-path pipeline was measured on
@@ -135,11 +135,69 @@ to 15 points. Exploratory rho at n=26: 0.538 (p = 1.1e-05).
 
 ## RESULTS
 
-*(EMPTY at pre-registration commit. Filled in a separate, later commit.)*
+*Filled 2026-07-11 in a separate, later commit (commit 2 of 2), after the pre-registered
+pipeline ran to completion. Environment: CPU-only sandbox, Python 3, scikit-learn 1.7.2,
+numpy 2.2.6 — exact match to the pinned environment, verified at runtime.*
+
+| Row | Published (SE) | Seed 0 (SE) | Seed 1 (SE) | Seed 2 (SE) | Dev seed 0 | Bar | Verdict |
+|---|---|---|---|---|---|---|---|
+| e_S (single CV-pruned tree) | 29.1 (0.2) | **29.277** (0.22) | 29.269 (0.19) | 29.707 (0.22) | +0.18 pp | ±2.5 | **CONFIRMED** |
+| e_B (bagging, 50 replicates) | 19.3 (0.1) | **19.589** (0.13) | 19.841 (0.15) | 19.793 (0.17) | +0.29 pp | ±2.5 | **CONFIRMED** |
+
+- **Verdict: CONFIRMED on both rows** — seed-0 deviations +0.18 / +0.29 pp, far inside the
+  ±2.5 pp bar, and the verdict sign is stable at all 3 master seeds (max deviation +0.61 pp).
+- **Standardized drift (3-seed mean |reproduced − published|): e_S 0.318 pp, e_B 0.441 pp**
+  — two tracker points **(3, 0.32), (3, 0.44)**. The fifth Breiman-1996 dataset lands on the
+  family drift floor, between breast cancer (0.21/0.45) and ionosphere (0.32/0.39).
+- The published 34% bagging decrease reproduces as **32.2–33.4%** across seeds.
+- Per-seed iteration SEs **bracket the published SE on e_S** (0.19–0.22 vs 0.2); on e_B they
+  sit slightly above it (0.13–0.17 vs 0.1) — see honesty item 3.
+- **Secondary prediction A: FAILED** (neither drift exceeds the 1.96 pp score-2 ceiling) —
+  the standing ladder probe fails again at score 3.
+- **Secondary prediction B (floor-headroom probe): FAILED on both clauses.** (i) e_S 0.32 ≥
+  breast cancer's 0.21 holds, but e_B 0.441 < 0.45 misses by 0.009 pp — reported as failed
+  per the registered wording; (ii) the high-headroom e_S row does NOT out-drift e_B
+  (0.32 < 0.44). The family's maximal-headroom target produced near-floor drifts, evidence
+  AGAINST a simple distance-to-floor bound: within this family, drift tracks the paper's own
+  sampling SE (waveform has its smallest) better than headroom.
+- **Sensitivity probe (NOT the registered pipeline):** the cited C program's u-quantization
+  (u ∈ {0..1000}/1000) plus 2-dp output rounding, seed 0 × 100 iterations: e_S 29.356
+  (SE 0.22), e_B 19.532 (SE 0.15) — **Δ vs registered seed 0 = +0.08 / −0.06 pp.** The
+  rubric-point-5 generator-variant discretion is numerically inert; the blind score is NOT
+  lowered post hoc (honesty item 4).
+- **Verification (planner/executor split, eighth audit under it):** 39/39 registered chunks
+  + 13 probe chunks delegated to mechanical executors; the auditing session independently
+  re-aggregated all 300 registered raw rows (per-iteration uniqueness, count and range
+  asserts), re-ran delegated chunk seed-2 [96,100) **bit-identically**, and matched delegated
+  iterations seed-0 0–1 **bit-identically** against a pre-delegation timing run.
 
 ## Honesty section
 
-*(EMPTY at pre-registration commit.)*
+1. **Prior-session artifact, disclosed.** The session that committed this pre-registration
+   died before publishing results, and this sandbox retained its files: a publish-ready
+   package for this audit (filled audit file, raw JSON, runner, PENDING_PUSH note) exists at
+   `/tmp/publish27_ready/`. Those files are mode-700 under a different uid and were **never
+   readable by this session** (verified: Permission denied on read attempts). This run
+   re-implemented the runner independently from the pre-registration text plus the committed
+   family runners, and re-ran everything from scratch; every published number derives solely
+   from this session's execution. The two-commit ordering is unaffected (the prereg was on
+   the remote at b7af1a5f before any of this session's reproduction code existed).
+2. **Drift direction unfavorable on both rows at all 3 seeds** (+0.17…+0.61 pp, 6/6 positive
+   deviations) — the same small systematic upward offset seen on glass and diabetes
+   (audits #14/#24), consistent with residual sklearn-vs-CART convention differences
+   (gini vs twoing, midpoint-alpha refit pruning), not sampling noise.
+3. **e_B noise-floor mismatch:** per-seed empirical SEs (0.13–0.17) sit above the published
+   0.1. Possible causes: Breiman's 100 iterations under a different RNG, or SE rounding to
+   1 dp in Table 3. e_S matches exactly, so the pipeline's iteration variance is not inflated.
+4. **The probe null does not lower the blind score.** Point 5 was scored blind as live
+   discretion; that it turned out numerically inert is a finding, not a rescore (audit #15
+   precedent).
+5. **Environment provenance:** scikit-learn 1.7.2 / numpy 2.2.6 were imported from a
+   leftover local install (`/tmp/pylibs`) of the prior session because the sandbox image
+   lacked disk space for a fresh install; versions were asserted at runtime and match the
+   pinned environment exactly.
+6. **Bayes-floor context:** reproduced e_B sits 5.5–5.8 pp above the task's known 14% floor
+   (paper: 5.3 pp) — bagging's near-floor behaviour on waveform reproduces qualitatively too.
 
 ---
 *Program 2b of the VAR initiative — github.com/AmirshayanHamidin/qrc-shot-wall. Verdict is a
