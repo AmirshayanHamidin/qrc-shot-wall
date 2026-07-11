@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-11, Program 2b audit #27 session)
+## State (updated 2026-07-11, Program 2b audit #29 session)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -601,6 +601,36 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       by the auditor, every drift recomputed from raw per-fold rates, and the published 61-point
       rho (0.532) reproduced from the printed list before appending.
 
+- [x] **2026-07-11 — StatLog (Michie, Spiegelhalter & Taylor 1994) Backprop rows: satimage
+      Table 9.9 + vehicle Table 9.6 (Program 2b confirmatory audit #29)**
+      (`audits/AUDIT_statlog1994-backprop-satimage-vehicle.md` +
+      `audits/audit_statlog_backprop2_run.py` + `audits/statlog_backprop2_raw.json`).
+      Two-commit rule clean in ONE session: prereg `9139fa3` (per-column blind rubric **5/5 satimage,
+      4/5 vehicle** — the program's first within-implementation 5-vs-4 contrast, vehicle being the
+      book's ONLY Backprop row with a disclosed configuration: "5 hidden nodes and a training time of
+      four hours"; bars ±5.0/±4.0 pp; THREE secondary predictions; EMPTY results) verified
+      byte-identical on the remote (10 229 B) before any reproduction code existed; results + runner +
+      raw published via the FILE-UPLOAD path in this session's batch. Published 13.9 / 20.7 (% test
+      error, single 4435/2000 split / 9-fold CV) -> reproduced **9.350 / 33.924** (seed 0). Satimage
+      **CONFIRMED** (-4.550 pp vs ±5.0 — in-bar by 0.45 pp, the score-5 bar doing real work for the
+      first time). Vehicle **DISCREPANCY** (+13.224 pp vs ±4.0, exceeded at every seed) — the
+      program's SECOND discrepancy, again at rubric 4. Standardized drift (3-seed): **4.18 / 11.21 pp**
+      — 11.21 is the largest drift in the confirmatory set (previous max 10.35) and 4.18 the largest
+      score-5 drift (previous ceiling 1.93). Secondary A **HELD for the first time** (both rows > 1.96
+      pp, after failing in audits #8/#28); secondary B **HELD decisively** (unscaled drifts 11.68 /
+      53.30 pp — scaling discretion is live, replicating #28); secondary C **FAILED INVERTED** (the
+      score-4 row out-drifted the score-5 row 2.7x). Post-hoc diagnosis, labelled as such: the
+      **partial-specification trap** — honoring the book's disclosed 5-hidden-node architecture
+      WITHOUT its undisclosed training budget underfits badly (9/9 primary folds unconverged at
+      max_iter=200, all seeds), while IGNORING the disclosure (library-default h=100 sensitivity,
+      drift 3.09 pp) would have confirmed the row. A disclosed detail honored out of context drove
+      more drift than full silence (satimage) — logged for the post-n=30 analysis beside the
+      competence and floor-headroom confounders. Fold-assignment discretion inert (KFold sensitivity
+      11.73 ≈ 11.21). Reported honestly and NOT fixed: satimage primary also hit max_iter (all
+      seeds). Tenth audit under the planner/executor split: 16 chunks delegated by exact registered
+      command, two re-run bit-identically by the auditor, every drift recomputed from raw JSON, and
+      the published 63-point rho (0.562) reproduced from the printed list before appending.
+
 ## Program 2b — pre-registered drift study (discretion predicts drift)
 
 Registered 2026-07-05 in `audits/PREREG_DRIFT.md` (commit `ad8aa31`) BEFORE any confirmatory audit:
@@ -608,7 +638,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 28/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing; includes the audit-#26 repair — the previously untracked PCA-quadratic audit — and audits #26–#28).
+**Tracker: n = 29/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing; includes the audit-#26 repair — the previously untracked PCA-quadratic audit — and audits #26–#29).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -633,9 +663,20 @@ train acc], (3, 0.32), (3, 0.39) [Breiman-1996 Bagging Predictors ionosphere, e_
 [LeCun-1998 MNIST 40-PCA+quadratic, audit-#26 tracker repair], (3, 0.21), (3, 0.45)
 [Breiman-1996 Bagging Predictors breast cancer, e_S / e_B], (3, 0.32), (3, 0.44)
 [Breiman-1996 Bagging Predictors waveform, e_S / e_B], (5, 1.93), (5, 1.83)
-[StatLog 1994 Backprop, diabetes Table 9.20 / Australian credit Table 9.3].
-Running rho (EXPLORATORY until n=30): spearmanr over the 63 points as printed above (2-dp) =
-**0.562, p = 1.7e-06** (audit #28; the 61-point value 0.532/1.0e-05 was reproduced from the
+[StatLog 1994 Backprop, diabetes Table 9.20 / Australian credit Table 9.3], (5, 4.18), (4, 11.21)
+[StatLog 1994 Backprop, satimage Table 9.9 / vehicle Table 9.6].
+Running rho (EXPLORATORY until n=30): spearmanr over the 65 points as printed above (2-dp) =
+**0.590, p = 2.4e-07** (audit #29; the 63-point value 0.562/1.7e-06 was reproduced from the printed
+list before appending - both new points land far above the global median drift (0.46 pp), so rho RISES
+0.028. The set's maximum drift is now at score 4 (11.21, vehicle - the program's second DISCREPANCY)
+and the score-5 ceiling more than doubles (1.93 -> 4.18, satimage CONFIRMED with 0.45 pp to spare).
+Secondary A (both rows > 1.96 pp) HELD for the FIRST time after failing in audits #8/#28; secondary B
+(scaling) HELD decisively again (unscaled drifts 11.68/53.30 pp); secondary C (within-audit 5-vs-4
+ordering) FAILED INVERTED - the score-4 row out-drifted the score-5 row 2.7x, because honoring the
+book's disclosed 5-hidden-node architecture without its undisclosed 4-hour training budget underfits
+(all folds unconverged), while the ignored-disclosure h100 sensitivity would have been in-bar at 3.09
+pp. The PARTIAL-SPECIFICATION TRAP is logged alongside the competence and floor-headroom confounders
+for the post-n=30 analysis). Previous note (audit #28, superseded): rho 0.562, p = 1.7e-06 (the 61-point value 0.532/1.0e-05 was reproduced from the
 printed list before appending - the two new points are the program's FIRST score-5 additions since
 audit #8, taking score 5 from 1 point to 3. rho RISES 0.030 because both land above the global median
 drift, yet the score-5 bucket is now the set's most-compressed: 3 points spanning 1.11-1.93 pp, with a
