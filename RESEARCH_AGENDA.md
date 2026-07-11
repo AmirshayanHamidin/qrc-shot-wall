@@ -631,6 +631,52 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       command, two re-run bit-identically by the auditor, every drift recomputed from raw JSON, and
       the published 63-point rho (0.562) reproduced from the printed list before appending.
 
+- [x] **2026-07-11 — StatLog (Michie, Spiegelhalter & Taylor 1994) Backprop rows: letters
+      Table 9.7 + shuttle Table 9.19 (Program 2b confirmatory audit #30 — THE TRIGGER AUDIT)**
+      (`audits/AUDIT_statlog1994-backprop-letter-shuttle.md` + `audits/audit_statlog_backprop3_run.py`
+      + `audits/statlog_backprop3_raw.json`). Two-commit rule clean in ONE session: prereg
+      (blind rubric **5/5 both rows**, bars +/-5.0 / +/-1.5 pp, THREE secondary predictions, EMPTY
+      results) uploaded via GitHub's FILE-UPLOAD path and verified byte-identical on the remote
+      (15 523 B, md5 7e28c1fb8617aa86f452cc61604b09b1) BEFORE any reproduction code existed; results
+      + runner + raw in this session's batch. Primary source re-fetched and re-verified (whole.pdf,
+      1 787 416 B, size-identical to the audits #28/#29 artifact). **Target selection rule fixed
+      BEFORE rubric scoring and published in the prereg:** take the ENTIRE remaining pool of StatLog
+      Backprop rows with (a) public data, (b) a proportion metric, (c) a recoverable attribute set
+      and split — which is exactly letters + shuttle. (Segmentation excluded: StatLog used **11 of
+      the 19** attributes, confirmed in the book's own Table 9.30, and never says which 11. DNA
+      excluded: Backprop used the 240-binary one-of-four coding; the distributed file carries the
+      180-binary coding. Heart/German/head-injury excluded: average-cost metric, not a proportion.)
+      Taking the whole pool was deliberate — the two rows' expected drifts were pre-registered as
+      pointing in OPPOSITE directions, so the last audit before the n=30 trigger could not be a
+      hypothesis-favorable cherry-pick. Published 32.7 / 0.43 (% test error; 15 000/5 000 one-shot
+      split / distributed 43 500/14 500 split) -> reproduced **5.36 / 0.0552** (seed 0).
+      Letters **DISCREPANCY** (-27.34 pp vs +/-5.0, outside at every seed) — the program's THIRD
+      discrepancy and **its largest drift by 2.5x**. Shuttle **CONFIRMED** (-0.375 pp vs +/-1.5,
+      inside at every seed). Standardized drift (3-seed): **27.53 / 0.36 pp** — at the SAME blind
+      rubric score of 5/5. Score-5 bucket goes 4 -> 6 points and now spans 0.36-27.53 pp.
+      **The finding — secondary B, registered as hypothesis-threatening, HELD at 75.8x:** the two
+      rows share book, algorithm, unpublished implementation, reproducer, defaults, session and
+      rubric score, and their absolute drifts differ 76x — but their RELATIVE drifts are identical
+      (the 2026 default MLP removes 84.2% of the published error on letters, 84.5% on shuttle), and
+      the drift ratio (75.8x) reproduces the published-headroom ratio (76.0x) to three significant
+      figures. **|drift| in pp ~= (relative reproduction error) x (headroom above the 0% floor)**;
+      the rubric scores only the first factor. This ESTABLISHES the floor-headroom confounder at
+      constant discretion — what audits #25/#26 could only conjecture and #27 argued against, since
+      every earlier test confounded headroom with score, paper, algorithm and dataset. Secondary A
+      FAILED on shuttle (pre-registered as expected to fail). Secondary C FAILED **INVERTED on both
+      rows**: unscaled drifts (23.40 / 0.285) are SMALLER than the scaled primaries (27.34 / 0.375)
+      because both drifts are negative — degrading the model moves it back toward the 1994 number.
+      Unstated discretion inflates |drift| only when the published claim is at least as good as the
+      modern default: **the competence confounder has a sign.** Reported honestly and NOT fixed:
+      letters hit max_iter=200 unconverged at every seed (and still beat the published number by
+      27 pp); one *sensitivity* cell (shuttle x MinMaxScaler) never completed inside the 45 s cap
+      after 11 attempts and is logged as a failure — all 6 registered PRIMARY cells ran, so both
+      verdicts and both tracker points are complete. Eleventh audit under the planner/executor split:
+      12 cells delegated by exact registered command, **both verdict cells re-run bit-identically by
+      the auditor**, the runner `cmp`-verified against the pinned script, every drift recomputed from
+      raw JSON, and the published 65-point rho (0.590) reproduced from the printed list before
+      appending. **n = 31; the one-shot confirmatory test is now DUE and the set is CLOSED.**
+
 ## Program 2b — pre-registered drift study (discretion predicts drift)
 
 Registered 2026-07-05 in `audits/PREREG_DRIFT.md` (commit `ad8aa31`) BEFORE any confirmatory audit:
@@ -638,7 +684,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 29/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing; includes the audit-#26 repair — the previously untracked PCA-quadratic audit — and audits #26–#29).
+**Tracker: n = 31 confirmatory audits — THE n>=30 TRIGGER HAS FIRED** (audit #4 was COULD-NOT-RUN and contributes nothing; includes the audit-#26 repair — the previously untracked PCA-quadratic audit — and audits #26–#30). The `PREREG_DRIFT.md` one-shot confirmatory test is now **DUE**. See the binding hand-off note below the points list.
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -664,9 +710,49 @@ train acc], (3, 0.32), (3, 0.39) [Breiman-1996 Bagging Predictors ionosphere, e_
 [Breiman-1996 Bagging Predictors breast cancer, e_S / e_B], (3, 0.32), (3, 0.44)
 [Breiman-1996 Bagging Predictors waveform, e_S / e_B], (5, 1.93), (5, 1.83)
 [StatLog 1994 Backprop, diabetes Table 9.20 / Australian credit Table 9.3], (5, 4.18), (4, 11.21)
-[StatLog 1994 Backprop, satimage Table 9.9 / vehicle Table 9.6].
-Running rho (EXPLORATORY until n=30): spearmanr over the 65 points as printed above (2-dp) =
-**0.590, p = 2.4e-07** (audit #29; the 63-point value 0.562/1.7e-06 was reproduced from the printed
+[StatLog 1994 Backprop, satimage Table 9.9 / vehicle Table 9.6], (5, 27.53), (5, 0.36)
+[StatLog 1994 Backprop, letters Table 9.7 / shuttle Table 9.19].
+
+**BINDING HAND-OFF (written 2026-07-11, audit #30, BEFORE the test is run).** The confirmatory set is
+now CLOSED at n = 31 audits / 67 points. The next Program 2b run executes the one-shot pre-registered
+test of `audits/PREREG_DRIFT.md` — Spearman rho(blind score, |drift| pp) > 0.5 with p < 0.01 — over
+**exactly the 67 points printed above and no others**, and publishes `RESULTS_DRIFT.md` with the
+verdict either way. It does NOT add points, does not re-score any rubric, does not re-run any audit,
+and does not touch PREREG_DRIFT.md. This is written down now, before the test fires, so that "keep
+auditing until rho looks right" is not available to any later session. The three confounders that
+MUST appear in the honesty section of RESULTS_DRIFT.md, all logged before the test: **floor-headroom**
+(audits #25/#26, contradicted by #27, and ESTABLISHED AT CONSTANT DISCRETION by #30 — see below),
+the **competence confounder** (audit #28, shown by #30 to have a sign), and the **partial-specification
+trap** (audit #29). A fourth, also pre-test: the **source concentration** of the high end — 5 of the 6
+score-5 points come from one book and one algorithm (StatLog Backprop), and the 6th (Sigillito 1989)
+is also a gradient-trained neural net.
+Running rho: spearmanr over the 67 points as printed above (2-dp) = **0.587, p = 1.7e-07**
+(audit #30; the 65-point value 0.590/2.4e-07 was reproduced from the printed list before appending.
+This is the LAST exploratory rho — the set is now closed and the next run's value is the confirmatory
+one. The two new points are the program's most informative pair yet and they cut BOTH ways: letters
+(5, **27.53**) is the largest drift in the entire set, at the highest rubric score, strongly
+hypothesis-supporting; shuttle (5, **0.36**) is a near-floor drift at the SAME rubric score, strongly
+hypothesis-undermining. They cancel almost exactly (rho moves 0.590 -> 0.587). **The finding is why
+they cancel.** Same book, same algorithm, same unpublished 1994 implementation, same reproducer, same
+library defaults, same session, same blind score of 5/5 — and the absolute drifts differ 76x. But the
+RELATIVE drifts are identical: the 2026 default MLP removes 84.2% of the published error on letters
+and 84.5% on shuttle. |drift| in pp is therefore approximately (relative reproduction error) x (the
+published value's headroom above the 0% floor), and the rubric scores only the first factor. The
+floor-headroom confounder is hereby ESTABLISHED AT CONSTANT DISCRETION — the one thing audits #25/#26
+could not show and #27 argued against, because every earlier test of it confounded headroom with
+score, paper, algorithm and dataset. Verdicts: letters DISCREPANCY (5.36 vs 32.7, -27.34 pp, outside
+the +/-5.0 bar at every seed; the program's third discrepancy and its largest), shuttle CONFIRMED
+(0.0552 vs 0.43, inside the +/-1.5 bar at every seed). Secondary A FAILED on shuttle as pre-registered
+and as expected. Secondary B (letters |drift| > 5x shuttle's) HELD at 75.8x. Secondary C FAILED
+INVERTED on BOTH rows: the unscaled configs drift LESS (23.40 / 0.285) than the scaled primaries
+(27.34 / 0.375), because both drifts are NEGATIVE — the modern default beats the 1994 number, so
+degrading the model moves it back TOWARD the published value. Unstated discretion inflates |drift|
+only when the published claim is at least as good as the modern default; the competence confounder has
+a sign. Both rows were taken by a selection rule fixed before rubric scoring — the ENTIRE remaining
+pool of StatLog Backprop rows with public data, a proportion metric and a recoverable attribute
+set — precisely so that the last audit before the trigger could not be a cherry-pick; their expected
+drifts were pre-registered as pointing in opposite directions, and they did.) Previous note (audit #29,
+superseded): rho 0.590, p = 2.4e-07 ( the 63-point value 0.562/1.7e-06 was reproduced from the printed
 list before appending - both new points land far above the global median drift (0.46 pp), so rho RISES
 0.028. The set's maximum drift is now at score 4 (11.21, vehicle - the program's second DISCREPANCY)
 and the score-5 ceiling more than doubles (1.93 -> 4.18, satimage CONFIRMED with 0.45 pp to spare).
