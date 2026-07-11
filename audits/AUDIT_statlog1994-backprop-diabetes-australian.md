@@ -57,16 +57,62 @@ Tracker context at registration (n = 27, 61 points, exploratory rho 0.532): scor
 
 ## Results
 
-*(EMPTY — to be filled in commit 2, after the reproduction runs. Nothing below this line exists at the time of the pre-registration commit.)*
+Data checks reproduced at run time: both md5s as pinned above; diabetes 768 × 8, Australian 690 × 14.
+
+Primary configuration (StandardScaler + `MLPClassifier` defaults, unstratified KFold, master seed 0):
+
+| Row | Published | Reproduced (seed 0) | Drift | Bar |
+|---|---|---|---|---|
+| Backprop, diabetes (12-fold CV) | 24.8 | **23.047** | **−1.753 pp** | ±5.0 |
+| Backprop, Australian credit (10-fold CV) | 15.4 | **13.623** | **−1.777 pp** | ±5.0 |
+
+All three master seeds, primary configuration:
+
+| Row | seed 0 | seed 1 | seed 2 | 3-seed mean \|drift\| |
+|---|---|---|---|---|
+| diabetes | 23.047 | 22.786 | 22.786 | **1.93 pp** |
+| Australian | 13.623 | 13.623 | 13.478 | **1.83 pp** |
+
+**Standardized drift for the tracker: diabetes 1.93 pp, Australian 1.83 pp — both at blind rubric 5/5.**
+
+Both rows drift in the same direction: the 2026 default MLP is **better** than the 1994 published Backprop by ~1.8 pp on both datasets, not worse. Between-fold spread is large relative to the drift (fold-error SD 4.1–6.2 pp on diabetes, 3.9–4.5 pp on Australian), i.e. both drifts are well inside one fold-to-fold standard deviation of the CV estimate itself.
+
+Convergence, reported as pre-registered and NOT fixed: in the primary configuration **every fold hit `max_iter=200` without meeting `tol`** (12/12 diabetes, 10/10 Australian folds, all seeds). Raising `max_iter` would have been moving a defaulted choice after seeing data, so it was not done. The reproduction therefore reproduces the published numbers while formally *not converged* — a point in favour of the drift being insensitive to the stopping choice on these targets.
+
+Labelled sensitivity checks (reported, never the verdict); values are 3-seed mean |drift|:
+
+| Configuration | diabetes | Australian |
+|---|---|---|
+| **Primary** (scaled, KFold) | **1.93** | **1.83** |
+| **Unscaled** (bare library defaults) | **4.89** | **9.72** |
+| Stratified folds | 1.28 | 1.87 |
+| diabetes: zeros→train-fold median | 0.93 | — |
+| Australian: one-hot categoricals (14→42 cols) | — | 0.96 |
+
+The unscaled runs are the story of this audit. Dropping the single preprocessing choice — the one the book never states — moves drift from 1.93 → **4.89 pp** (diabetes) and 1.83 → **9.72 pp** (Australian), a 2.5× and 5.3× increase, and flips the sign (the unscaled MLP is far *worse* than published, not better). Mechanism visible in the raw: unscaled, adam trips `tol` and stops early (27–150 epochs) at a poor optimum; scaled, it uses the full 200-epoch budget. Every other discretion axis tested (fold stratification, one-hot encoding, missing-value imputation) moves the number by ≤ 1 pp.
+
+Secondary pre-registered prediction **A: FAILED on both clauses.** Neither row's 3-seed drift exceeds 1.96 pp (the largest score-2 drift in the set): diabetes **1.93**, Australian **1.83**. The diabetes row misses by 0.03 pp — a margin far smaller than the audit's own fold-to-fold noise, so the honest reading is not "score 5 drifts less than score 2" but "**score-5 drift lands in the same range as the top of the score-2 range**". This is now the second, third and fourth score-5 point (with audit #8's 1.11 pp) to land at or below the score-2 ceiling. Evidence against the hypothesis at the high-discretion end, reported with the same prominence as the confirmations.
+
+Secondary pre-registered prediction **B: HELD on both rows, decisively.** The unscaled configuration out-drifts the scaled primary on both (4.89 > 1.93; 9.72 > 1.83). Rubric point 5 is a *live* drift driver on this target, not an inert checkbox.
+
+A and B holding *together* is the most informative thing this audit produces, and it cuts at the program's own headline: the discretion was real and large (B), yet the measured drift was small (A). The difference is entirely **how the discretion was resolved**. The rubric counts the choices a claim leaves open; |drift| measures what happens when a *competent* reproducer closes them well. A high-discretion claim reproduced carefully drifts little; the same claim reproduced carelessly drifts 5×. See honesty item 2 — this is a confounder for the headline rho, not a footnote.
 
 ## Verdict
 
-*(EMPTY — commit 2.)*
+**CONFIRMED — both rows.** At master seed 0 in the primary configuration, diabetes lands −1.753 pp and Australian −1.777 pp against pre-registered ±5.0 pp bars, robust across all 3 master seeds (worst seed: −2.014 pp diabetes, −1.922 pp Australian). A 1994 multi-lab benchmark table's neural-network rows — produced by an unpublished MLP configuration on a since-vanished software package — reproduce to within ~1.8 pp under 2026 library defaults, with the modern default landing slightly *better* than the original on both datasets.
 
 ## Environment
 
-*(EMPTY — commit 2.)*
+Sandbox Linux (Ubuntu 22.04, CPU only), Python 3.10.12, scikit-learn 1.7.2, numpy 2.2.6, scipy 1.15.3. Reproduction script: `audits/audit_statlog_backprop_run.py` (one `(dataset, config, seed)` triple per invocation; every chunk well inside the 45 s cap). Raw output (all 24 chunks = 2 datasets × 4 configurations × 3 seeds, with per-fold error rates, per-fold epoch counts and convergence counts): `audits/statlog_backprop_raw.json`. Both committed in this session's batch.
 
 ## Honesty section
 
-*(EMPTY — commit 2.)*
+1. **Estimator mapping is the load-bearing assumption.** StatLog's "Backprop" was an unnamed external package's MLP with a CV-tuned hidden-layer size that the book never publishes. `MLPClassifier` defaults (100 relu units, adam) are certainly *not* what ran in 1993 (adam did not exist). This audit therefore measures "does the published number survive a competent modern reproduction attempt", not "is this the same network". That is the honest scope of every cross-implementation audit in this program, and it is at its most stretched here.
+2. **The competence confounder (new, and the most important item in this audit).** Secondary B shows one unstated choice can move drift 5×. Secondary A shows the drift we actually recorded is small. Both facts come from the same target. So |drift| as this program measures it is not a function of the claim alone — it is a function of (discretion available) × (how well the reproducer resolves it), and the reproducer here is a careful one that consults the library docs. The rubric scores only the first factor. This plausibly explains why rho keeps sagging at the high-score end (audits #8, #25, and now #28): high-discretion claims are exactly the ones where a careful reproducer's care pays off most. Flagged for the post-n=30 exploratory analysis alongside the floor-headroom confounder; it is NOT used to adjust anything now, and the rubric is NOT amended post hoc.
+3. **The 1.96 pp margin.** The diabetes row failed secondary A by 0.03 pp. Had the fold-shuffle RNG landed differently it could have passed. No conclusion in this file rests on which side of 1.96 it fell — it is reported as a fail because that is what was pre-registered, and the substantive claim made is the weaker, robust one (score-5 drift is *in the range of*, not above, score-2 drift).
+4. **Architecture is a sixth discretion axis the frozen rubric cannot score** (noted before running, in the rubric section). 5/5 is the ceiling, so this target's true discretion is under-counted — which makes its low drift *more* awkward for the hypothesis, not less.
+5. **Non-convergence.** The verdict rests on runs where 100% of folds hit `max_iter` without meeting `tol`. This was pre-registered as report-don't-fix; it is nonetheless a real caveat on the primary configuration.
+6. **The two points are not independent** in the usual sense — same algorithm, same (unpublished) implementation, same book, scored with one rubric — though unlike most prior multi-row audits they are at least on two different datasets with different fold counts. Same caveat as every multi-row audit in the set.
+7. **Data provenance.** The diabetes file is byte-identical (md5) to the one audits #19/#24 already used, so the *dataset* is not a new source of drift; the Australian file is the StatLog-distributed pre-imputed version, so StatLog's own missing-value handling is inherited rather than re-derived. The book's "Default" rows (0.350 / 0.440) differ in the 3rd decimal from the whole-file majority-class rates (0.349 / 0.445) — flagged before running (data-checks section) and consistent with the book's Default being a fold-mean like every other row.
+8. **Execution was delegated** to a subagent (planner/executor split): 24 chunks + one re-run check. Nothing about target choice, rubric scoring, tolerances, or interpretation was delegated. The auditor independently re-ran the two primary seed-0 chunks (reproduced bit-identically: 23.046875, 13.623188), recomputed every drift in the tables above from the raw per-fold rates rather than trusting the subagent's arithmetic, and reproduced the previously-published 61-point rho (0.532) from the printed tracker list before appending the two new points. Any error the subagent made is the auditor's once pushed.
+9. **Two-commit ordering:** the pre-registration (rubric, bars, both secondary predictions, tracker context) was committed to the REMOTE at `28213ee` with EMPTY results and verified byte-identical (10 846 B, md5 `0fea4f78…`) by SHA-pinned fetch, BEFORE any reproduction code existed. Uploaded via GitHub's file-upload path rather than the web editor, deliberately: the web editor's auto-indent mangled audit #27's pre-registration and forced a byte-exact re-upload. No editor incident this session.
