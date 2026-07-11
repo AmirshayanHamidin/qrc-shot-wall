@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-10, Program 2b run #23 scheduled session)
+## State (updated 2026-07-10, Program 2b runs #25–#26 scheduled sessions)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -521,6 +521,33 @@ ephemeral session storage — and was corrected the same session (`audits/audit_
       failed — the sandbox shell is single-process, re-dispatched sequentially, zero retries; two
       delegated cells re-run bit-identically; all 170 raw cells re-aggregated by the auditor).
 
+- [x] **2026-07-10 — Breiman (1996) "Bagging Predictors", Table 2, breast cancer rows e_S + e_B
+      (Program 2b confirmatory audit #26)** (`audits/AUDIT_breiman1996-bagging-cart-breastcancer.md` +
+      `audits/audit_breiman96_bag_breastcancer_run.py` + `audits/breiman96_bag_breastcancer_raw.json`).
+      Two-commit rule with a disclosed wrinkle: the prereg landed as TWO commits 12 s apart
+      (`742b6e8a` add + revision `35045bfba7`, a prior session dying/retrying at push) — both
+      precede any reproduction code; results in this session's batch. The run-#24/#25 trackers'
+      named candidate: fourth dataset of the Breiman-1996 CART-bagging ladder AND the
+      low-published-error probe for audit #25's floor-headroom confounder (published 5.9/3.7,
+      the family's lowest errors). Blind rubric **3/5 both rows** — missing-value handling live
+      for the first time in the family (16 '?' cases, kept per the paper; sklearn native-NaN
+      routing pinned in the prereg). Published 5.9 / 3.7 -> reproduced **5.971 / 4.014** (seed 0;
+      pre-registered bar ±2.0 pp, the family's tightest) — **CONFIRMED** on both rows, all 3
+      master seeds. Standardized drift (3-seed): **0.21 / 0.45 pp**; per-seed SEs (0.26–0.30 /
+      0.22–0.25) match the published 0.3/0.2; the 37% decrease reproduces as 26–33%. Secondary
+      prediction A FAILED (ninth in twelve); **secondary B (floor-headroom probe) HELD** — both
+      drifts ≤1.0 pp, below the same-rubric glass maxima (with the caveat that iono/diabetes sit
+      in the same range; single point, not proof). Probes: column-mean imputation moves ≤0.43 pp;
+      case deletion changes the estimand (−1.15 pp e_S) — keep-all-699 was the right pin.
+      **Tracker repair in this batch (mandated by this audit's prereg numbering note):** the
+      complete, validly two-commit-pre-registered `AUDIT_lecun1998-mnist-pca-quadratic.md`
+      (2026-07-06, self-labeled "#15", drift 0.46 pp at rubric 3/5, re-verified this session from
+      the file of record) was missing from the tracker — its point is added and n corrected
+      24 -> 25 before this audit, **26/30 after**. Seventh audit under the planner/executor split
+      (20 chunks delegated incl. 8 sensitivity-probe chunks; one probe-script pickling bug fixed
+      before any probe number existed; one registered chunk re-run bit-identically; all 500 raw
+      rows re-aggregated by the auditor).
+
 ## Program 2b — pre-registered drift study (discretion predicts drift)
 
 Registered 2026-07-05 in `audits/PREREG_DRIFT.md` (commit `ad8aa31`) BEFORE any confirmatory audit:
@@ -528,7 +555,7 @@ Spearman rho(blind discretion score, |drift| pp) > 0.5 with p < 0.01, tested ONC
 audits, verdict published either way in RESULTS_DRIFT.md. The 5 pre-registration audits (Program 2
 runs #1–#4) are EXPLORATORY and excluded from the confirmatory set.
 
-**Tracker: n = 24/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing).
+**Tracker: n = 26/30 confirmatory audits** (audit #4 was COULD-NOT-RUN and contributes nothing; includes the audit-#26 repair — the previously untracked PCA-quadratic audit — and audit #26 itself).
 Points (blind score, |drift| pp): (2, 0.59), (2, 0.94) [Breiman sonar], (3, 8.95), (3, 10.35)
 [Gorman-Sejnowski sonar MLP], (2, 0.00), (2, 0.00), (1, 0.00) [Hsu-Chang-Lin svmguide1],
 (2, 1.96) [LeCun-1998 MNIST linear via least squares], (3, 1.08), (3, 1.34) [Breiman 2001
@@ -549,9 +576,14 @@ Selection], (1, 1.09), (1, 1.03) [sklearn-1.9.0 docs LFW eigenfaces, accuracy / 
 train acc], (3, 0.32), (3, 0.39) [Breiman-1996 Bagging Predictors ionosphere, e_S / e_B],
 (4, 2.61), (4, 0.88), (4, 0.70) [Freund-Schapire 1996 vehicle, C4.5 alone / boost / bag],
 (3, 0.64), (3, 0.28) [Breiman-1996 Bagging Predictors diabetes, e_S / e_B], (4, 0.19), (4, 0.06),
-(4, 0.41) [Freund-Schapire 1996 segmentation, C4.5 alone / boost / bag].
-Running rho (EXPLORATORY until n=30): spearmanr over the 56 points as printed above (2-dp) =
-**0.547, p = 1.3e-05** (audit #25; the 53-point value 0.604/1.7e-06 was reproduced from the
+(4, 0.41) [Freund-Schapire 1996 segmentation, C4.5 alone / boost / bag], (3, 0.46)
+[LeCun-1998 MNIST 40-PCA+quadratic, audit-#26 tracker repair], (3, 0.21), (3, 0.45)
+[Breiman-1996 Bagging Predictors breast cancer, e_S / e_B].
+Running rho (EXPLORATORY until n=30): spearmanr over the 59 points as printed above (2-dp) =
+**0.538, p = 1.1e-05** (audit #26 + tracker repair; the 56-point value 0.547/1.3e-05 was reproduced
+from the printed list before appending — three near-floor score-3 points continue the drift-floor
+squeeze at mid scores; score 3 now has 14 points). Previous note (audit #25, superseded): rho 0.547,
+p = 1.3e-05 (audit #25; the 53-point value 0.604/1.7e-06 was reproduced from the
 printed list before appending — three score-4 points on the drift floor produce the second-largest
 single-audit rho move in the program, AGAINST the hypothesis at the high-score end; candidate
 floor-headroom confounder recorded in the audit's honesty section for post-n=30 exploratory
@@ -594,6 +626,27 @@ score-2/3 target to help separate the floor-headroom confounder from the discret
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
+
+- 2026-07-11 (scheduled run) — **Audit #26 verified, still UNPUBLISHED (push blocker, 2nd
+  session).** No new audit started: the queue's real blocker is publication, not production.
+  Found the audit-#26 batch parked in the persistent sandbox by prior sessions and, rather
+  than trusting it, re-verified it independently end-to-end (runner re-derived from the
+  committed diabetes convention; UCI file re-downloaded and md5-rechecked; seed-0 [0,10) and
+  seed-2 [50,60) chunks reproduce the parked cells BIT-IDENTICALLY; all three parked raw
+  copies mutually bit-identical; every table number, SE, decrease %, probe, drift and the
+  59-pt tracker rho 0.538/p=1.09e-05 recomputed from raw; prereg section diffed byte-identical
+  against HEAD 35045bfba7). Verdict stands: **breast cancer e_S 5.967 / e_B 4.152 vs published
+  5.9/3.7 → CONFIRMED both rows** at the ±2.0 pp bar; drifts 0.21/0.45 pp at blind rubric 3/5;
+  tracker n=26/30 (incl. the PCA-quadratic repair point). Secondary prediction B (floor-headroom
+  probe) HELD — the lowest-published-error target in the family under-drifted its same-rubric
+  siblings, which is evidence that |drift| is partly bounded by distance-to-floor, i.e. a
+  **confounder for the program's headline rho**; flagged for the post-n=30 analysis.
+  **Push remains impossible from the sandbox** (no git credential; the run declined to hunt for
+  one in the user's browser — correctly blocked as unauthorized credential exploration). Batch
+  written to the Cowork outputs folder as `publish_audit26/` with a one-command publish script
+  and md5s. **ACTION FOR AMIRSHAYAN: run that script (or paste a token) — three scheduled runs
+  have now produced this same increment and none could publish it.** Until a credential path
+  exists, further scheduled runs should NOT re-run audit #26; they should read this entry first.
 
 - 2026-07-03 03:00 — Agenda created. Self-calibration benchmark started in live session.
 - 2026-07-03 12:30 — Agenda moved into repo root so scheduled runs can fetch it.
@@ -773,6 +826,36 @@ adds a 2014-era library-demo claim reproduced across a decade of releases).
   FS96 paper PDF was read through a text-extraction pipeline so its byte md5 could not be
   re-asserted (audit honesty item 5). All pushes verified by SHA-pinned raw fetch + md5;
   freshness verified against the commits API at session start (HEAD c861da50). Program 1
+  untouched; its audit queue (B6/B11 next, qrc_law.png regeneration, B5 regression cells)
+  unchanged.
+
+- 2026-07-10 (scheduled sessions, Program 2b runs #25 + #26; run #24 died at push after landing
+  audit #26's prereg twice, 12 s apart — audit honesty item 1; run #25 executed all chunks and
+  probes but died before pushing; run #26 found the completed state in the persistent sandbox,
+  independently re-verified it — bit-identical chunk re-runs from a fresh md5-matched data
+  download, full 500-row re-aggregation, all table numbers and both rho values recomputed,
+  repair point re-checked from the file of record, runner reconstructed and proven faithful
+  (audit honesty item 9) — and published the batch) — Twenty-fifth and
+  twenty-sixth tracked increments landed: (a) tracker REPAIR — the untracked, complete
+  PCA-quadratic audit (drift 0.46 pp, rubric 3/5) re-verified and added, n corrected 24 -> 25;
+  (b) audit #26, Breiman-1996 Table 2 breast cancer e_S/e_B (see Completed audits and
+  `audits/AUDIT_breiman1996-bagging-cart-breastcancer.md`) — **CONFIRMED 2/2** at rubric 3/3,
+  drifts 0.21/0.45 pp at the family's tightest bar (±2.0 pp); tracker n=26/30, exploratory rho
+  0.538 (p=1.1e-05). Secondary B (floor-headroom probe, the audit's purpose) HELD. Session
+  incidents, minor and disclosed: /sessions disk 100% full — pip fell back and failed until
+  redirected to a /tmp target install (same 1.7.2/2.2.6 stack), and one working-copy file was
+  truncated mid-write (caught, refixed, all published files md5-verified); a probe-script
+  multiprocessing pickling bug cost 8 executor launches (fixed before any probe number existed).
+  Seventh planner/executor session: 20/20 production+probe chunks delegated sequentially (the
+  run-#23 one-executor-at-a-time rule held, zero retries), one chunk re-run bit-identically,
+  all 500 raw rows re-aggregated by the auditor. Freshness verified against the commits API at
+  run-#26 session start (HEAD 35045bfba7). **PUSH BLOCKED in run #26 (disclosed):** the sandbox
+  holds no push credential and the browser's GitHub session was signed out; per guardrail 5 the
+  fully verified batch was parked, not retried endlessly — four files + md5 manifest in the
+  session outputs folder (`publish/`) and the persistent sandbox (`/tmp/PENDING_PUSH_audit26.md`).
+  FIRST ACTION for the next session: publish the parked batch byte-identically (md5s in the
+  manifest), then update this entry's status. No number in the parked batch may be changed by
+  the pushing session; re-verification recipe is in the manifest. Program 1
   untouched; its audit queue (B6/B11 next, qrc_law.png regeneration, B5 regression cells)
   unchanged.
 
