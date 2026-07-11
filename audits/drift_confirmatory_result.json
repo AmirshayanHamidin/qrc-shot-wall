@@ -1,0 +1,49 @@
+{
+  "n_audits": 31,
+  "n_points": 67,
+  "spearman_rho": 0.587498,
+  "p_two_sided_scipy": 1.7289164229497714e-07,
+  "p_permutation_1e6_seed0": 9.99999000001e-07,
+  "prereg_bar": "rho > 0.5 and p < 0.01",
+  "rho_exceeds_bar": true,
+  "p_below_bar": true,
+  "verdict": "SUPPORTED",
+  "per_score_summary": {
+    "0": {
+      "n": 4,
+      "median_drift_pp": 0.0,
+      "mean_drift_pp": 0.0275,
+      "max_drift_pp": 0.11
+    },
+    "1": {
+      "n": 3,
+      "median_drift_pp": 1.03,
+      "mean_drift_pp": 0.7067,
+      "max_drift_pp": 1.09
+    },
+    "2": {
+      "n": 21,
+      "median_drift_pp": 0.04,
+      "mean_drift_pp": 0.371,
+      "max_drift_pp": 1.96
+    },
+    "3": {
+      "n": 16,
+      "median_drift_pp": 0.455,
+      "mean_drift_pp": 1.7269,
+      "max_drift_pp": 10.35
+    },
+    "4": {
+      "n": 17,
+      "median_drift_pp": 0.99,
+      "mean_drift_pp": 2.1647,
+      "max_drift_pp": 11.21
+    },
+    "5": {
+      "n": 6,
+      "median_drift_pp": 1.88,
+      "mean_drift_pp": 6.1567,
+      "max_drift_pp": 27.53
+    }
+  }
+}
