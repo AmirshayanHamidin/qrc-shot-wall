@@ -1,0 +1,124 @@
+{
+ "date": "2026-07-11",
+ "environment": {
+  "numpy": "2.2.6",
+  "sklearn": "1.7.2",
+  "qiskit": "2.5.0",
+  "scipy": "1.15.3"
+ },
+ "grid_cells": {
+  "n": 80,
+  "max_abs_diff_per_field": {
+   "floor": 0.0,
+   "exact": 0.0,
+   "noisy": 0.0,
+   "law_pred": 0.0,
+   "retained": 0.0,
+   "resid": 0.0
+  }
+ },
+ "retrain_check": {
+  "n": 60,
+  "max_abs_diff": {
+   "fixed": 0.0,
+   "retrained": 0.0
+  }
+ },
+ "summary_identical": true,
+ "figure_md5": {
+  "published": "a2342baee16bdf44735e1f0364c288c6",
+  "regenerated": "a2342baee16bdf44735e1f0364c288c6",
+  "identical": true
+ },
+ "claim_checks": {
+  "pooled": {
+   "r2": 0.7929,
+   "mae_pp": 2.24,
+   "bias_pp": 0.59,
+   "obs_range": [
+    0.434,
+    0.77
+   ],
+   "obs_std": 0.063
+  },
+  "per_task": {
+   "updown": {
+    "r2": 0.87,
+    "mae_pp": 1.93,
+    "obs_range": [
+     0.456,
+     0.748
+    ]
+   },
+   "accel": {
+    "r2": 0.144,
+    "mae_pp": 2.82,
+    "obs_range": [
+     0.434,
+     0.583
+    ]
+   },
+   "prodmed": {
+    "r2": 0.887,
+    "mae_pp": 1.97,
+    "obs_range": [
+     0.44,
+     0.77
+    ]
+   }
+  },
+  "fixed_mean": {
+   "at_250": 0.49,
+   "at_64k": 0.558,
+   "floor_mean": 0.621
+  },
+  "arch4_at_64k": [
+   [
+    "updown",
+    0.748,
+    0.711
+   ],
+   [
+    "accel",
+    0.583,
+    0.545
+   ],
+   [
+    "prodmed",
+    0.77,
+    0.763
+   ]
+  ],
+  "reg_retention_mean": [
+   -1.063,
+   -0.019,
+   0.57,
+   0.78,
+   0.86
+  ],
+  "retrain_at_64k": {
+   "fixed": 0.558,
+   "retrained": 0.856,
+   "gap_pp": [
+    7.8,
+    46.3
+   ],
+   "gap_mean_pp": 29.8
+  },
+  "exact_span": {
+   "per_cell": [
+    0.874,
+    0.99
+   ],
+   "per_task_means": {
+    "updown": 0.983,
+    "accel": 0.944,
+    "prodmed": 0.951
+   }
+  },
+  "input_levels": {
+   "raw_unique": 394,
+   "unique_rounded_4dec": 341
+  }
+ }
+}
