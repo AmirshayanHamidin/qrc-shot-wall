@@ -102,4 +102,78 @@ Disclosure for the n=30 honesty section, recorded now rather than later: **5 of 
 
 ## Results
 
-*(EMPTY — this section is filled only in commit 2, after the reproduction has run. Nothing below this line existed when this file was committed.)*
+Runner: `audits/audit_statlog_backprop3_run.py`. Raw per-cell records: `audits/statlog_backprop3_raw.json`. Environment: scikit-learn 1.7.2, numpy 2.2.6, CPU only. Data md5s re-verified at run time inside the runner (asserts), matching the pre-registration exactly.
+
+Primary configuration (StandardScaler + `MLPClassifier` defaults), master seed 0 = the verdict seed:
+
+| Row | Published | Reproduced (seed 0) | Drift | Bar | Verdict |
+|---|---|---|---|---|---|
+| Backprop, letters (15 000/5 000) | 32.7 | **5.36** | **-27.34 pp** | ±5.0 | **DISCREPANCY** |
+| Backprop, shuttle (43 500/14 500) | 0.43 | **0.0552** | **-0.375 pp** | ±1.5 | **CONFIRMED** |
+
+All three master seeds, primary configuration:
+
+| Row | seed 0 | seed 1 | seed 2 | 3-seed mean \|drift\| |
+|---|---|---|---|---|
+| letters | 5.36 | 5.60 | 4.54 | **27.53 pp** |
+| shuttle | 0.0552 | 0.0828 | 0.0621 | **0.36 pp** |
+
+**Standardized drift for the tracker: letters 27.53 pp, shuttle 0.36 pp — both at blind rubric 5/5.**
+
+Verdicts hold at every seed: letters exceeds its ±5.0 pp bar by more than 5x on all three seeds; shuttle sits inside its ±1.5 pp bar by a factor of four on all three. **Letters is the largest drift in the confirmatory set** (previous maximum: 11.21 pp, audit #29's vehicle row). Shuttle is one of the program's smallest non-zero drifts.
+
+Convergence, reported as pre-registered and NOT fixed: **letters hit `max_iter=200` without meeting `tol` at every seed** (0/3 converged) — and still beat the published number by 27 pp. Shuttle converged properly at every seed (74-86 iterations of a 200 cap). So the row that failed to converge is the one that crushed the published claim; the stopping-rule discretion is not what drives this drift.
+
+### Secondary prediction A — **FAILED** (as pre-registered, and as expected)
+
+Both rows' 3-seed |drift| > 1.96 pp: letters **27.53 OK**, shuttle **0.36 NO**. The clause fails on shuttle. This is the third failure of the standing clause at score 5 (audits #8, #28, and this row) against two passes (#29, and letters here) — and it is now clear *why* it keeps failing, which is the subject of prediction B.
+
+### Secondary prediction B — **HELD, and far more sharply than registered**
+
+Registered: letters' |drift| exceeds shuttle's by **more than 5x**. Observed: **75.8x** (27.53 vs 0.36).
+
+The number that matters is not 75.8 but what it is 75.8 *of*:
+
+| | published error (= headroom above the 0 % floor) | 3-seed \|drift\| | drift as % of headroom |
+|---|---|---|---|
+| letters | 32.7 pp | 27.53 pp | **84.2 %** |
+| shuttle | 0.43 pp | 0.36 pp | **84.5 %** |
+| **ratio** | **76.0x** | **75.8x** | **1.00x** |
+
+The two rows have **the same rubric score, the same algorithm, the same unpublished 1994 implementation, the same 2026 reproducer, the same library defaults, the same session** — and their absolute drifts differ by 76x. But their *relative* drifts are identical to three significant figures: the 2026 default MLP removes **~84 %** of the published error on both. A modern MLP is, on both datasets, about six times more accurate than StatLog's Backprop; on letters that is worth 27 pp, on shuttle it is worth 0.4 pp.
+
+**This establishes the floor-headroom confounder at constant discretion**, which no prior audit could do (audits #25/#26 raised it, #27 gave evidence against it, but all of them confounded headroom with rubric score, paper, algorithm, and dataset). The consequence for the program's own hypothesis is direct and unfavourable, and it is stated here rather than in a footnote:
+
+> **|drift| measured in percentage points is not a scale-free measure of reproducibility.** It is approximately (relative reproduction error) x (the published value's headroom). Two claims that are *equally* reproducible in the only sense the reproducer controls — both reproduced to within 16 % of the published error — contribute 27.53 and 0.36 to the same correlation. The blind rubric scores discretion; it does not score headroom; and the pre-registered test correlates the rubric against a quantity that demonstrably depends on both.
+
+### Secondary prediction C — **FAILED, INVERTED on both rows**
+
+Registered: the unscaled configuration's |drift| exceeds the scaled primary's on both rows. Observed: it is **smaller** on both.
+
+| Row | primary \|drift\| | no-scaler \|drift\| | MinMax \|drift\| |
+|---|---|---|---|
+| letters | 27.34 | **23.40** | **18.62** |
+| shuttle | 0.375 | **0.285** | *(infra-blocked, see honesty item 2)* |
+
+The mechanism is unambiguous once the *sign* of the drift is read. In audits #28/#29 the reproduction landed near the published value, so anything that degraded the model pushed it away and inflated |drift|. Here the reproduction lands **far better** than the published value (drift is negative on every row and every seed), so degrading the model — dropping the scaler, or squashing the features with MinMax — moves it *back toward* the 1994 number and **shrinks** |drift|. Removing the scaler recovers 4 pp of the letters gap; MinMax recovers 9 pp.
+
+So prediction C's direction is not a property of the preprocessing discretion at all — **it is a property of the sign of the drift.** Rubric point 5 is live and large on these rows (an 8.7 pp swing across scaler choices on letters), exactly as scored; but "unstated discretion inflates |drift|" is only true when the published claim is at least as good as the modern default. When the published claim is *worse* than the modern default — which is what a 32-year-old neural net on 26-class letter recognition is — the same discretion can make the reproduction *look* more faithful. This is the **competence confounder** (audit #28) shown to have a sign, and it is a second unfavourable finding for the pp-drift measure.
+
+### Other sensitivity checks (labelled; never the verdict)
+
+- **Letters, seeded stratified random 15 000/5 000 split** (the split StatLog actually used is unpublished — see the pre-run data check): **4.88** vs the file-order split's 5.36 — a 0.48 pp effect. The unrecoverable split discretion is real but **small**, and it moves the drift *away* from the published value, not toward it. The DISCREPANCY is not an artifact of the split choice.
+- **Shuttle, `hidden_layer_sizes=(5,)`** — the only hidden-node count the book discloses for any Backprop row (vehicle, audit #29), applied here as a partial-specification probe: **0.1103** vs the default-100 primary's 0.0552. It roughly doubles the error and still lands 0.32 pp below the published value — i.e. on shuttle the partial-specification trap that broke audit #29's vehicle row does **not** bite; the row is CONFIRMED either way (0.32 pp vs 0.37 pp drift).
+
+## Honesty section
+
+1. **The letters DISCREPANCY is not a challenge to the 1994 claim.** Per program policy, verdicts are numbers, never accusations, and unexplained gaps default to environment differences. StatLog's Backprop ranked 19th of 22 on letters and the book itself flags the result as disappointing for a neural method; the reproduction says only that a 2026 library-default MLP, trained in ten seconds on a laptop CPU without converging, reaches 5.4 % where the 1994 configuration reported 32.7 % after 277 445 seconds of training. What drifted is the *portability of the published number to modern defaults*, which is the only thing this program ever measures. Thirty-two years of defaults — adam, ReLU, Glorot init, 100 hidden units, standardized inputs — are doing the work.
+
+2. **One registered sensitivity cell did not run: shuttle x MinMaxScaler.** It was attempted 11 times in fresh processes and never completed inside the sandbox's hard 45 s per-call cap (the same `.fit` under StandardScaler converges in 9 s; MinMax on shuttle's wildly-ranged integer columns evidently fails to reach `tol` and grinds against `max_iter`). No number for that cell was ever observed, the block is outcome-independent, and no configuration was altered to force it through. It is a *sensitivity* cell, not a registered primary cell: **all 6 primary cells ran, so both verdicts and both tracker points are complete.** Reported as a failure, not quietly dropped.
+
+3. **Executor/planner split (eleventh audit under it).** The 12 cells were dispatched to a subordinate executor by exact pre-registered command; the executor was given no authority over configuration or interpretation. The auditing session then **independently re-ran both verdict cells (letters seed 0, shuttle seed 0) and reproduced them bit-identically** (5.36 / 0.0552), confirmed the runner on disk was byte-identical to the pinned script (`cmp`), and recomputed every drift, every mean, and both secondary tests from the raw JSON rather than from the executor's summary. The published 65-point rho (0.590) was reproduced from the printed list before the two new points were appended.
+
+4. **The bar asymmetry (±5.0 letters / ±1.5 shuttle) was declared before data and did not affect the drift study.** It affects only the verdict labels. Note that letters would be a DISCREPANCY under *any* bar this program has ever used, and shuttle a CONFIRMED under any bar >= 0.4 pp — so no bar choice could have changed either verdict.
+
+5. **Direction of drift.** Both rows drift in the *favourable* direction (the modern reproduction beats the 1994 published number) at every seed. The program has now seen favourable drift on all six StatLog Backprop rows audited (#28, #29, #30). Whatever else is true, the 1994 Backprop entries are systematically pessimistic relative to modern defaults.
+
+6. **What this audit costs the program's hypothesis.** Prediction B was registered as hypothesis-threatening and it landed. The rubric cannot distinguish these two rows — it scores both 5/5, correctly — and yet they contribute 27.53 and 0.36 to the same Spearman correlation. The high-discretion end of the confirmatory set is now 6 points spanning 0.36 -> 27.53 pp, a 76x range, driven not by discretion (constant) but by headroom (76x). This does **not** license any adjustment to the pre-registered test: the bars are not moved, the measure is not changed, no point is dropped, and `PREREG_DRIFT.md` stands exactly as registered. It licenses one thing only — that `RESULTS_DRIFT.md` must report the confounder alongside whatever rho the one-shot test produces.
