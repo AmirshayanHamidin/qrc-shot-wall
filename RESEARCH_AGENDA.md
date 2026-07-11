@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-11, Program 2b CONFIRMATORY TEST session — the drift study is ANSWERED)
+## State (updated 2026-07-11 late session, back on the main program: B6 audit CONFIRMED; drift study ANSWERED earlier today)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -74,9 +74,12 @@ the README's B1–B13 numbering is canonical.
       every claim in its write-up, append an AUDITS.md entry (confirmed/discrepancy, numbers
       side by side). Audited so far: B13 (2026-07-03, CONFIRMED; +2026-07-04 same-convention
       repros #2 and #3, see AUDITS.md addenda), B5 (2026-07-04, DISCREPANCY → RESTORED
-      same day). Suggested order: B6 and B11 next (they quote/build on B5's figures), then
-      B2, B10, B12. Also open: B5 regression cells (30) re-run; regenerate
-      figures/qrc_law.png from law_rerun.json.
+      same day), B6 (2026-07-11, CONFIRMED — all 420 cells bit-identical from committed code;
+      one honesty-section sentence flagged: RESULTS_GATENOISE.md claims a fixed noiseless
+      readout but the committed code retrains per cell — doc fix queued, numbers unaffected).
+      Suggested order: B11 next (builds on B5), then B2, B10, B12. Also open: correct the
+      RESULTS_GATENOISE.md readout sentence (doc-only, flagged in AUDITS.md); B5 regression
+      cells (30) re-run; regenerate figures/qrc_law.png from law_rerun.json.
 - [ ] (Deferred, needs Amirshayan's sign-off: third task family for the within-task IPS
       confirmation; injection-scheme sweep; anything requiring hardware.)
 
@@ -851,6 +854,24 @@ the honesty section of RESULTS_DRIFT.md. LFW DONE audit #20; diabetes DONE audit
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
+
+- 2026-07-11 (scheduled run, late session) — **Back on the main program per the confirmatory
+  session's hand-off: B6 audit landed — CONFIRMED, bit-identical.** The scheduled task file still
+  said "one new confirmatory audit toward n=30"; per PREREG_DRIFT's run-ONCE rule and the binding
+  hand-off this was treated as stale and AUDIT MODE resumed instead (deviation noted here).
+  Full 420-cell re-run of `src/qrc_gatenoise.py` (12 (arch,gamma) slices via
+  `audits/audit_b6_rerun.py`, committed functions unmodified; numpy 2.2.6 / sklearn 1.7.2 /
+  qiskit 2.5.0): every cell matches `results/gate_noise_law.json` exactly (max diff 0.0 on acc,
+  c, exact_sep), stored per-cell predictions recomputed from raw to 1e-16, all printed
+  aggregates and the per-gamma table reproduce every digit, monotone-advantage claim verified.
+  One doc-level flag: the write-up's honest-residual section says the readout was held fixed at
+  its noiseless solution, but the committed code (and its docstring) retrain LogisticRegression
+  per cell — a mischaracterization to correct, no number affected. AUDITS.md entry +
+  `audits/b6_rerun_check.json` published; README updated (B6 caveat replaced with the audit
+  note, limitations line adjusted) and the queued one-line drift-verdict mention added to
+  Start-here item 5. Executor-delegation note: at ~4 s per slice the mechanical work was two
+  bash calls, below subagent overhead, so chunks ran inline (efficiency rule judgment call).
+  Next run: audit B11, or the RESULTS_GATENOISE doc fix + qrc_law.png regeneration.
 
 - 2026-07-11 (scheduled run, Program 2b CONFIRMATORY TEST) — **The one-shot pre-registered test
   fired: VERDICT SUPPORTED (rho 0.587 > 0.5, p 1.7e-07 < 0.01).** Executed exactly per the

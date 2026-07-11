@@ -2,6 +2,18 @@
 
 Verification-only entries: independent re-runs of published benchmarks against their written claims. Format per entry: what was re-run, how independently, verdict (CONFIRMED / DISCREPANCY), numbers side by side.
 
+## 2026-07-11 — B6 (RESULTS_GATENOISE.md): full 420-cell re-run from committed code — **CONFIRMED**
+
+**What was re-run.** The entire B6 grid (2 architectures × 5 tasks × 6 γ × 7 shot budgets = 420 cells), from the repo's own committed `src/qrc_gatenoise.py`, unmodified — executed in 12 (arch, γ) slices to fit the 45 s sandbox cap via a thin driver (`audits/audit_b6_rerun.py`) that calls the committed module's functions verbatim and recomputes the deterministic γ=0 reference identically per slice. Environment: numpy 2.2.6, sklearn 1.7.2 (same as all prior audits), qiskit 2.5.0, CPU. Comparison summary: `audits/b6_rerun_check.json`.
+
+**Result: bit-identical.** All 420 cells reproduce `results/gate_noise_law.json` exactly — max |Δacc| = 0, max |Δc| = 0, max |Δexact_sep| = 0 — so every aggregate follows: collapse **R² = 0.927091 / MAE 2.893 pp** and naive baseline **R² = 0.851222 / MAE 4.165 pp**, exactly as published. Independently of the re-run, the stored per-cell `pred_collapse` values were recomputed from the raw γ=0 cells (committed interpolation logic re-derived): max abs diff 1.1e-16; the per-γ table (mean c 0.923/0.819/0.677/0.566/0.481; law MAE 1.8→4.6 pp; naive MAE 2.1→7.2 pp) matches every printed digit, and the "advantage widens monotonically with γ" claim holds (0.24 → 2.61 pp). Unlike B5, B6's generator is committed, complete, and regenerates its published raw file exactly; the pipeline is fully deterministic (fixed input seed, sampling seeds 1–3, lbfgs logistic readout), which is why bit-identity is achievable across library versions.
+
+**One write-up mischaracterization, flagged (doc-level, not numeric).** `RESULTS_GATENOISE.md`'s honest-residual section attributes part of the residual to "hold[ing] the linear readout fixed at its noiseless solution rather than retraining under each γ". The committed code does the opposite: `achievable_acc` **retrains** `LogisticRegression(C=1)` on the noisy features of every cell, and the module docstring says so explicitly ("RETRAINED on the noisy features at each budget"). The published numbers are therefore retrained-readout numbers (self-consistent: the γ=0 reference curve is retrained too, so the collapse maps retrained-to-retrained — consistent with B10's later finding that retraining is load-bearing). The stated residual mechanism should be corrected; the residual magnitude (~2.9 pp) and both R² values are unaffected.
+
+**Verdict: CONFIRMED.** Every number in RESULTS_GATENOISE.md and the README B6 paragraph reproduces exactly from committed code; the raw file of record is untouched. One honesty-section sentence mischaracterizes the readout protocol and is flagged for correction (queued, not silently edited here). B6 no longer carries the "not yet re-audited post-B5" caveat; B10/B11 remain unaudited.
+
+---
+
 ## 2026-07-04 (later session) — B5 RESTORATION — closes the 2026-07-04 discrepancy
 
 **What was done (consolidation, not a new benchmark).** The three audit findings below are now remediated in the repo:
