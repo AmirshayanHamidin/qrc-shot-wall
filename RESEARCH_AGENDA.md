@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-11 late session, back on the main program: B6 audit CONFIRMED; drift study ANSWERED earlier today)
+## State (updated 2026-07-11 second late session: B11 audit CONFIRMED bit-identical; B6 audit CONFIRMED and drift study ANSWERED earlier today)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -76,10 +76,17 @@ the README's B1–B13 numbering is canonical.
       repros #2 and #3, see AUDITS.md addenda), B5 (2026-07-04, DISCREPANCY → RESTORED
       same day), B6 (2026-07-11, CONFIRMED — all 420 cells bit-identical from committed code;
       one honesty-section sentence flagged: RESULTS_GATENOISE.md claims a fixed noiseless
-      readout but the committed code retrains per cell — doc fix queued, numbers unaffected).
-      Suggested order: B11 next (builds on B5), then B2, B10, B12. Also open: correct the
-      RESULTS_GATENOISE.md readout sentence (doc-only, flagged in AUDITS.md); B5 regression
-      cells (30) re-run; regenerate figures/qrc_law.png from law_rerun.json.
+      readout but the committed code retrains per cell — doc fix queued, numbers unaffected),
+      B11 (2026-07-11, CONFIRMED — all 140 cells (80-cell grid + 60-cell retrain check), the
+      aggregate summary and the figure bit-identical from committed code; three wording flags
+      queued, no number affected: the write-up's “exact accuracy 0.94–0.98” is the span of
+      per-task MEAN exacts (per-cell span is 0.874–0.990), “341 distinct input levels” is a
+      4-decimal-rounding count (raw 394), and the illustrative “fixed 0.52 → retrained 0.88”
+      should read 0.53 → 0.90).
+      Suggested order: B2 next, then B10, B12. Also open: doc-fix batch — RESULTS_GATENOISE.md
+      readout sentence + the three RESULTS_TASKFAM.md wording flags (all doc-only, flagged in
+      AUDITS.md); B5 regression cells (30) re-run; regenerate figures/qrc_law.png from
+      law_rerun.json.
 - [ ] (Deferred, needs Amirshayan's sign-off: third task family for the within-task IPS
       confirmation; injection-scheme sweep; anything requiring hardware.)
 
@@ -854,6 +861,26 @@ the honesty section of RESULTS_DRIFT.md. LFW DONE audit #20; diabetes DONE audit
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
+
+- 2026-07-11 (scheduled run, second late session) — **AUDIT MODE continued per queue: B11 audit
+  landed — CONFIRMED, bit-identical.** The scheduled task file still said “one new confirmatory
+  audit toward n=30”; treated as stale per the discharged Program 2b hand-off (same call as the
+  B6 session earlier today; deviation noted here). Full re-run of the committed B11 pipeline
+  unmodified (`src/qrc_taskfam.py` run 0/1/2/4 + agg, then `src/qrc_taskfam_fig.py` for the
+  retrain-check addendum and figure), in a scratch dir via `audits/audit_b11_rerun.py`; numpy
+  2.2.6 / sklearn 1.7.2 / qiskit 2.5.0 / scipy 1.15.3. Every published number reproduces exactly:
+  80 grid cells max |Δ| = 0 on all six stored fields, 60 retrain-check cells max |Δ| = 0, summary
+  float-identical (R² 0.7929 / MAE 2.240 pp / H2_pass false / H3_pass true), and
+  `figures/qrc_taskfam.png` regenerates byte-identically (md5 a2342bae…). Claim checks pass on
+  every headline number of the write-up and README paragraph (fixed 0.490@250 / 0.558@64k vs floor
+  0.621; bias +0.59 pp; per-task R² 0.87/0.14/0.89; arch-4 recovery 0.748 obs vs 0.711 law; reg
+  retention −1.06 → 0.86; retrain 0.558 → 0.856 @64k; 3× variance ratio 0.198/0.063). Three
+  doc-level wording flags queued (exact-span phrasing, “341 levels” rounding convention,
+  0.52→0.88 → 0.53→0.90); none touches a number of record. Comparison summary:
+  `audits/b11_rerun_check.json`. Executor-delegation note: full grid = 2.8 s/arch, below subagent
+  overhead, so it ran inline (efficiency-rule judgment call, same as the B6 session). Publish via
+  the authenticated-browser file-upload path (no sandbox git credential), byte-verified below.
+  Next run: B2 audit, or the queued doc-fix batch + qrc_law.png regeneration.
 
 - 2026-07-11 (scheduled run, late session) — **Back on the main program per the confirmatory
   session's hand-off: B6 audit landed — CONFIRMED, bit-identical.** The scheduled task file still

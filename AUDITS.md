@@ -2,6 +2,24 @@
 
 Verification-only entries: independent re-runs of published benchmarks against their written claims. Format per entry: what was re-run, how independently, verdict (CONFIRMED / DISCREPANCY), numbers side by side.
 
+## 2026-07-11 (second late session) — B11 (RESULTS_TASKFAM.md): full 140-cell re-run from committed code — **CONFIRMED**
+
+**What was re-run.** The entire B11 grid — 4 architectures × (3 classification + 1 regression tasks) × 5 shot budgets × 3 sample seeds = 60 clf + 20 reg cells — from the repo's own committed `src/qrc_taskfam.py` (`run 0/1/2/4` + `agg`), unmodified, followed by the committed `src/qrc_taskfam_fig.py`, unmodified, which regenerates the 60-cell fixed-vs-retrained `retrain_check` addendum and `figures/qrc_taskfam.png`. Everything ran in a scratch directory; the files of record were never written. Driver + comparison summary: `audits/audit_b11_rerun.py` + `audits/b11_rerun_check.json`. Environment: numpy 2.2.6, sklearn 1.7.2, qiskit 2.5.0, scipy 1.15.3 (same as all prior audits), CPU.
+
+**Result: bit-identical.** All 80 grid cells reproduce `results/taskfam_law.json` exactly on every stored field — max |Δ| = 0 for floor, exact, noisy, law_pred, retained and resid — and all 60 retrain-check cells match exactly (max |Δfixed| = |Δretrained| = 0). The aggregate summary is float-identical to the last digit (R² = 0.7929148469844362, MAE = 2.2397152186809275 pp, H2_pass false, H3_pass true, the four per-arch regression retentions at 250 shots). The figure regenerates **byte-identically** (md5 `a2342baee16bdf44735e1f0364c288c6` both sides). Like B6, the pipeline is fully deterministic (fixed Mackey-Glass input seed, sampling seeds `default_rng(1000·ss + S)`, lbfgs logistic readout), which is why bit-identity is achievable across sessions.
+
+**Claim checks — every headline number in the write-up and the README B11 paragraph verified.** Fixed-readout mean 0.490 @250 / 0.558 @64k vs classical-floor mean 0.621 (“0.49 / 0.56 / 0.62”, and “below the inputs-only floor” holds); H2 MAE 2.24 pp, bias +0.59 pp, pooled R² 0.793 (the pre-registered bar fails exactly as published — reported, not moved); observed range 0.434–0.770, std 0.063 (parity ratio 0.198/0.063 ≈ 3.1× ✓); per-task R² = 0.87 / 0.14 / 0.89 and MAE 1.93 / 2.82 / 1.97 pp (updown / accel / prodmed), accel observed range 0.434–0.583 ✓; the arch-4 recovery is predicted as published (obs 0.748 vs law 0.711 on updown @64k; prodmed 0.770 vs 0.763); regression retention −1.06 / −0.02 / 0.57 / 0.78 / 0.86 ✓ (negative at 250 shots ✓); retrain check fixed 0.558 → retrained 0.856 @64k ✓. The “~30–40 pp” fixed-vs-retrained gap is a fair gloss: mean 29.8 pp @64k, per-cell span 7.8–46.3 pp.
+
+**Three doc-level wording flags (no number of record affected), queued for the doc-fix batch rather than silently edited:**
+
+1. “exact accuracy 0.94–0.98” (H1 section) is the span of **per-task mean** exact accuracies (0.944 / 0.952 / 0.983); the per-cell span is 0.874–0.990. The convention should be stated — as written it understates the best cells and hides the weakest (arch-2 accel, 0.874).
+2. “341 distinct input levels” reproduces only as a 4-decimal-rounding count; the raw count is 394. Harmless, but the convention is unstated.
+3. The illustrative pair “arch 0 `updown`: fixed 0.52 → retrained 0.88” should read **0.53 → 0.90** (0.534 / 0.900 @64k; no budget of that cell yields 0.52 / 0.88).
+
+**Verdict: CONFIRMED.** Every number in RESULTS_TASKFAM.md and the README B11 paragraph reproduces exactly from committed code, including the honest H2 bar failure; the raw file of record is untouched. B11 no longer carries the “not yet re-audited post-B5” caveat; B10 remains unaudited. Queue after this: B2, B10, B12, plus the doc-fix batch (B6 readout sentence + the three items above).
+
+---
+
 ## 2026-07-11 — B6 (RESULTS_GATENOISE.md): full 420-cell re-run from committed code — **CONFIRMED**
 
 **What was re-run.** The entire B6 grid (2 architectures × 5 tasks × 6 γ × 7 shot budgets = 420 cells), from the repo's own committed `src/qrc_gatenoise.py`, unmodified — executed in 12 (arch, γ) slices to fit the 45 s sandbox cap via a thin driver (`audits/audit_b6_rerun.py`) that calls the committed module's functions verbatim and recomputes the deterministic γ=0 reference identically per slice. Environment: numpy 2.2.6, sklearn 1.7.2 (same as all prior audits), qiskit 2.5.0, CPU. Comparison summary: `audits/b6_rerun_check.json`.
