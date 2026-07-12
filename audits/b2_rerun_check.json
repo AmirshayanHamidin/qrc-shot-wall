@@ -1,0 +1,54 @@
+{
+ "date": "2026-07-11",
+ "environment": {
+  "numpy": "2.2.6",
+  "sklearn": "1.7.2",
+  "qiskit": "2.5.0",
+  "scipy": "1.15.3"
+ },
+ "raw_sweep_bit_identical": true,
+ "raw_sweep_reproduced": [
+  0.8317067021346892,
+  0.5814928957420354,
+  0.3025096726387838,
+  0.1394925158924504
+ ],
+ "mitigated_sweep_match_at_stored_4dp": true,
+ "mitigated_sweep_reproduced_4dp": [
+  0.1507,
+  0.1417,
+  0.1282,
+  0.0784
+ ],
+ "plateau_seeds_bit_identical": true,
+ "plateau_seeds_reproduced": [
+  0.14174852736407675,
+  0.1522957402341502,
+  0.15006345729280374
+ ],
+ "table_40k_match_at_4dp": true,
+ "table_40k_reproduced_full_precision": {
+  "V=4 raw": 0.5814928957420354,
+  "V=4 ema+lag+in": 0.15681414418087444,
+  "V=4 pca+lag+in": 0.1521305485883292,
+  "V=4 pca+ema+lag+in": 0.1514740886030978,
+  "V=4 eiv+lag+in": 0.17594827377175237,
+  "V=1 ema+lag+in": 0.14174852736407675,
+  "exact floor (lag+in)": 0.002991557336108784
+ },
+ "refs": {
+  "linear_inputs_pub": 0.1483,
+  "linear_inputs_reproduced": 0.14825373856390617,
+  "esn_tuned_pub": 0.0138,
+  "esn_tuned_reproduced": 0.013781576514235323,
+  "exact_floor_pub": 0.003,
+  "exact_floor_reproduced": 0.002991557336108784,
+  "qrc_results_json_bit_identical": true,
+  "qrc_full_results_json_bit_identical": true
+ },
+ "no_committed_generator": [
+  "sim-trained linear denoiser row (0.1519)",
+  "sim-trained MLP denoiser row (0.1533)",
+  "non-redundancy probe (rel. err 0.90 linear / 0.89 MLP)"
+ ]
+}
