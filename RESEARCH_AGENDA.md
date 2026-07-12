@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-11 second late session: B11 audit CONFIRMED bit-identical; B6 audit CONFIRMED and drift study ANSWERED earlier today)
+## State (updated 2026-07-11 third late session: B2 audit CONFIRMED bit-identical; B11 + B6 audits CONFIRMED and drift study ANSWERED earlier today)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -82,11 +82,18 @@ the README's B1–B13 numbering is canonical.
       queued, no number affected: the write-up's “exact accuracy 0.94–0.98” is the span of
       per-task MEAN exacts (per-cell span is 0.874–0.990), “341 distinct input levels” is a
       4-decimal-rounding count (raw 394), and the illustrative “fixed 0.52 → retrained 0.88”
-      should read 0.53 → 0.90).
-      Suggested order: B2 next, then B10, B12. Also open: doc-fix batch — RESULTS_GATENOISE.md
+      should read 0.53 → 0.90),
+      B2 (2026-07-11, CONFIRMED — raw budget sweep 4/4 and plateau seeds 3/3 bit-identical from
+      committed qrc_gap_eval.py, all seven code-backed 40k table rows + both reference baselines
+      reproduce, and B1's two raw files of record regenerate bit-identically as a bonus; two
+      provenance flags queued, no number challenged: the sim-trained denoiser rows
+      (0.1519/0.1533) and the redundancy probe (rel. err 0.90/0.89) have NO committed generator,
+      and gap_final.json's mitigated[] is stored at 4 dp only).
+      Suggested order: B10 next, then B12. Also open: doc-fix batch — RESULTS_GATENOISE.md
       readout sentence + the three RESULTS_TASKFAM.md wording flags (all doc-only, flagged in
       AUDITS.md); B5 regression cells (30) re-run; regenerate figures/qrc_law.png from
-      law_rerun.json.
+      law_rerun.json; the two B2 provenance flags (commit or annotate the denoiser/redundancy
+      generators; note the mitigated[] 4-dp convention).
 - [ ] (Deferred, needs Amirshayan's sign-off: third task family for the within-task IPS
       confirmation; injection-scheme sweep; anything requiring hardware.)
 
@@ -861,6 +868,28 @@ the honesty section of RESULTS_DRIFT.md. LFW DONE audit #20; diabetes DONE audit
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
+
+- 2026-07-11 (scheduled run, third late session) — **AUDIT MODE continued per queue: B2 audit
+  landed — CONFIRMED, bit-identical.** The scheduled task file still said "one new confirmatory
+  audit toward n=30"; treated as stale per the discharged Program 2b hand-off (same call as the
+  two earlier sessions today; deviation noted here). Committed `src/qrc_gap_eval.py` re-run
+  unmodified at all four published budgets, plus the 40k plateau at noise seeds 2–3 via a thin
+  driver calling the committed `run()` verbatim (`audits/audit_b2_rerun.py`, phased under the
+  45 s cap), plus both reference baselines from committed `qrc_benchmark.py`/`qrc_full_eval.py`;
+  numpy 2.2.6 / sklearn 1.7.2 / qiskit 2.5.0 / scipy 1.15.3. Everything with a committed
+  generator reproduces: raw sweep 4/4 bit-identical, plateau seeds 3/3 bit-identical, mitigated
+  sweep 4/4 at stored 4 dp, the seven code-backed 40k table rows at printed 4 dp, refs
+  0.1483/0.0138 — and B1's two raw files of record regenerate bit-identically wholesale. Two
+  provenance flags queued (no number challenged): the sim-trained denoiser rows (0.1519/0.1533)
+  and the redundancy probe (0.90/0.89) have NO committed generator (a B5-class gap at lower
+  stakes — interior plateau points), and gap_final.json's mitigated[] is stored at 4 dp.
+  Comparison summary: `audits/b2_rerun_check.json`. Executor-delegation note: the mechanical
+  first pass (3 budgets + plateau seeds + qrc_benchmark.py) ran via a haiku subagent per the
+  efficiency rule; the published check was then regenerated inline in a fresh scratch by the
+  committed runner — double-generated, identical both times; judgment steps stayed inline.
+  Publish via the authenticated-browser file-upload path (no sandbox git credential),
+  byte-verified against raw.githubusercontent at the new HEAD. Next run: B10 audit, or the
+  queued doc-fix batch (now incl. the B2 flags) + qrc_law.png regeneration.
 
 - 2026-07-11 (scheduled run, second late session) — **AUDIT MODE continued per queue: B11 audit
   landed — CONFIRMED, bit-identical.** The scheduled task file still said “one new confirmatory

@@ -37,7 +37,7 @@ python qrc_gap_eval.py 40000     # benchmark 2: gap-closing strategies @ 40k sho
 ## The three findings
 
 1. **Fair baselines matter.** QRC "beats" a classical echo state network by 14× — until you tune the ESN, after which they tie. 
-2. **The shot wall.** With exact expectation values QRC is excellent; with realistic sampling, every readout-side fix (smoothing, lag stacking, PCA, noise-covariance-corrected regression, learned denoisers, shot reallocation) plateaus at the no-quantum classical baseline.
+2. **The shot wall.** With exact expectation values QRC is excellent; with realistic sampling, every readout-side fix (smoothing, lag stacking, PCA, noise-covariance-corrected regression, learned denoisers, shot reallocation) plateaus at the no-quantum classical baseline. (Re-audited 2026-07-11: every code-backed number regenerates from committed code — raw budget sweep and plateau seeds **bit-identically** — CONFIRMED, see [`AUDITS.md`](AUDITS.md); the two sim-trained-denoiser table rows lack a committed generator and are flagged there.)
 3. **The information is real but unreachable.** The reservoir's features are *not* classically redundant — neither a linear map nor an MLP can reproduce them from input history. The quantum advantage exists in the state and dies at the measurement interface.
 
 ## The redirected question
@@ -76,7 +76,7 @@ Post-processing can't fix this; the loss happens at measurement. The live questi
 
 ## Honest limitations
 
-Two task families tested (binary parity/NARMA and continuous Mackey-Glass; B11) and a topology sweep in both margin regimes (B12 maximal-headroom, B13 small-margin), but still 5–6 qubits, one injection scheme, one reservoir-parameter seed for the topology sweeps, sampling plus the gate-noise channels of B6–B8 — real hardware adds crosstalk and drift, so the wall here is *optimistic*. B13's within-task rescue of the IPS rule is post-hoc and needs a confirmatory third family. Feature-count-matched (not wall-clock-matched) classical comparisons. The B5 audit (2026-07-04) found the law's originally published precision unreproducible — audited numbers are quoted above, and the audit trail is in [`AUDITS.md`](AUDITS.md); B6 and B11 were re-audited 2026-07-11 (both CONFIRMED, bit-identical); B10, which builds on B5, has not yet been re-audited. Details and seeds in the write-ups.
+Two task families tested (binary parity/NARMA and continuous Mackey-Glass; B11) and a topology sweep in both margin regimes (B12 maximal-headroom, B13 small-margin), but still 5–6 qubits, one injection scheme, one reservoir-parameter seed for the topology sweeps, sampling plus the gate-noise channels of B6–B8 — real hardware adds crosstalk and drift, so the wall here is *optimistic*. B13's within-task rescue of the IPS rule is post-hoc and needs a confirmatory third family. Feature-count-matched (not wall-clock-matched) classical comparisons. The B5 audit (2026-07-04) found the law's originally published precision unreproducible — audited numbers are quoted above, and the audit trail is in [`AUDITS.md`](AUDITS.md); B2, B6 and B11 were re-audited 2026-07-11 (all CONFIRMED, bit-identical where full precision is stored; two B2 table rows lack a committed generator — flagged, not challenged); B10, which builds on B5, has not yet been re-audited. Details and seeds in the write-ups.
 
 ---
 *Amirshayan Hamidin, 2026. Built as a scoping study for an independent-study research project.*
