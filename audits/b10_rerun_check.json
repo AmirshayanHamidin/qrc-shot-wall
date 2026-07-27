@@ -1,0 +1,161 @@
+{
+ "md5_retrain_law": {
+  "rerun": "074a667dd1d9648abdf2fea51922b258",
+  "committed": "074a667dd1d9648abdf2fea51922b258",
+  "byte_identical": true
+ },
+ "md5_figure": {
+  "rerun": "809ff00cfcdd3355e328d75fd834037f",
+  "committed": "809ff00cfcdd3355e328d75fd834037f",
+  "byte_identical": true
+ },
+ "derived_claims": {
+  "r2_law_vs_fixed_all160": {
+   "published": 0.948,
+   "recomputed": 0.9476
+  },
+  "mae_law_fixed_all160_pp": {
+   "published": 0.74,
+   "recomputed": 0.742
+  },
+  "mae_law_fixed_noisy_pp": {
+   "published": 0.14,
+   "recomputed": 0.135
+  },
+  "mae_law_retrain_noisy_pp": {
+   "published": 26.8,
+   "recomputed": 26.81
+  },
+  "corr_pred_vs_fixed": {
+   "published": 0.974,
+   "recomputed": 0.9743
+  },
+  "acc_fixed_span_std_mean": {
+   "published": [
+    0.37,
+    0.59,
+    0.069,
+    0.46
+   ],
+   "recomputed": [
+    0.369,
+    0.592,
+    0.069,
+    0.463
+   ]
+  },
+  "acc_retrain_span_mean": {
+   "published": [
+    0.44,
+    0.97,
+    0.71
+   ],
+   "recomputed": [
+    0.437,
+    0.968,
+    0.708
+   ]
+  },
+  "mean_collapse_all160_pp": {
+   "published": 24.5,
+   "recomputed": 24.5
+  },
+  "per_gamma_table": {
+   "published": {
+    "0.05": [
+     25.9,
+     0.28,
+     28.2
+    ],
+    "0.1": [
+     24.8,
+     0.06,
+     26.7
+    ],
+    "0.15": [
+     23.4,
+     0.07,
+     25.5
+    ],
+    "0.0": [
+     23.9,
+     null,
+     null
+    ]
+   },
+   "recomputed": {
+    "0.05": {
+     "gain_pp": 25.88,
+     "mae_law_fixed_pp": 0.28,
+     "mae_law_retrain_pp": 28.23
+    },
+    "0.1": {
+     "gain_pp": 24.79,
+     "mae_law_fixed_pp": 0.06,
+     "mae_law_retrain_pp": 26.71
+    },
+    "0.15": {
+     "gain_pp": 23.38,
+     "mae_law_fixed_pp": 0.07,
+     "mae_law_retrain_pp": 25.48
+    },
+    "0.0": {
+     "gain_pp": 23.95,
+     "mae_law_fixed_pp": 2.56,
+     "mae_law_retrain_pp": 23.21
+    }
+   }
+  },
+  "frac_explained": {
+   "published": 0.995,
+   "recomputed": 0.995
+  },
+  "corr_gain_vs_officialresidual": {
+   "published": -0.9997,
+   "recomputed": -0.99972
+  },
+  "H0_supported": {
+   "published": true,
+   "recomputed": true
+  },
+  "retrain_mean_majority3": {
+   "published": 0.87,
+   "recomputed": 0.865
+  },
+  "retrain_mean_parity4": {
+   "published": 0.62,
+   "recomputed": 0.618
+  },
+  "fixed_max_at_32k": {
+   "published": "never resolves",
+   "recomputed": 0.592
+  },
+  "ratio_maeR_over_maeF_noisy": {
+   "published": "190x",
+   "recomputed": 198.4
+  }
+ },
+ "flags": {
+  "exact_separation_framing": {
+   "claim": "perfect-exact-separation regime, exact accuracy ~1.00 (README + honesty section)",
+   "found": {
+    "acc_exact0_span": [
+     0.534,
+     1.0
+    ],
+    "mean": 0.853,
+    "pairs_at_1": 4,
+    "pairs_total": 10,
+    "gain_pp_where_exact1": 38.8,
+    "gain_pp_where_below1": 15.0
+   },
+   "assessment": "doc-level: mechanism real and strongest where separation is perfect, but blanket ~1.00 framing covers only 4/10 pairs"
+  },
+  "ratio_190x": {
+   "claim": "190x smaller",
+   "found": "198.4x exact (191x from rounded 26.8/0.14)",
+   "assessment": "cosmetic understatement"
+  }
+ },
+ "verdict": "CONFIRMED"
+}
