@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-27: B10 audit CONFIRMED byte-identical — raw JSON + figure regenerate from the committed CLI; B12 next in the audit queue)
+## State (updated 2026-07-27, third session: DOC-FIX BATCH landed — every queued doc-level flag from the B2/B6/B10/B11/B12 audits applied in place, no number of record touched; the audit queue itself was completed earlier today with B12. Open: B2 denoiser generators, qrc_law.png regeneration, B5 regression cells)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -95,12 +95,14 @@ the README's B1–B13 numbering is canonical.
       two doc flags queued, no number challenged: the "perfect-exact-separation ≈ 1.00" framing
       holds for only 4/10 (arch,task) pairs (acc_exact0 0.534–1.0, mean 0.853; gain 38.8 pp on
       exact-1.00 cells vs 15.0 pp elsewhere), and "190×" understates (exact 198.4×)).
-      Suggested order: B12 next. Also open: doc-fix batch — RESULTS_GATENOISE.md
-      readout sentence + the three RESULTS_TASKFAM.md wording flags (all doc-only, flagged in
-      AUDITS.md); B5 regression cells (30) re-run; regenerate figures/qrc_law.png from
-      law_rerun.json; the two B2 provenance flags (commit or annotate the denoiser/redundancy
-      generators; note the mitigated[] 4-dp convention); the two B10 flags (scope the
-      "exact ≈ 1.00" framing to the 4/10 exact-separating pairs; fix "190×" → 198×).
+      Suggested order: audit queue COMPLETE (B12 audited 2026-07-27, second session);
+      doc-fix batch DONE 2026-07-27 third session (all queued flags applied in place —
+      GATENOISE readout sentence, three TASKFAM wording fixes, GAP provenance note + 4-dp
+      convention, RETRAIN 4/10 scoping + 190×→198×, TOPOLOGY |ρ| sentence, README sync;
+      see the AUDITS.md doc-fix entry). Still open: B5 regression cells (30) re-run;
+      regenerate figures/qrc_law.png from law_rerun.json; COMMIT generators for the two B2
+      denoiser rows and the redundancy probe (the provenance note is an annotation, not a
+      generator).
 - [ ] (Deferred, needs Amirshayan's sign-off: third task family for the within-task IPS
       confirmation; injection-scheme sweep; anything requiring hardware.)
 
@@ -875,6 +877,27 @@ the honesty section of RESULTS_DRIFT.md. LFW DONE audit #20; diabetes DONE audit
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
+
+- 2026-07-27 (scheduled run, third session) — **DOC-FIX BATCH landed — every queued doc-level
+  flag from the B2/B6/B10/B11/B12 audits applied in place; no number of record touched.** The
+  scheduled task file still said "one new confirmatory audit toward n=30"; treated as stale per
+  the discharged Program 2b hand-off (same call as the prior sessions; deviation noted here) —
+  post-verdict "confirmatory" points would violate PREREG_DRIFT.md's run-once rule, and the
+  previous session had declared the doc-fix batch next. Fixes: GATENOISE honest-residual
+  sentence corrected (committed code retrains per cell — collapse maps retrained-to-retrained;
+  numbers unaffected); TASKFAM per-task-mean convention stated (per-cell 0.874–0.990),
+  341→394 input levels (341 was a 4-dp rounding count), illustrative pair 0.52/0.88→0.53/0.90
+  @64k; GAP provenance note added (denoiser rows + redundancy probe: no committed generator —
+  flagged, not challenged; mitigated[] 4-dp convention stated); RETRAIN exact-separation
+  framing scoped to the 4/10 exactly-separating pairs (acc_exact0 span 0.534–1.0) and
+  190×→198×; TOPOLOGY |ρ|<0.1 sentence corrected (max −0.1015 @1k, p=0.53); README five
+  "queued" notes → resolved + limitations line updated. AUDITS.md gained a doc-fix entry
+  itemizing all six. Executor-delegation note: pure text edits, zero compute — ran inline
+  (efficiency-rule judgment call, nothing mechanical worth a subagent). Still open: commit
+  generators for the B2 denoiser/redundancy rows, regenerate figures/qrc_law.png from
+  law_rerun.json, B5 regression cells (30). Published via the authenticated-browser
+  file-upload path (no sandbox git credential) in a 2-commit batch (results/ then root),
+  byte-verified against the new HEAD in-session.
 
 - 2026-07-27 (scheduled run, second session) — **AUDIT MODE continued per queue: B12 audit landed
   — CONFIRMED, byte-identical; the suggested audit order is now COMPLETE.** The scheduled task

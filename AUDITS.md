@@ -2,6 +2,21 @@
 
 Verification-only entries: independent re-runs of published benchmarks against their written claims. Format per entry: what was re-run, how independently, verdict (CONFIRMED / DISCREPANCY), numbers side by side.
 
+## 2026-07-27 (third session) — Doc-fix batch: every queued doc-level flag applied — **no number of record touched**
+
+**What was done.** Not a new audit: the write-up corrections queued by the B6 (2026-07-11), B11 (2026-07-11), B2 (2026-07-11), B10 (2026-07-27) and B12 (2026-07-27) entries below were applied in place, each annotated with its origin audit. Files of record (raw JSON, figures) untouched; no published number of record changed anywhere — wording, scope and provenance annotations only.
+
+1. `results/RESULTS_GATENOISE.md` (B6 flag): the honest-residual sentence claiming a fixed noiseless readout replaced — the committed code retrains `LogisticRegression(C=1)` per cell, so the collapse maps retrained-to-retrained and no fixed-readout artifact contributes.
+2. `results/RESULTS_TASKFAM.md` (B11 flags 1–3): "exact accuracy 0.94–0.98" now stated as the per-task-mean convention (per-cell span 0.874–0.990); "341 distinct input levels" corrected to 394 raw (341 was the 4-dp rounding count); the illustrative pair corrected to fixed 0.53 → retrained 0.90 @64k.
+3. `results/RESULTS_GAP.md` (B2 flags 1–2): provenance note added — the two sim-trained denoiser rows (0.1519/0.1533) and the non-redundancy probe (0.90/0.89) have no committed generator (flagged, not challenged); the `mitigated`-at-4-dp storage convention stated.
+4. `results/RESULTS_RETRAIN.md` (B10 flags 1–2): the "perfect-exact-separation" framing scoped to the 4/10 exactly-separating (arch, task) pairs (`acc_exact0` span 0.534–1.0, mean 0.853; retraining gain 38.8 pp there vs 15.0 pp elsewhere); "190×" corrected to 198× (198.4 exact).
+5. `results/RESULTS_TOPOLOGY.md` (B12 flag): "|ρ| < 0.1 at all larger budgets" corrected (max |ρ| = 0.1015 @1k, p = 0.53).
+6. `README.md`: the five benchmark paragraphs' "flag queued" notes updated to resolved, the B10 caveat's "exact ≈ 1.00" scoped, and the limitations paragraph updated.
+
+Still open from the audit entries (annotations are not generators): commit generators for the B2 denoiser rows and redundancy probe, regenerate `figures/qrc_law.png` from `results/law_rerun.json`, re-run the 30 B5 regression cells.
+
+---
+
 ## 2026-07-27 (second session) — B12 (RESULTS_TOPOLOGY.md): full 200-cell re-run from committed code — **CONFIRMED**
 
 **What was re-run.** The entire B12 topology sweep from the repo's own committed code, unmodified: `src/qrc_topology.py build <topo> <layers>` for all 8 reservoirs (chain/ring/star/all2all × depth 1–2, committed default build seed 3), then the committed `evaluate_all()` — called one (topology, depth) slice at a time by a thin phaser so each process fits the 45 s sandbox cap, with the 8 slice outputs concatenated in the committed loop order — then the committed `src/qrc_topology_fig.py`. Everything ran in a scratch directory; the files of record were never written. Driver + comparison summary: `audits/audit_b12_rerun.py` + `audits/b12_rerun_check.json` (double-generated: a first manual pass, then the committed runner end-to-end in a fresh scratch — identical md5s both times). Environment: numpy 2.2.6, sklearn 1.7.2, qiskit 2.5.0, scipy 1.15.3, matplotlib 3.10.9 (same stack as all prior audits), CPU.
