@@ -876,6 +876,31 @@ adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
 
+- 2026-07-27 (scheduled run, second session) — **AUDIT MODE continued per queue: B12 audit landed
+  — CONFIRMED, byte-identical; the suggested audit order is now COMPLETE.** The scheduled task
+  file still said "one new confirmatory audit toward n=30"; treated as stale per the discharged
+  Program 2b hand-off (same call as the four prior sessions; deviation noted here). Committed
+  `src/qrc_topology.py` re-run unmodified (8 builds via its own CLI, default seed 3, then the
+  committed `evaluate_all()` one (topo, depth) slice per process under the 45 s cap via the
+  phased `audits/audit_b12_rerun.py`, slices concatenated in committed loop order), then the
+  committed `src/qrc_topology_fig.py`; numpy 2.2.6 / sklearn 1.7.2 / qiskit 2.5.0 / scipy 1.15.3
+  / matplotlib 3.10.9. `results/topology_law.json` reproduces **byte-identically** (md5
+  da7077bc…, all 200 cells, max |Δ| = 0 on every stored field) and `figures/qrc_topology.png`
+  **byte-identically** (md5 a63f68c4…). Every headline recomputes: exact = 1.0 for all 40
+  configs, IPS spans 55.5×/45.8×/14.4× (published 56×/46×/14×), ρ(log IPS, acc) +0.90 → +0.37
+  with published p's, ranking star 0.924/0.63 over ring/all2all/chain, H2 ρ(PR, acc) −0.18/0.28
+  and ρ(PR, IPS) −0.25/0.12. ONE wording flag queued (no number challenged): "|ρ| < 0.1 at all
+  larger budgets" misses at S=1000 (ρ = −0.1015, p = 0.53). Comparison summary:
+  `audits/b12_rerun_check.json`. Executor-delegation note: 0.7 s builds / 6.5 s eval slices —
+  below subagent overhead, ran inline (efficiency-rule judgment call, same as B6/B10/B11); the
+  whole pipeline was double-generated (manual pass, then the committed runner in a fresh
+  scratch) — identical md5s both times. Sandbox note: /sessions disk full again this session;
+  all work in /tmp, pip --target=/tmp/pylibs. Publish via the authenticated-browser file-upload
+  path (no sandbox git credential), byte-verified against raw.githubusercontent at the new HEAD.
+  Audit queue COMPLETE: B13, B5, B6, B11, B2, B10, B12 all have AUDITS.md entries. Next run: the
+  doc-fix batch (B2 provenance rows + B6 readout sentence + B10/B11/B12 wording flags) +
+  qrc_law.png regeneration.
+
 - 2026-07-27 (scheduled run) — **AUDIT MODE continued per queue: B10 audit landed — CONFIRMED,
   byte-identical.** The scheduled task file still said "one new confirmatory audit toward n=30";
   treated as stale per the discharged Program 2b hand-off (same call as the three 07-11 sessions;
