@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-11 third late session: B2 audit CONFIRMED bit-identical; B11 + B6 audits CONFIRMED and drift study ANSWERED earlier today)
+## State (updated 2026-07-27: B10 audit CONFIRMED byte-identical — raw JSON + figure regenerate from the committed CLI; B12 next in the audit queue)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -89,11 +89,18 @@ the README's B1–B13 numbering is canonical.
       provenance flags queued, no number challenged: the sim-trained denoiser rows
       (0.1519/0.1533) and the redundancy probe (rel. err 0.90/0.89) have NO committed generator,
       and gap_final.json's mitigated[] is stored at 4 dp only).
-      Suggested order: B10 next, then B12. Also open: doc-fix batch — RESULTS_GATENOISE.md
+      B10 (2026-07-27, CONFIRMED — `results/retrain_law.json` byte-for-byte (md5 074a667d…, all
+      160 cells + aggregates) and `figures/qrc_retrain.png` byte-identical (md5 809ff00c…) via the
+      committed CLI run unmodified; all ~17 derived headline claims recompute to published values;
+      two doc flags queued, no number challenged: the "perfect-exact-separation ≈ 1.00" framing
+      holds for only 4/10 (arch,task) pairs (acc_exact0 0.534–1.0, mean 0.853; gain 38.8 pp on
+      exact-1.00 cells vs 15.0 pp elsewhere), and "190×" understates (exact 198.4×)).
+      Suggested order: B12 next. Also open: doc-fix batch — RESULTS_GATENOISE.md
       readout sentence + the three RESULTS_TASKFAM.md wording flags (all doc-only, flagged in
       AUDITS.md); B5 regression cells (30) re-run; regenerate figures/qrc_law.png from
       law_rerun.json; the two B2 provenance flags (commit or annotate the denoiser/redundancy
-      generators; note the mitigated[] 4-dp convention).
+      generators; note the mitigated[] 4-dp convention); the two B10 flags (scope the
+      "exact ≈ 1.00" framing to the 4/10 exact-separating pairs; fix "190×" → 198×).
 - [ ] (Deferred, needs Amirshayan's sign-off: third task family for the within-task IPS
       confirmation; injection-scheme sweep; anything requiring hardware.)
 
@@ -868,6 +875,27 @@ the honesty section of RESULTS_DRIFT.md. LFW DONE audit #20; diabetes DONE audit
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
+
+- 2026-07-27 (scheduled run) — **AUDIT MODE continued per queue: B10 audit landed — CONFIRMED,
+  byte-identical.** The scheduled task file still said "one new confirmatory audit toward n=30";
+  treated as stale per the discharged Program 2b hand-off (same call as the three 07-11 sessions;
+  deviation noted here). The committed `src/qrc_retrain.py` was re-run through its own CLI,
+  unmodified (`0`/`1`/`agg`, then `qrc_retrain_fig.py`), in a scratch dir via the phased
+  `audits/audit_b10_rerun.py`; numpy 2.2.6 / sklearn 1.7.2 / qiskit 2.5.0 / scipy 1.15.3.
+  `results/retrain_law.json` reproduces **byte-for-byte** (md5 074a667d…, all 160 cells on every
+  stored field + all aggregates) and `figures/qrc_retrain.png` **byte-identically** (md5
+  809ff00c…). All derived headline claims recompute to published values (R² 0.9476, MAE
+  0.742/0.135/26.81 pp, collapse 24.5 pp, per-γ table exact, 0.995 / −0.9997, spans and task
+  means; H0 bar passed ~200×). Two doc-level flags queued, no number challenged: the
+  "perfect-exact-separation ≈ 1.00" framing holds for only 4/10 (arch,task) pairs (acc_exact0
+  0.534–1.0, mean 0.853; the gain mechanism is 38.8 pp on exact-1.00 cells vs 15.0 pp elsewhere
+  — real, but the blanket framing overstates), and "190×" understates (exact 198.4×). Comparison
+  summary: `audits/b10_rerun_check.json`. Executor-delegation note: two ~30 s CLI calls, below
+  subagent overhead — ran inline (efficiency-rule judgment call, same as the B6/B11 sessions).
+  Sandbox note: /sessions disk full this session; pip installs redirected to /tmp, no repo
+  impact. Publish via the authenticated-browser file-upload path (no sandbox git credential),
+  byte-verified against raw.githubusercontent at the new HEAD. Next run: B12 audit, or the
+  doc-fix batch (now incl. the B10 flags) + qrc_law.png regeneration.
 
 - 2026-07-11 (scheduled run, third late session) — **AUDIT MODE continued per queue: B2 audit
   landed — CONFIRMED, bit-identical.** The scheduled task file still said "one new confirmatory
