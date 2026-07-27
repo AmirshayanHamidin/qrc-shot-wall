@@ -1,0 +1,140 @@
+{
+ "audit": "B12 re-run 2026-07-27",
+ "head": null,
+ "env": {
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "sklearn": "1.7.2",
+  "qiskit": "2.5.0",
+  "matplotlib": "3.10.9"
+ },
+ "md5": {
+  "topology_law.json": {
+   "rerun": "da7077bc7adb210737aab37b2b5e4a3b",
+   "committed": "da7077bc7adb210737aab37b2b5e4a3b",
+   "byte_identical": true
+  },
+  "qrc_topology.png": {
+   "rerun": "a63f68c46819cade81b4bf914b5ae6ca",
+   "committed": "a63f68c46819cade81b4bf914b5ae6ca",
+   "byte_identical": true
+  }
+ },
+ "cells": {
+  "n": [
+   200,
+   200
+  ],
+  "key_order_identical": true,
+  "max_abs_delta": {
+   "ips": 0.0,
+   "pr": 0.0,
+   "top3": 0.0,
+   "dnorm": 0.0,
+   "floor": 0.0,
+   "exact": 0.0,
+   "noisy": 0.0,
+   "retained": 0.0
+  }
+ },
+ "claims": {
+  "exact_all_1.000": {
+   "n_configs": 40,
+   "all_exactly_1.0": true
+  },
+  "ips_spans": {
+   "parity2": {
+    "min": 0.02113715993208497,
+    "max": 0.45902779000552507,
+    "span_x": 21.716625671585508
+   },
+   "parity3": {
+    "min": 0.0032869192644857923,
+    "max": 0.18250222259109575,
+    "span_x": 55.523792313057164
+   },
+   "parity4": {
+    "min": 0.004780580376727566,
+    "max": 0.09935873369640534,
+    "span_x": 20.78382243714497
+   },
+   "delay_xor": {
+    "min": 0.030274552948672557,
+    "max": 0.43536660873109995,
+    "span_x": 14.38061230728064
+   },
+   "majority3": {
+    "min": 0.08591686996415804,
+    "max": 3.9349901122682245,
+    "span_x": 45.79997052860265
+   }
+  },
+  "rho_logIPS_acc": {
+   "250": {
+    "rho": 0.8989,
+    "p": 3.4531714756372393e-15
+   },
+   "1000": {
+    "rho": 0.844,
+    "p": 7.885197437176522e-12
+   },
+   "4000": {
+    "rho": 0.5738,
+    "p": 0.00010849985193361666
+   },
+   "16000": {
+    "rho": 0.4837,
+    "p": 0.001566372475350903
+   },
+   "64000": {
+    "rho": 0.3735,
+    "p": 0.017586502795949047
+   }
+  },
+  "ranking_250": {
+   "chain": {
+    "acc_250": 0.7887,
+    "mean_ips": 0.4575
+   },
+   "ring": {
+    "acc_250": 0.8275,
+    "mean_ips": 0.4171
+   },
+   "star": {
+    "acc_250": 0.9243,
+    "mean_ips": 0.6311
+   },
+   "all2all": {
+    "acc_250": 0.7903,
+    "mean_ips": 0.3345
+   }
+  },
+  "rho_PR_acc": {
+   "250": {
+    "rho": -0.1758,
+    "p": 0.2778
+   },
+   "1000": {
+    "rho": -0.1015,
+    "p": 0.5333
+   },
+   "4000": {
+    "rho": 0.0926,
+    "p": 0.5699
+   },
+   "16000": {
+    "rho": -0.0187,
+    "p": 0.909
+   },
+   "64000": {
+    "rho": 0.0243,
+    "p": 0.8816
+   }
+  },
+  "rho_PR_IPS": {
+   "rho": -0.2478,
+   "p": 0.1231
+  },
+  "flag_wording": "\"|rho| < 0.1 at all larger budgets\" misses at S=1000: rho(PR,acc) = -0.1015 (p = 0.53); harmlessly non-significant, no number of record affected"
+ }
+}
