@@ -92,7 +92,7 @@ shot-noise variance than either a sparse line or a dense clique.
 
 **H2 — falsified (honest negative).** Concentration is **not** the mechanism. The
 participation ratio is uncorrelated with shot-limited accuracy at every budget
-(ρ = −0.18 @250, p = 0.28; |ρ| < 0.1 at all larger budgets), and PR does not even track IPS
+(ρ = −0.18 @250, p = 0.28; |ρ| ≤ 0.102 at all larger budgets — max −0.1015 @1k, p = 0.53; an earlier version said "< 0.1", which the 1k value misses by 0.0015, corrected per the 2026-07-27 re-audit), and PR does not even track IPS
 (ρ = −0.25, p = 0.12). Whether the separation is packed into 5 observables or spread across
 25 makes no difference; what matters is the **summed** SNR²-per-shot `Σ Δμᵢ²/σᵢ²`. The
 README's specific phrase "concentrate … in a few high-magnitude observables" points at the

@@ -49,8 +49,9 @@ prediction and measured fixed accuracy is 0.974. So the closed-form model is val
 *as a model of the fixed readout*.
 
 But the fixed readout is non-robust. Trained on exact features that separate the classes
-perfectly (exact accuracy ≈ 1.00), its decision margins live along directions that any
-realistic sampling destroys; `acc_fixed` averages 0.46 and never resolves the task even
+perfectly — true for 4 of the 10 (arch, task) pairs (`acc_exact0` = 1.00 there; grid-wide
+span 0.534–1.0, mean 0.853; scope stated per the 2026-07-27 re-audit) — its decision
+margins live along directions that any realistic sampling destroys; `acc_fixed` averages 0.46 and never resolves the task even
 at 32,000 shots. Retraining the readout on the noisy features finds a different,
 noise-robust direction and recovers reachable accuracy of 0.44–0.97 (mean 0.71),
 consistent with the task-shaped wall of B3 (majority-3 mean 0.87, parity-4 mean 0.62).
@@ -62,7 +63,8 @@ consistent with the task-shaped wall of B3 (majority-3 mean 0.87, parity-4 mean 
 | 0.15 | 23.4 pp | 0.07 pp | 25.5 pp |
 | 0 (shot only) | 23.9 pp | — | — |
 
-`MAE(law−fixed)` = 0.14 pp is **190× smaller** than `MAE(law−reachable)` = 26.8 pp on
+`MAE(law−fixed)` = 0.14 pp is **198× smaller** (198.4× at full precision; an earlier
+version said 190×, corrected per the 2026-07-27 re-audit) than `MAE(law−reachable)` = 26.8 pp on
 the noisy cells — far past the H0 bar of a 2× gap. The entire discrepancy between the
 fixed-readout law and reachable accuracy is the retraining gain.
 
@@ -87,10 +89,14 @@ fixed-readout law and reachable accuracy is the retraining gain.
 
 ## What this is not — honesty
 
-This result lives in the **perfect-exact-separation regime**: arch 0/1 with strong
-encoding classify the parity/majority tasks perfectly on exact features, so the
-noiseless-trained readout is maximally overfit to noise-fragile directions and the
-collapse is maximal. B5 reported R² = 0.991 for its law *against reachable accuracy*
+This result is strongest in the **perfect-exact-separation regime**, which — scope
+corrected 2026-07-27 per the B10 re-audit (see [`AUDITS.md`](../AUDITS.md)) — covers 4 of
+the 10 (arch, task) pairs, not the whole grid: `acc_exact0` spans 0.534–1.0 (mean 0.853;
+arch-1 `parity4` sits at 0.534, barely above chance on exact features). Where separation
+is exact, the noiseless-trained readout is maximally overfit to noise-fragile directions
+and the collapse is maximal: mean retraining gain 38.8 pp on the exact-1.00 cells vs
+15.0 pp elsewhere — so the queued encoding-gain sweep is partly answerable from the
+existing grid, which already spans that exact-separation range. B5 reported R² = 0.991 for its law *against reachable accuracy*
 across six architectures including weak-encoding ones; that is only consistent with the
 present finding if B5's cells sat where fixed and retrained readouts nearly coincide
 (imperfect exact separation, so the design readout is already noise-robust), **or** if

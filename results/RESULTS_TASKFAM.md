@@ -8,8 +8,9 @@ re-tests, changing nothing else in the pipeline.
 
 **New family.**
 - **Input:** a continuous, chaotic **Mackey-Glass** series (β=0.2, γ=0.1, p=10, τ=17),
-  normalised into the encoder's monotone angle range `[0.02, 0.18]` (341 distinct input
-  levels vs the old 2). A different input *distribution* and a standard reservoir-computing
+  normalised into the encoder's monotone angle range `[0.02, 0.18]` (394 distinct input
+  levels — an earlier version said 341, the count after 4-decimal rounding; convention
+  stated per the 2026-07-11 re-audit — vs the old 2). A different input *distribution* and a standard reservoir-computing
   signal, unrelated to i.i.d. bits.
 - **Classification (non-parity, nonlinear, memory-dependent, all balanced ~50/50):**
   `updown` (u_t > u_{t−2}), `accel` (sign of the discrete curvature u_t−2u_{t−1}+u_{t−2}),
@@ -32,7 +33,9 @@ Figure: `figures/qrc_taskfam.png`.
 ## H1 — the wall is not a parity artifact (and is more severe here)
 
 The noiseless reservoir separates all three new classification tasks almost perfectly
-(exact accuracy 0.94–0.98 vs classical floors 0.54–0.68). But that separation lives in
+(per-task mean exact accuracy 0.94–0.98 — per-cell span 0.874–0.990, weakest cell
+arch-2 `accel`; averaging convention stated per the 2026-07-11 re-audit — vs classical
+floors 0.54–0.68). But that separation lives in
 **razor-thin, high-order feature margins.** Under shot noise the fixed design-time readout
 collapses to near chance and **stays there across the entire practical budget** — fixed-
 readout accuracy averages 0.49 at 250 shots and only 0.56 at 64 000 shots, *below* the
@@ -78,7 +81,9 @@ NARMA, new family.
 B11 was designed to test the law, but it independently reproduces B10's central finding.
 Retraining the readout on the noisy features recovers most of the loss the fixed readout
 suffers: at 64 000 shots fixed-readout accuracy averages 0.56 while **retrained** accuracy
-averages 0.86 (per-cell, e.g. arch 0 `updown`: fixed 0.52 → retrained 0.88). The wall the
+averages 0.86 (per-cell, e.g. arch 0 `updown` @64k:
+fixed 0.53 → retrained 0.90 — an earlier version said 0.52/0.88, which matches no budget
+of that cell; corrected per the 2026-07-11 re-audit). The wall the
 law predicts is the *fixed design-time readout* wall (the law's native target); retraining
 on-device claws much of it back. B11 thus lands squarely in the "perfect-exact-separation /
 tiny-margin" regime B10 flagged as its own caveat — now confirmed on a second family, with
