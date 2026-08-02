@@ -1,50 +1,24 @@
-# The Verified Autonomous Research (VAR) Protocol — v1.0
+# The Verified Autonomous Research (VAR) protocol — v1.0
 
-*Status: category-defining spec, first published 2026-07-05. Case study #1: this repository
-(13 benchmarks, live QPU validation, 40+ autonomous sessions, full audit trail below in
-AUDITS.md and the commit history).*
+A six-rule verification protocol for research conducted with substantial autonomous (AI) assistance. Adopted in this repository 2026-07-05; the audit history in [`AUDITS.md`](AUDITS.md), the operational log in [`RESEARCH_AGENDA.md`](RESEARCH_AGENDA.md), and the commit record show the rules in use.
 
-## The problem
+## Motivation
 
-AI systems now generate research end-to-end (Sakana AI Scientist, Google Co-Scientist,
-AI-Researcher). Independent evaluations consistently flag the same gap: uneven rigor and
-unverifiable claims. As AI-generated papers scale, the scarce commodity is no longer
-producing results — it is trusting them. VAR is a protocol for making autonomous research
-*audit-proof by construction*.
+AI systems can now run experiments and draft research end-to-end. Independent evaluations of such systems repeatedly flag the same weakness: uneven rigor and claims that are hard to verify after the fact. As AI-assisted results scale, the scarce commodity is not producing numbers but trusting them. The goal of this protocol is that the trustworthiness of a result be checkable from the public record alone, without relying on testimony about how the work was done.
 
 ## The six rules
 
-1. **Pre-register or it didn't happen.** Every benchmark states one falsifiable hypothesis
-   with numeric success bars BEFORE any experiment runs. Bars are never moved after data.
-2. **Failures are results.** Negative outcomes are published with the same prominence and
-   format as positives (see RESULTS_PERNODE.md — a pre-registered correction that didn't
-   work, reported as such).
-3. **The repo is the lab notebook.** Public git is the only memory. Every run of the
-   autonomous loop reads the live remote as ground truth, publishes its increment (writeup +
-   raw numbers + code + figure) in one batch, and never leaves work half-published.
-4. **Honest baselines.** Comparison methods get the same tuning effort as the proposed
-   method, plus a no-method floor. An untuned baseline is treated as a protocol violation.
-5. **Audit mode is mandatory.** When the queue empties, the loop switches from generating to
-   auditing: re-running published numbers from published code, logging confirmations and
-   discrepancies to AUDITS.md. Incidents (state loss, overwrites, stale caches) are logged,
-   repaired, and turned into new guardrails — see the Log in RESEARCH_AGENDA.md.
-6. **Human sign-off gate.** Nothing leaves the repo (preprint submission, external claims)
-   without a named human reviewing and owning every claim.
+1. **Pre-register or it didn't happen.** Every benchmark states one falsifiable hypothesis with numeric success criteria before any experiment runs. Criteria are never moved after data.
+2. **Failures are results.** Negative outcomes are published with the same prominence and format as positive ones (for example `results/RESULTS_PERNODE.md`, a pre-registered correction that did not work, reported as such).
+3. **The repository is the lab notebook.** Public version control is the only memory. Every working session reads the live repository as ground truth and publishes its increment — write-up, raw values, code, figure — in one batch; work is never left half-published.
+4. **Honest baselines.** Comparison methods receive the same tuning effort as the proposed method, plus a no-method floor. An untuned baseline is treated as a protocol violation.
+5. **Audit mode is mandatory.** When the work queue empties, effort switches from generating results to auditing them: re-running published numbers from published code and logging confirmations and discrepancies to the audit file. Incidents (state loss, overwrites, stale caches) are logged, repaired, and converted into new guardrails.
+6. **Human sign-off gate.** Nothing leaves the repository — preprint submission, external claims — without a named human reviewing and taking responsibility for every claim.
 
-## Why this beats "AI scientist" systems at trust
+## Properties
 
-A VAR repository is self-prosecuting: any reader can re-run any claim, see what was
-predicted before data arrived, and read the loop's own incident reports. The credibility
-does not come from the model that generated the work — it comes from the trail the
-protocol forces. Replication happened here by accident (a stale-cache incident re-executed
-benchmark B13 blind and reproduced every verdict) and the protocol turned even that into
-evidence.
+A repository following these rules is checkable by construction: any reader can re-run any claim from committed code, see what was predicted before the data arrived, and read the incident log. Credibility attaches to the trail rather than to whoever, or whatever, generated the work. The rules have been exercised here in practice: an audit found one headline result not reproducible from the committed code (B5), and the finding, the restoration from a pinned-convention generator, and the corrected numbers are all part of the public record. On two occasions an accidental duplicate session re-executed a benchmark blind and reproduced its verdicts; both incidents are logged.
 
-## Adopt it
-
-The protocol is model-agnostic and domain-agnostic (this instance: quantum ML on a consumer
-laptop at ~$0 infrastructure). A portable skill implementing the loop is available from the
-author. Next program under this protocol: autonomous audit of published third-party ML
-results — replication as a routine, logged, public pass.
+The protocol is model-agnostic and domain-agnostic.
 
 *Amirshayan Hamidin, 2026. Contact: hamideinamirshayan@gmail.com*
