@@ -1,0 +1,55 @@
+{
+ "protocol": "audits/PREREG_B2_GEN.md (registered 2026-08-02, commit 217a342, BEFORE first run; reconstruction under pinned conventions, not a bit-reproduction claim)",
+ "exploratory_posthoc_diagnostics": {
+  "label": "EXPLORATORY post-hoc diagnostic, not pre-registered; see stage docstring",
+  "relerr_linear_standardized": 0.2908262687065961,
+  "relerr_linear_perfeat_median": 0.17223850653883832,
+  "relerr_linear_perfeat_max": 0.9871697646287506,
+  "relerr_mlp_standardized": 1.0114376327065022,
+  "relerr_mlp_perfeat_median": 0.7927641608511372,
+  "relerr_mlp_perfeat_max": 2.4220978541126867,
+  "relerr_linear_nocurrent_pooled": 0.860983480273181,
+  "relerr_linear_nocurrent_standardized": 0.6651736508707646
+ },
+ "published": {
+  "nmse_linear": 0.1519,
+  "nmse_mlp": 0.1533,
+  "relerr_linear": 0.9,
+  "relerr_mlp": 0.89
+ },
+ "pinned": {
+  "benchmark": "narma(5,1200,seed=5), U seed 7, V=4, 10000 shots/node, benchmark noise seed 1, committed eval_strategy, lag+input downstream",
+  "training": "narma(5,2400,seed=105), noise seed 2, 2300 rows after washout",
+  "alphas": [
+   1e-06,
+   0.0001,
+   0.01,
+   1.0,
+   100.0
+  ],
+  "mlp": "(256,128), random_state=0, max_iter=300"
+ },
+ "reconstructed": {
+  "nmse_linear": 0.1507391988456632,
+  "alpha_denoiser": 0.01,
+  "relerr_linear_centered": 0.12993102477928445,
+  "relerr_linear_uncentered": 0.022220360287270296,
+  "alpha_probe": 1e-06,
+  "nmse_mlp": 0.14852184847701225,
+  "n_iter": 14,
+  "relerr_mlp_centered": 0.6012013089659295,
+  "relerr_mlp_uncentered": 0.1028153954230286,
+  "nmse_linear_seed2": 0.15036666957552877,
+  "nmse_mlp_seed2": 0.14598229415399733,
+  "nmse_linear_seed3": 0.15049156393093796,
+  "nmse_mlp_seed3": 0.1416065461461972
+ },
+ "bars": {
+  "A1_nmse_linear_within_0.010": true,
+  "A2_nmse_mlp_within_0.010": true,
+  "A3_relerr_linear_within_0.05": false,
+  "A4_relerr_mlp_within_0.05": false,
+  "B1_both_nmse_in_plateau_bracket": true,
+  "B2_both_relerr_ge_0.80": false
+ }
+}
