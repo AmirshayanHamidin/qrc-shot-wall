@@ -12,7 +12,11 @@ Code: `src/qrc_law.py` (reservoir grid), **`src/qrc_law_predict.py` (the canonic
 prediction generator — pinned convention)**, `src/qrc_law_rerun.py` (8-seed observation
 protocol). Raw cells with per-seed observations: `results/law_rerun.json`. Historical file
 of record from the original run: `results/law_theory.json` (see provenance note below).
-Figure: `figures/qrc_law.png` (original run; regenerate from `law_rerun.json`).
+Figure: `figures/qrc_law.png` (regenerated 2026-08-02 from `law_rerun.json` by
+`src/qrc_law_fig.py`, which self-verifies against the stored summary; the original-run
+figure — it quoted the retired R² = 0.991 headline, and its naive-SNR v1 panel used
+observations with no committed generator — remains in git history. The v1 failure
+stays narrated below.)
 
 ## Provenance note (read this first)
 
