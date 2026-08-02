@@ -53,6 +53,21 @@ doesn't see; cf. B10) and slightly optimistic at high budgets (+0.85 pp at 64k).
 zero-parameter closed-form forecast at 3.3 pp across a 150-cell design grid remains a
 strong, useful law — the original claim's *precision* was inflated, its substance was not.
 
+### The regression cells (completed 2026-08-02)
+
+The original run's 30 `narma2_reg` cells never had a committed artifact (`law_results.json`
+was never in the tree); they were re-run under the restored 8-seed protocol, pre-registered
+remote-first in `audits/PREREG_B5_REG.md` with raw per-seed values in
+`results/law_reg_rerun.json`. Result: against the committed inputs-only floor (which has no
+NARMA2 skill), regression retention is **high, not low** — mean 0.54 at 250 shots rising to
+0.95 at 64k, *above* the classification grid's mean at every budget, with strong
+architecture heterogeneity at 250 shots (−0.01 to 0.88). Two of three pre-registered bars
+failed; the audit file's honesty section explains why this does **not** contradict B3's
+task-shape result (different retention conventions: tuned-baseline vs no-skill floor) and
+what it does say — the wall is margin/feature-structure-shaped, not output-type-shaped
+(cf. B13). The probit law itself makes no prediction for these cells (margins are a
+classification quantity); they complete the grid's evidence base, not the law's test set.
+
 ## How we got here (including the failures)
 
 We pre-stated a hypothesis: retained quantum benefit collapses onto a universal curve in
@@ -104,8 +119,10 @@ versions, which is far below the 3.3 pp residual).
 
 ## Scale of evidence
 
-150 classification cells re-run under the restored protocol (plus 30 regression cells from
-the original run, not re-audited), 6 reservoir architectures (4–6 qubits, varying depth,
+150 classification cells re-run under the restored protocol, plus the 30 regression cells
+completed under the same 8-seed protocol on 2026-08-02 (`results/law_reg_rerun.json`,
+pre-registered in `audits/PREREG_B5_REG.md` — two of three bars failed informatively; see
+the audit file), 6 reservoir architectures (4–6 qubits, varying depth,
 window, encoding gain, readout nodes), 5 task families, 5 shot budgets spanning 250–64,000,
 **8 documented sampling seeds per cell with per-seed values published**, zero free
 parameters at the final stage.
