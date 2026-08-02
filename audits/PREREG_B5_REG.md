@@ -57,4 +57,60 @@ deterministic build phase). No credentials, no network beyond the repo.
 
 ## Results
 
-(EMPTY at registration — filled by commit 2.)
+(Run 2026-08-02, same session, after the registration commit `ee4ad4c` was raw-verified on
+the remote. Driver: `src/qrc_law_reg_rerun.py`; raw per-seed values:
+`results/law_reg_rerun.json`. This section is commit 2 of 2.)
+
+**Mean retention by budget (30 cells, 8 seeds each), vs the published classification grid:**
+
+| S | reg (this run) | clf (published `law_rerun.json`) |
+|---|---|---|
+| 250 | 0.544 | 0.146 |
+| 1 000 | 0.743 | 0.298 |
+| 4 000 | 0.854 | 0.448 |
+| 16 000 | 0.916 | 0.540 |
+| 64 000 | 0.953 | 0.616 |
+
+**Anchors.** floor = −0.063 for every arch (the committed inputs-only proxy has no NARMA2
+skill — it lacks memory), exact R² = 0.953–0.993, so denominators are 1.02–1.06 and the
+|exact − floor| ≤ 0.02 guard never triggered. Retention at 250 shots spans −0.008 (arch 0)
+to 0.883 (arch 4); by 64k all archs sit at 0.83–0.99.
+
+**Pre-registered bars:**
+
+- **H1: FAILED.** Mean retention @250 = **0.544**; the bar was < 0.20.
+- **H2: PASSED.** @64k − @250 = **+0.409**; the bar was > 0.10.
+- **H3: FAILED — inverted.** reg > clf at 250 (0.544 vs 0.146) and at 1000 (0.743 vs
+  0.298) — and in fact at every budget.
+
+**Verification.** Three spot cells re-run in-session reproduce bit-identically
+(a2/S=1000/seed 5, a2/S=250/seed 1, a2/S=64000/seed 8); the build phase is deterministic
+from committed seeds.
+
+## Reading the failures (honesty section)
+
+1. **The anchor mapping was wrong, and that is the finding.** H1/H3 transplanted B3's
+   "regression retains ~4% at 40k" (NARMA5) and B11's negative-at-250 (Mackey-Glass) onto
+   B5's committed retention convention. Those results measure retention against *tuned,
+   history-aware classical baselines*; B5's committed floor is the instantaneous
+   single-input column, which has zero NARMA2 skill. Against a no-skill floor, "retention"
+   measures the fraction of exact-readout R² reached — a different and easier quantity.
+   The bars failed largely because the convention does not transfer, and partly because
+   NARMA2 (short memory, smooth target) is genuinely easier under sampling noise than
+   NARMA5 or Mackey-Glass prediction. **No B3/B11 number is challenged by this inversion**
+   — they are different quantities on different tasks.
+2. **What the inversion does say:** under the B5 convention, a smooth regression target
+   recovers with shots far faster than the margin-limited classification cells — NARMA2's
+   signal rides low-order feature directions that Ridge averages across ~60–100 correlated
+   features, while parity-type cells depend on fragile high-order correlators. Consistent
+   with B13's scope correction: the wall is margin/feature-structure-shaped, not
+   output-type-shaped. A tuned-baseline reg-vs-clf comparison on this grid would be a NEW
+   pre-registration, not attempted here.
+3. **The probit law makes no prediction for these cells** (margins are a classification
+   quantity); they complete the grid's evidence base, not the law's test set.
+4. Environment: qiskit 2.5.1 (deterministic build phase only) vs 2.5.0 in the 07-27
+   audits; numpy/sklearn/scipy identical. Per-arch scratch files (`lawreg{0..5}.json`)
+   are subsumed by the published aggregate (all per-seed values included) and not
+   committed, matching the `law_rerun.json` precedent. Only pre-registered quantities are
+   reported; the H3 comparison uses the published `law_rerun.json` at HEAD `2dcd4ec`
+   exactly as registered.
