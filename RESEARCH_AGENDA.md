@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-08-02, second session: qrc_law.png REGENERATED from law_rerun.json via a new committed self-verifying generator `src/qrc_law_fig.py`; the original-run figure (retired R²=0.991 headline) is retired to git history. Earlier today: B5 regression cells completed (see log). Open: B2 denoiser generators)
+## State (updated 2026-08-02, third session: B2 denoiser rows RESTORED via pre-registered reconstruction generator `src/qrc_gap_denoiser.py` (0.1507/0.1485, bars A1/A2/B1 passed); redundancy probe DISCREPANCY — corrected to memory-content form in RESULTS_GAP.md/README (bars A3/A4/B2 failed as published, see AUDITS.md). No provenance-incomplete number remains. Earlier today: B5 reg cells + qrc_law.png (see log))
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -100,9 +100,11 @@ the README's B1–B13 numbering is canonical.
       doc-fix batch DONE 2026-07-27 third session (all queued flags applied in place —
       GATENOISE readout sentence, three TASKFAM wording fixes, GAP provenance note + 4-dp
       convention, RETRAIN 4/10 scoping + 190×→198×, TOPOLOGY |ρ| sentence, README sync;
-      see the AUDITS.md doc-fix entry). Still open: COMMIT
+      see the AUDITS.md doc-fix entry). ~~Still open: COMMIT
       generators for the two B2 denoiser rows and the redundancy probe (the provenance
-      note is an annotation, not a generator). qrc_law.png REGENERATED 2026-08-02 (second
+      note is an annotation, not a generator)~~ DONE 2026-08-02 third session
+      (pre-registered reconstruction `audits/PREREG_B2_GEN.md`: denoiser rows RESTORED,
+      redundancy probe corrected to memory-content form — see AUDITS.md). qrc_law.png REGENERATED 2026-08-02 (second
       session; committed generator `src/qrc_law_fig.py`, see log + AUDITS.md). B5 regression
       cells DONE 2026-08-02
       (pre-registered completion, see log + AUDITS.md).
@@ -880,6 +882,41 @@ the honesty section of RESULTS_DRIFT.md. LFW DONE audit #20; diabetes DONE audit
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
+
+- 2026-08-02 (scheduled run, third session) — **B2 DENOISER ROWS RESTORED, REDUNDANCY PROBE
+  CORRECTED: the repo's last provenance-incomplete numbers now have a committed,
+  pre-registered reconstruction generator.** The scheduled task file still said "one new
+  confirmatory audit toward n=30"; treated as stale per the discharged Program 2b hand-off
+  (same call as the seven prior sessions; deviation noted here); worked the queue's declared
+  next target (the second session's hand-off). Registration remote-first
+  (`audits/PREREG_B2_GEN.md`, commit `217a342`, EMPTY results, raw-verified byte-identical
+  BEFORE any reproduction code ran); every unrecoverable free choice pinned and disclosed
+  there. Results: denoiser rows **A1/A2/B1 PASSED** — reconstructed 0.1507/0.1485 vs printed
+  0.1519/0.1533, inside the plateau bracket, stable at noise seeds 2/3 — restored at claims
+  level. Redundancy probe **A3/A4/B2 FAILED** — pooled rel err 0.13 (linear), not 0.90: with
+  the committed 10-input window (current input included) the exact features ARE largely
+  linearly predictable. Post-hoc diagnostic (labeled): excluding u_t gives 0.861 — the
+  printed number's neighborhood — so the original probe most plausibly measured memory
+  content; RESULTS_GAP.md and README corrected in-batch to the memory-content form (the
+  downstream mechanism claim survives: inputs-only 0.1483 vs exact floor 0.0030, both
+  bit-reproduced 07-11). MLP probe underfits at the pinned settings (0.601, n_iter=14) —
+  reported, not tuned. Verification: linear+MLP stages re-ran bit-identically in-session;
+  publish batch byte-verified (md5) against raw at the new HEAD. Session mechanics: fresh
+  clone at HEAD `cea3178`, freshness via git ls-remote; /sessions disk full again (worked in
+  /tmp, pip --target=/tmp/pylibs); executor-delegation judgment call: eight sub-45 s compute
+  chunks, below subagent overhead — ran inline (seven-session precedent); publication via
+  web editor cmTile.view + per-directory upload path, no sandbox git credential; Copilot
+  commit-dialog autofill replaced and readback-verified on every commit (recurring class).
+  NEW incident class: the per-directory upload POST froze the renderer ~2 min and commit 2a
+  landed late — verified via the commits API BEFORE any retry (no duplicate created); the
+  frozen tab's React event root stayed broken afterwards (synthetic AND real input events
+  no longer reached React state — workaround: fresh tab + server-side ?filename=&value=
+  prefill, then per-file /edit/ commits with targeted CodeMirror dispatches); the web
+  editor appends a trailing newline to created files (gap_denoiser.json 1959→1960 bytes,
+  content otherwise byte-identical — accepted as the file of record).
+  The audit program's provenance ledger is now CLOSED: every published number has a
+  committed generator or a published, annotated correction.
+
 
 - 2026-08-02 (scheduled run, second session) — **qrc_law.png REGENERATED from committed data —
   the B5 restoration's last open figure item closed.** The scheduled task file still said "one
