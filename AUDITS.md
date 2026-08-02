@@ -2,6 +2,18 @@
 
 Verification-only entries: independent re-runs of published benchmarks against their written claims. Format per entry: what was re-run, how independently, verdict (CONFIRMED / DISCREPANCY), numbers side by side.
 
+## 2026-08-02 — B5 regression cells (30): completed under the restored 8-seed protocol — **pre-registered bars 1/3 PASSED; failures informative, no number of record challenged**
+
+**What was run.** The 30 `narma2_reg` cells (6 committed architectures × 5 budgets) that RESULTS_LAW.md's scale-of-evidence line carried as "from the original run, not re-audited". Pre-run provenance finding: **no committed artifact ever contained these cells** — `narma2_reg` appears only in `src/qrc_law.py`, and `law_results.json` (the only committed generator's output for them) is absent from the tree; there was no number of record to compare against, so this is a pre-registered completion, not a drift audit. Registration remote-first (`audits/PREREG_B5_REG.md`, commit `ee4ad4c`, EMPTY results section, raw-verified byte-identical) before any reproduction code ran; committed conventions only (`qrc_law.build` / `feats_from_P` / `perf` / the inputs-only floor proxy), sampling seeds 1–8, driver `src/qrc_law_reg_rerun.py`, raw per-seed values `results/law_reg_rerun.json`. Environment: numpy 2.2.6, sklearn 1.7.2, scipy 1.15.3, qiskit 2.5.1 (vs 2.5.0 in the 07-27 audits; qiskit touches only the deterministic build phase), CPU.
+
+**Result.** Mean retention by budget (reg | published clf grid from `law_rerun.json`): 250: **0.544** | 0.146; 1k: **0.743** | 0.298; 4k: **0.854** | 0.448; 16k: **0.916** | 0.540; 64k: **0.953** | 0.616. floor = −0.063 every arch, exact 0.953–0.993 (guard never triggered); arch spread at 250 shots −0.008…0.883. Bars: **H1 FAILED** (0.544, bar < 0.20), **H2 PASSED** (+0.409, bar > 0.10), **H3 FAILED — inverted** (reg above clf at every budget). Three spot cells re-ran bit-identically in-session.
+
+**Reading (see the audit file's honesty section).** The B3/B11 anchors measure retention against tuned history-aware baselines; B5's committed floor is a no-skill proxy for NARMA2, so the bars tested a different, easier quantity — the failures indict the anchor mapping and NARMA2's noise-robustness, not B3/B11, whose numbers are untouched. Informative content: under the B5 convention the wall is margin/feature-structure-shaped, not output-type-shaped (cf. B13); the probit law makes no prediction for reg cells, which complete the grid's evidence base, not the law's test set.
+
+**Still open from prior entries:** commit generators for the B2 denoiser rows and redundancy probe; regenerate `figures/qrc_law.png` from `results/law_rerun.json`.
+
+---
+
 ## 2026-07-27 (third session) — Doc-fix batch: every queued doc-level flag applied — **no number of record touched**
 
 **What was done.** Not a new audit: the write-up corrections queued by the B6 (2026-07-11), B11 (2026-07-11), B2 (2026-07-11), B10 (2026-07-27) and B12 (2026-07-27) entries below were applied in place, each annotated with its origin audit. Files of record (raw JSON, figures) untouched; no published number of record changed anywhere — wording, scope and provenance annotations only.

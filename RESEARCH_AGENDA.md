@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-07-27, third session: DOC-FIX BATCH landed — every queued doc-level flag from the B2/B6/B10/B11/B12 audits applied in place, no number of record touched; the audit queue itself was completed earlier today with B12. Open: B2 denoiser generators, qrc_law.png regeneration, B5 regression cells)
+## State (updated 2026-08-02: B5 REGRESSION CELLS COMPLETED — the 30 narma2_reg cells re-run under the restored 8-seed protocol, pre-registered remote-first, 2 of 3 bars failed informatively (see log + audits/PREREG_B5_REG.md). Open: B2 denoiser generators, qrc_law.png regeneration)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -67,7 +67,7 @@ the README's B1–B13 numbering is canonical.
 - [x] **B5 restoration — DONE 2026-07-04.** Generator committed (`src/qrc_law_predict.py`),
       8-seed re-run (`results/law_rerun.json`), RESULTS_LAW.md headline replaced
       (R²=0.939/0.944, MAE 3.3 pp), provenance note added, README/PREPRINT/AUDITS synced.
-      Leftovers folded into audit mode: 30 regression cells not re-run;
+      Leftovers folded into audit mode: ~~30 regression cells not re-run~~ DONE 2026-08-02 (pre-registered completion, `results/law_reg_rerun.json`);
       `figures/qrc_law.png` still shows the original run (regenerate from law_rerun.json).
 - [ ] **AUDIT MODE (standing default).** Do not invent new benchmarks.
       Pick the least-recently-audited benchmark, re-run its key numbers from repo code, check
@@ -99,10 +99,10 @@ the README's B1–B13 numbering is canonical.
       doc-fix batch DONE 2026-07-27 third session (all queued flags applied in place —
       GATENOISE readout sentence, three TASKFAM wording fixes, GAP provenance note + 4-dp
       convention, RETRAIN 4/10 scoping + 190×→198×, TOPOLOGY |ρ| sentence, README sync;
-      see the AUDITS.md doc-fix entry). Still open: B5 regression cells (30) re-run;
-      regenerate figures/qrc_law.png from law_rerun.json; COMMIT generators for the two B2
-      denoiser rows and the redundancy probe (the provenance note is an annotation, not a
-      generator).
+      see the AUDITS.md doc-fix entry). Still open: regenerate figures/qrc_law.png from law_rerun.json; COMMIT
+      generators for the two B2 denoiser rows and the redundancy probe (the provenance
+      note is an annotation, not a generator). B5 regression cells DONE 2026-08-02
+      (pre-registered completion, see log + AUDITS.md).
 - [ ] (Deferred, needs Amirshayan's sign-off: third task family for the within-task IPS
       confirmation; injection-scheme sweep; anything requiring hardware.)
 
@@ -877,6 +877,32 @@ the honesty section of RESULTS_DRIFT.md. LFW DONE audit #20; diabetes DONE audit
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
+
+- 2026-08-02 (scheduled run) — **B5 REGRESSION CELLS COMPLETED: the 30 `narma2_reg` cells re-run
+  under the restored 8-seed protocol, pre-registered remote-first (`audits/PREREG_B5_REG.md`,
+  commit `ee4ad4c`, EMPTY results committed and raw-verified BEFORE any reproduction code ran).**
+  The scheduled task file still said "one new confirmatory audit toward n=30"; treated as stale per
+  the discharged Program 2b hand-off (same call as the five prior sessions; deviation noted here);
+  worked the queue's top open item instead. Provenance finding: no committed artifact contained
+  these cells (`law_results.json` never in the tree — the audit-#5 pattern). Result: **H1 FAILED**
+  (mean retention @250 = 0.544, bar < 0.20), **H2 PASSED** (+0.409 budget ordering, bar > 0.10),
+  **H3 FAILED — inverted** (reg above clf mean retention at every budget: 0.544/0.146 @250 up to
+  0.953/0.616 @64k). Honesty call (full version in the audit file): the B3/B11 anchors measure
+  retention against tuned history-aware baselines while B5's committed floor is a no-skill
+  instantaneous-input proxy (floor −0.063, exacts 0.953–0.993, guard never triggered), so the bars
+  tested a different, easier quantity — no B3/B11 number challenged; the informative content is
+  that the wall is margin/feature-structure-shaped, not output-type-shaped (cf. B13), and the
+  probit law makes no prediction for reg cells (they complete the evidence base, not the law's
+  test set). Verification: three spot cells re-ran bit-identically in-session; publish batch
+  byte-verified against the new HEAD. Session mechanics: fresh shallow clone at HEAD `2dcd4ec`,
+  freshness confirmed against the commits API; no same-day prereg collision (guardrail check);
+  /sessions disk full again (all work in /tmp, pip --target=/tmp/pylibs); qiskit 2.5.1 vs 2.5.0
+  (deterministic build phase only); executor-delegation judgment call: six sub-45 s compute
+  chunks, below subagent overhead — ran inline (B6/B10/B11/B12 precedent); publication via the
+  web editor CodeMirror document API (cmTile.view handle this session) + per-directory
+  upload path, no sandbox git credential; Copilot commit-dialog autofill replaced and
+  readback-verified on every commit (recurring class). Still open: B2 denoiser generators;
+  **qrc_law.png regeneration is the next run's natural target.**
 
 - 2026-07-27 (scheduled run, third session) — **DOC-FIX BATCH landed — every queued doc-level
   flag from the B2/B6/B10/B11/B12 audits applied in place; no number of record touched.** The
