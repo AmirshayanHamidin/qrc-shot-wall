@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-08-02: B5 REGRESSION CELLS COMPLETED — the 30 narma2_reg cells re-run under the restored 8-seed protocol, pre-registered remote-first, 2 of 3 bars failed informatively (see log + audits/PREREG_B5_REG.md). Open: B2 denoiser generators, qrc_law.png regeneration)
+## State (updated 2026-08-02, second session: qrc_law.png REGENERATED from law_rerun.json via a new committed self-verifying generator `src/qrc_law_fig.py`; the original-run figure (retired R²=0.991 headline) is retired to git history. Earlier today: B5 regression cells completed (see log). Open: B2 denoiser generators)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -68,7 +68,8 @@ the README's B1–B13 numbering is canonical.
       8-seed re-run (`results/law_rerun.json`), RESULTS_LAW.md headline replaced
       (R²=0.939/0.944, MAE 3.3 pp), provenance note added, README/PREPRINT/AUDITS synced.
       Leftovers folded into audit mode: ~~30 regression cells not re-run~~ DONE 2026-08-02 (pre-registered completion, `results/law_reg_rerun.json`);
-      `figures/qrc_law.png` still shows the original run (regenerate from law_rerun.json).
+      ~~`figures/qrc_law.png` still shows the original run~~ REGENERATED 2026-08-02 from
+      law_rerun.json (committed generator `src/qrc_law_fig.py`).
 - [ ] **AUDIT MODE (standing default).** Do not invent new benchmarks.
       Pick the least-recently-audited benchmark, re-run its key numbers from repo code, check
       every claim in its write-up, append an AUDITS.md entry (confirmed/discrepancy, numbers
@@ -99,9 +100,11 @@ the README's B1–B13 numbering is canonical.
       doc-fix batch DONE 2026-07-27 third session (all queued flags applied in place —
       GATENOISE readout sentence, three TASKFAM wording fixes, GAP provenance note + 4-dp
       convention, RETRAIN 4/10 scoping + 190×→198×, TOPOLOGY |ρ| sentence, README sync;
-      see the AUDITS.md doc-fix entry). Still open: regenerate figures/qrc_law.png from law_rerun.json; COMMIT
+      see the AUDITS.md doc-fix entry). Still open: COMMIT
       generators for the two B2 denoiser rows and the redundancy probe (the provenance
-      note is an annotation, not a generator). B5 regression cells DONE 2026-08-02
+      note is an annotation, not a generator). qrc_law.png REGENERATED 2026-08-02 (second
+      session; committed generator `src/qrc_law_fig.py`, see log + AUDITS.md). B5 regression
+      cells DONE 2026-08-02
       (pre-registered completion, see log + AUDITS.md).
 - [ ] (Deferred, needs Amirshayan's sign-off: third task family for the within-task IPS
       confirmation; injection-scheme sweep; anything requiring hardware.)
@@ -877,6 +880,27 @@ the honesty section of RESULTS_DRIFT.md. LFW DONE audit #20; diabetes DONE audit
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
+
+- 2026-08-02 (scheduled run, second session) — **qrc_law.png REGENERATED from committed data —
+  the B5 restoration's last open figure item closed.** The scheduled task file still said "one
+  new confirmatory audit toward n=30"; treated as stale per the discharged Program 2b hand-off
+  (same call as the six prior sessions; deviation noted here); worked the queue's declared next
+  target (the morning session's hand-off). New `src/qrc_law_fig.py` (deterministic — three
+  consecutive runs byte-identical, md5 139b7b35ee91c2485fd0441ccfce9753) draws ONLY from
+  `results/law_rerun.json` and self-verifies: it recomputes R²/MAE/bias overall and per budget
+  from the raw cells and hard-fails unless they match the stored summary (rel_tol 1e-9) —
+  matched, and equal to RESULTS_LAW.md's restored table (R² 0.939/0.944 noise-corr., MAE
+  3.33 pp, bias −0.98 pp; per-budget 0.855→0.962). The replaced figure quoted the retired
+  R²=0.991 headline and a naive-SNR v1 panel with no committed generator; the v1 honest
+  negative stays narrated in RESULTS_LAW.md and the old figure stays in git history (noted in
+  the AUDITS.md entry). Reg cells intentionally excluded (the law makes no prediction for
+  them). Also fixed: README's still-open list was stale (still carried the reg cells completed
+  this morning). Session mechanics: fresh shallow clone at HEAD `7269d67`, freshness via git
+  ls-remote against the live remote; /sessions disk full again (worked in /tmp); executor-
+  delegation judgment call: one small render script, below subagent overhead — ran inline
+  (six-session precedent); publication via the per-directory web upload path, no sandbox git
+  credential; batch byte-verified (md5) against raw at the new HEAD. Still open: B2 denoiser
+  generators — **the next run's natural target.**
 
 - 2026-08-02 (scheduled run) — **B5 REGRESSION CELLS COMPLETED: the 30 `narma2_reg` cells re-run
   under the restored 8-seed protocol, pre-registered remote-first (`audits/PREREG_B5_REG.md`,

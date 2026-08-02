@@ -2,6 +2,18 @@
 
 Verification-only entries: independent re-runs of published benchmarks against their written claims. Format per entry: what was re-run, how independently, verdict (CONFIRMED / DISCREPANCY), numbers side by side.
 
+## 2026-08-02 (second session) — figures/qrc_law.png regenerated from law_rerun.json — **generator committed; no number of record touched**
+
+**What was done.** Not a new audit: the last open figure item from the 2026-07-04 B5 restoration. The previous `figures/qrc_law.png` was the ORIGINAL run's figure: its right panel quoted the retired headline (R² = 0.991 / MAE 1.3 pp — found not reproducible by the 2026-07-04 entry below), and its left panel (naive-SNR "hypothesis v1", R² = 0.20, FAILED) was built from the original-run observations, which have no committed generator. The figure now regenerates from committed artifacts only: new `src/qrc_law_fig.py` (deterministic — three consecutive runs byte-identical, md5 `139b7b35ee91c2485fd0441ccfce9753`) reads `results/law_rerun.json` and renders the restored headline (R² = 0.939, 0.944 noise-corrected, MAE 3.33 pp, bias −0.98 pp, 150 cells, zero fitted parameters) plus a per-budget calibration panel (R² 0.855 → 0.962; MAE vs the 0.91 pp 8-seed observation noise floor).
+
+**Verification.** The script is self-verifying: it recomputes R²/MAE/bias overall and per budget from the raw `cells` array and hard-fails unless every value matches the stored `summary` block (rel_tol 1e-9). All matched, and they equal RESULTS_LAW.md's restored-result table exactly (this also pins the stored bias convention: mean(pred − obs) in pp). Stored-only quantities (noise-corrected R², the seed-noise floor) are displayed as stored and asterisk-labeled as such in the figure.
+
+**Honest note.** The dropped v1 panel was an honest-negative display; dropping it does not erase the record — the v1 failure remains narrated in RESULTS_LAW.md ("It failed — R² = 0.20") and the original figure remains in git history. The 30 regression cells completed this morning (`results/law_reg_rerun.json`) are intentionally not in this figure: the probit law makes no prediction for them (see the entry below).
+
+**Still open from prior entries:** commit generators for the two B2 denoiser rows and the redundancy probe.
+
+---
+
 ## 2026-08-02 — B5 regression cells (30): completed under the restored 8-seed protocol — **pre-registered bars 1/3 PASSED; failures informative, no number of record challenged**
 
 **What was run.** The 30 `narma2_reg` cells (6 committed architectures × 5 budgets) that RESULTS_LAW.md's scale-of-evidence line carried as "from the original run, not re-audited". Pre-run provenance finding: **no committed artifact ever contained these cells** — `narma2_reg` appears only in `src/qrc_law.py`, and `law_results.json` (the only committed generator's output for them) is absent from the tree; there was no number of record to compare against, so this is a pre-registered completion, not a drift audit. Registration remote-first (`audits/PREREG_B5_REG.md`, commit `ee4ad4c`, EMPTY results section, raw-verified byte-identical) before any reproduction code ran; committed conventions only (`qrc_law.build` / `feats_from_P` / `perf` / the inputs-only floor proxy), sampling seeds 1–8, driver `src/qrc_law_reg_rerun.py`, raw per-seed values `results/law_reg_rerun.json`. Environment: numpy 2.2.6, sklearn 1.7.2, scipy 1.15.3, qiskit 2.5.1 (vs 2.5.0 in the 07-27 audits; qiskit touches only the deterministic build phase), CPU.
