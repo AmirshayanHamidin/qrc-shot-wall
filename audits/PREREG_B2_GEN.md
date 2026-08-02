@@ -91,4 +91,56 @@ credentials, no network beyond the repo. 45 s bash chunks.
 
 ## Results
 
-(EMPTY at registration — filled by commit 2 only.)
+(Run 2026-08-02, same session, after registration commit `217a342` was raw-verified
+byte-identical on the remote. Generator: `src/qrc_gap_denoiser.py`; raw output:
+`results/gap_denoiser.json`. This section is commit 2 of 2.)
+
+| Quantity | published | reconstructed | bar | verdict |
+|---|---|---|---|---|
+| Sim-trained linear denoiser NMSE | 0.1519 | **0.150739** | A1: ±0.010 | **PASSED** (Δ 0.0012) |
+| Sim-trained MLP denoiser NMSE | 0.1533 | **0.148522** | A2: ±0.010 | **PASSED** (Δ 0.0048) |
+| Linear probe rel. err (pinned pooled metric) | 0.90 | **0.1299** | A3: ±0.05 | **FAILED** (Δ 0.77) |
+| MLP probe rel. err (pinned pooled metric) | 0.89 | **0.6012** | A4: ±0.05 | **FAILED** (Δ 0.29) |
+| Both denoiser NMSEs in [0.1417, 0.1759] | — | 0.1507 / 0.1485 | B1 | **PASSED** |
+| Both probe rel. errs ≥ 0.80 | — | 0.13 / 0.60 | B2 | **FAILED** |
+
+Pre-declared sensitivities: denoiser NMSEs at benchmark noise seeds 2/3 — linear
+0.150367/0.150492, MLP 0.145982/0.141607 (plateau-stable); uncentered probe ratios 0.0222
+(linear) / 0.1028 (MLP). Selected alphas: denoiser 1e-2, probe 1e-6; the MLP stopped at
+n_iter = 14 (adam default tolerance). Determinism: the linear and MLP stages re-ran
+bit-identically in-session (byte-identical JSON via cmp).
+
+### Post-hoc diagnosis (EXPLORATORY, labeled — computed AFTER the A3/A4/B2 failures)
+
+1. Variance-equalized (per-feature standardized) rel err does NOT reconcile the printed
+   values: linear 0.291, MLP 1.011.
+2. Excluding the current input u_t from the predictor window DOES land in the printed
+   number's immediate neighborhood: pooled rel err **0.861** (linear). The freshly injected
+   input dominates raw feature variance (uncentered linear ratio 0.022), so with u_t included
+   the exact features are ~98% linearly predictable, while the reservoir's MEMORY content
+   (past-input dependence) is not. The original probe most plausibly measured the latter.
+
+## Reading the failures (honesty section)
+
+1. **The denoiser rows are restored at claims level.** Under entirely pinned, disclosed
+   conventions the reconstruction lands within 2-seed tolerance of both printed values and
+   inside the plateau bracket, at every checked noise seed. The wall claim never depended on
+   the exact digits; now the rows regenerate from committed code.
+2. **The redundancy probe sentence was wrong as literally written — and is corrected, not
+   defended.** "A linear map from input history cannot reproduce the exact features" is
+   falsified under the committed input representation (which includes u_t): pooled rel err
+   0.13. The defensible claim — supported by the post-hoc 0.861 and by the committed
+   downstream numbers (inputs-only NMSE 0.1483 vs exact floor 0.0030, both bit-reproduced
+   2026-07-11) — is that the reservoir's memory content is not linearly recoverable from past
+   inputs, which is where the task-relevant signal lives. RESULTS_GAP.md and the README are
+   corrected in this batch; the printed 0.90/0.89 remain provenance-lost as exact numbers.
+   Verdicts are numbers, not accusations: the likeliest history is an unstated predictor
+   convention (past inputs only), not a fabricated result.
+3. **The MLP probe (0.601) underperforms the linear probe (0.130) at the pinned settings** —
+   MLPRegressor underfits at n_iter = 14 with default tolerances on unscaled 84-dim targets.
+   Reported as-is; no post-data tuning. This also means A4 fails in a different direction
+   than A3, and the printed near-equality (0.90 ≈ 0.89) is another hint the original pair was
+   computed under the no-current-input convention, where linear (0.861) and a mildly better
+   MLP would sit close together.
+4. Scratch cache (`dn_cache.npz`, per-stage `dn_*.json`) is intermediate and not committed;
+   all published quantities are in `results/gap_denoiser.json`, full precision.
