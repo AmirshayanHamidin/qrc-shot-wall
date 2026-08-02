@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-08-02, third session: B2 denoiser rows RESTORED via pre-registered reconstruction generator `src/qrc_gap_denoiser.py` (0.1507/0.1485, bars A1/A2/B1 passed); redundancy probe DISCREPANCY — corrected to memory-content form in RESULTS_GAP.md/README (bars A3/A4/B2 failed as published, see AUDITS.md). No provenance-incomplete number remains. Earlier today: B5 reg cells + qrc_law.png (see log))
+## State (updated 2026-08-02, fourth session: B3 audited for the FIRST time — CONFIRMED on the code-backed portion (`design_sweep_40000.json` byte-identical from committed code, all derived claims recompute, checker `audits/audit_b3_rerun.py`); BUT `results/task_shape.json` + `figures/qrc_task_shape.png` — the ~86%-retention headline curve — have NO committed generator: provenance ledger REOPENED, `PREREG_B3_GEN` reconstruction queued as next target; B7/B8/B9 also never audited. See AUDITS.md)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -107,7 +107,13 @@ the README's B1–B13 numbering is canonical.
       redundancy probe corrected to memory-content form — see AUDITS.md). qrc_law.png REGENERATED 2026-08-02 (second
       session; committed generator `src/qrc_law_fig.py`, see log + AUDITS.md). B5 regression
       cells DONE 2026-08-02
-      (pre-registered completion, see log + AUDITS.md).
+      (pre-registered completion, see log + AUDITS.md). **CORRECTION
+      (2026-08-02, fourth session): the "queue COMPLETE" scope missed B3/B7/B8/B9 — never
+      audited. B3 audited this session (CONFIRMED on the code-backed portion, byte-identical;
+      headline `task_shape.json` + figure generator-less — the write-up's "experiment blocks
+      reproduced below" do not exist; see AUDITS.md). Provenance ledger REOPENED. NEXT
+      TARGETS, in order: (1) pre-registered reconstruction of the B3 parity curve + refs
+      (`PREREG_B3_GEN`, the B2-gen class); (2) first audits of B7, B8, B9.**
 - [ ] (Deferred, needs Amirshayan's sign-off: third task family for the within-task IPS
       confirmation; injection-scheme sweep; anything requiring hardware.)
 
@@ -882,6 +888,32 @@ the honesty section of RESULTS_DRIFT.md. LFW DONE audit #20; diabetes DONE audit
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
+
+- 2026-08-02 (scheduled run, fourth session) — **B3 AUDITED FOR THE FIRST TIME — CONFIRMED
+  on the code-backed portion; provenance ledger REOPENED.** The scheduled task file still said
+  "one new confirmatory audit toward n=30"; treated as stale per the discharged Program 2b
+  hand-off (same call as the seven prior sessions; deviation noted here); the third session left
+  no explicit hand-off, so worked the standing audit-mode default — least-recently-audited =
+  never-audited B3. Findings: (a) `src/qrc_design.py 40000` regenerates
+  `design_sweep_40000.json` **byte-identically** (md5 `954b86b5f7f2b8e1ffc664e23c696ffb`,
+  18/18 cells, three in-session runs); (b) every derived claim in RESULTS_TASKSHAPE.md
+  recomputes from stored raw (committed checker `audits/audit_b3_rerun.py`, 13/13 PASS,
+  including the cross-file trace of the regression row into `gap_final.json`); (c) **the
+  headline raw file `task_shape.json` (~86%-retention curve, all refs) and
+  `figures/qrc_task_shape.png` have NO committed generator** — the write-up's "experiment
+  blocks reproduced below" are absent from the file; the third session's "ledger CLOSED"
+  statement was scoped too broadly (B3/B7/B8/B9 had never been audited). Four wording/labeling
+  flags queued, no number challenged: the "6% of dynamic range" doesn't recompute (actual
+  18°/90° = 20%, matching the script docstring); the `0.09rad max` key label (actual θ_max
+  0.314 rad); the "0.157 → 0.130" cell attribution (0.130 is the 2.5×-gain cell, full-range
+  best is 0.133/−15.1%); `retained_pct` 4.1 computed from rounded inputs (full-precision
+  4.54%). NEXT: `PREREG_B3_GEN` reconstruction, then first audits of B7/B8/B9. Session
+  mechanics: fresh shallow clone at HEAD `a2219aa`, freshness via the commits API; /sessions
+  disk full again (worked in /tmp; the /tmp/pylibs env from an earlier same-day session reused:
+  qiskit 2.5.1 / sklearn 1.7.2 / numpy 2.2.6); executor-delegation judgment call: one ~15-s
+  CLI run + JSON recomputes, below subagent overhead — ran inline (eight-session precedent);
+  no same-day twin in the commits feed (guardrail check); no sandbox git credential —
+  publication via the web editor; batch byte-verified (md5) against raw at the new HEAD.
 
 - 2026-08-02 (scheduled run, third session) — **B2 DENOISER ROWS RESTORED, REDUNDANCY PROBE
   CORRECTED: the repo's last provenance-incomplete numbers now have a committed,
