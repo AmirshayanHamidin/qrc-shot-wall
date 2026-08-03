@@ -75,7 +75,7 @@ direction diagnostic (Fig. panel B) cleanly separates them:
    off-curve bias, amplified — non-unital noise is the worst case for the law.
 
 3. **Dephasing (unital) — closest to depolarizing, as predicted, but still short.**
-   Direction is well preserved (cos ≥ 0.98), the factor helps modestly (+5.9 %),
+   Direction is well preserved (cos ≥ 0.976), the factor helps modestly (+5.9 %),
    R²=0.836. Anisotropy in Pauli space (coherences killed, populations kept) is
    enough to pull it below the uniform-depolarizing benchmark.
 
