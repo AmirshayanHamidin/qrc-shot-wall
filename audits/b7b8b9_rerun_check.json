@@ -1,0 +1,42 @@
+{
+ "audit": "B7/B8/B9 first audits, 2026-08-02 (closeout session 2/4)",
+ "environment": "numpy 2.2.6, sklearn 1.7.2, CPU, fresh clone at HEAD b1c3113",
+ "checker": "audits/audit_b7b8b9_rerun.py (all stages PASS; 3 wording FLAGs, no number challenged)",
+ "b7": {
+  "verdict": "CONFIRMED",
+  "regeneration": "byte-identical from src/qrc_pernode.py {0,1,agg}",
+  "md5": {
+   "pn_part0.json": "afafc9f82b03a63a212aa405c2ff510c",
+   "pn_part1.json": "a35de15655b94240218f0d4ed4b69271",
+   "pernode_law.json": "c7b8b39366b8fb8f918fa33f604ea0cd"
+  },
+  "note": "observed accuracies inherited verbatim from B6 gate_noise_law.json (audited separately); all four predictor columns + per-gamma biases re-derived and matching"
+ },
+ "b8": {
+  "verdict": "CONFIRMED",
+  "regeneration": "byte-identical from src/qrc_beyondnoise.py {coherent,amp_damping,dephasing,agg}, including the seeded noisy-readout sampling",
+  "md5": {
+   "bn_coherent.json": "b5a1eed7df97149b1847ff342e1f0c2a",
+   "bn_amp_damping.json": "114e18388e3633e9fb468d769deac6d6",
+   "bn_dephasing.json": "71eadb464175d075cbdbec25232d7652",
+   "beyond_noise_law.json": "43012c1a419448f9ce09d19b94a64583"
+  },
+  "wording_flag": "mechanism text says dephasing cos >= 0.98; actual min 0.9762 (the table already prints 0.976)"
+ },
+ "b9": {
+  "verdict": "CONFIRMED (two wording flags)",
+  "regeneration": "all 60 rows exact float equality from src/qrc_marginest.py (deterministic seeds 1000*arch+37*s+S_pilot); marginest_law.json metadata (summary/worst/grid) recomputes exactly from the rows",
+  "parity3_naive_bias_pct_at_250": {
+   "0": 2.68,
+   "1": 10.89,
+   "2": 41.41
+  },
+  "parity3_across_arch_mean_pct": 18.3,
+  "corr_pilot_abs_bias_pct_max": 1.802,
+  "corr_pilot_configs_over_0p8pct": 7,
+  "wording_flags": [
+   "write-up attributes the +18% naive bias to parity-3 on arch 0; +18.3% is the parity-3 mean across the three architectures (arch0 +2.7, arch1 +10.9, arch2 +41.4); the arch-resolved worst (+41%) is quoted correctly in the same sentence",
+   "\"corrected bias <= 0.8% on every config\" holds for 53/60 configs; 7 exceed it (1.04-1.80%), worst being the +41% arch2/parity3/250 case the sentence explicitly includes; the budget-averaged table (<= 0.2%) is correct as published. The same two phrasings appear in the JSON outcome string, left untouched as file of record."
+  ]
+ }
+}
