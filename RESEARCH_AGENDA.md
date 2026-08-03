@@ -1,6 +1,8 @@
-# Standing Research Agenda — qrc-shot-wall overnight program
+# Standing Research Agenda — qrc-shot-wall
 
-## State (updated 2026-08-02, sixth session — CLOSEOUT session 2/4 of the bounded closeout: first audits of B7/B8/B9 COMPLETE — ALL THREE CONFIRMED. B7 (`pn_part0/1.json` + `pernode_law.json`) and B8 (all three `bn_*.json` + `beyond_noise_law.json`) regenerate BYTE-IDENTICALLY from committed code — B8 including its seeded noisy-readout sampling; B9's 60 rows regenerate float-exact and `marginest_law.json`'s summary metadata recomputes from the rows. Provenance ledger CLOSED again: every benchmark now has a first audit, and every raw file of record either regenerates from committed code or carries a permanent provenance annotation. Three wording flags queued, no number challenged — B9 "+18% on arch 0" (it is the across-arch parity-3 mean; arch 0 itself +2.7%), B9 "≤0.8% on every config" (holds 53/60; worst +1.80%, the +41% case itself; budget-averaged table correct), B8 dephasing "cos ≥ 0.98" (actual min 0.9762). Checker `audits/audit_b7b8b9_rerun.py` + `audits/b7b8b9_rerun_check.json`. REMAINING CLOSEOUT QUEUE: (3) final doc-fix batch (fourth session's four B3 flags + fifth session's TASKSHAPE crossing flag + this session's three flags + reader-hygiene items); (4) stop procedure. See AUDITS.md)
+*This file is the autonomous loop's operational notebook — incidents, guardrails and session logs live here by design; readers start at [README.md](README.md).*
+
+## State (updated 2026-08-02, seventh session — CLOSEOUT session 3/4 + STOP PROCEDURE: BOUNDED CLOSEOUT COMPLETE, nightly program ENDED. Final doc-fix batch applied — every queued wording/labeling flag (fourth session's four B3 flags, fifth session's TASKSHAPE crossing/retention flag, sixth session's two B9 + one B8 flags) landed in the results/ write-ups, no number of record touched; reader-hygiene items done (this file retitled + preamble, stale B5 highlight corrected to the restored headline, RELATED_WORK.md de-sessioned with the ~8-query scope limitation kept, README/PREPRINT/PROTOCOL verified clean and untouched). Stop procedure executed: release v1.0-audit-complete tagged via the web UI; scheduled task qrc-overnight-research deleted. Closeout queue EMPTY. Further work requires human sign-off (VAR rule 6); deferred items listed in the final Log entry. Readers start at README.md.)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -14,7 +16,7 @@ re-scored, PREREG_DRIFT.md untouched. The confirmatory set is closed; further dr
 exploratory or needs a NEW pre-registration.
 
 Benchmarks **B1–B13 complete and pushed** (see README + `results/`). Highlights: the shot wall (B2),
-the parameter-free measurement-wall law (B5, R²=0.991, QPU-validated), gate noise as effective
+the parameter-free measurement-wall law (B5, restored headline R²=0.939, 0.944 noise-corrected, MAE 3.3 pp; QPU-checked), gate noise as effective
 shots with mapped limits (B6–B8), pilot-run margin estimation (B9), retraining as load-bearing
 (B10), second task family (B11), IPS topology design rule (B12) with small-margin scope
 correction (B13). **PREPRINT.md consolidated (v0.2). RELATED_WORK.md literature pass done
@@ -891,6 +893,43 @@ the honesty section of RESULTS_DRIFT.md. LFW DONE audit #20; diabetes DONE audit
 adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
+
+- 2026-08-02 (scheduled run, seventh session — **CLOSEOUT COMPLETE**) — **Nightly program ended;
+  further work requires human sign-off (VAR rule 6).** All four closeout queue items are done:
+  PREREG_B3_GEN executed and published (session 1/4), B7/B8/B9 first audits (session 2/4),
+  final doc-fix batch (session 3/4, this session — see the entry below), stop procedure (this
+  session): GitHub Release **v1.0-audit-complete** ("Audit-complete freeze") tagged via the web
+  UI, and the scheduled task `qrc-overnight-research` deleted (self-termination). **Deferred to
+  human review:** (1) the optional split of this file into a public status file + a separate
+  operational log; (2) the B3 weaker-input-encoding variant test that would resolve the
+  reconstruction discrepancy (needs a new pre-registration); (3) the flagged prose `outcome`
+  strings inside `results/marginest_law.json` (file of record, left byte-untouched; corrected
+  phrasings live in RESULTS_MARGINEST.md); (4) any future re-audit cadence. No open queue items
+  remain.
+
+- 2026-08-02 (scheduled run, seventh session — **CLOSEOUT session 3/4**) — **FINAL DOC-FIX
+  BATCH: every queued wording/labeling flag applied; no number of record touched.**
+  RESULTS_TASKSHAPE.md: the fourth session's four flags ("6% of the dynamic range" → 20% of the
+  rotation range with the 18°/90° arithmetic and the 9.5% sin² reading; the
+  `g=base(0.09rad max)` key-label mislabel noted in-text; the ~15% claim's cell attribution
+  corrected — full-range best 0.133, the printed 0.130 being the g=2.5×/depth-1 cell; the ~4%
+  retention stated with its rounding convention, 4.1 stored vs 4.54 full-precision) plus the
+  fifth session's flag: the ESN-crossing sentence and tuned-ESN comparison now state the
+  reconstruction outcome (no crossing on committed code; retention restored at 99.6%), the
+  header code line corrected, and a Provenance-note section added. RESULTS_MARGINEST.md: "+18%
+  on arch 0" → across-arch parity-3 mean (arch 0 +2.7%, arch 1 +10.9%, arch 2 +41.4%); "≤0.8%
+  on every config" → ≤1.8% worst-config / 53 of 60 at ≤0.8% / budget-averaged ≤0.2%.
+  RESULTS_BEYONDNOISE.md: dephasing "cos ≥ 0.98" → 0.976, matching its own table. Reader
+  hygiene: this file retitled (the title's "overnight program" dropped) with a one-line
+  preamble; the stale Highlights "B5, R²=0.991, QPU-validated" corrected to the restored
+  headline (R²=0.939, 0.944 noise-corr., MAE 3.3 pp); RELATED_WORK.md's compiled-line and
+  scope wording de-sessioned ("Honesty section" → "Limitations") with the ~8-query search-scope
+  limitation kept; README/PREPRINT/PROTOCOL grep-verified clean of process language, not
+  touched. Historical log entries untouched. AUDITS.md entry added. Session mechanics: fresh
+  shallow clone at HEAD `153ccbc`, freshness via the commits API, no same-day twin in the feed;
+  no numeric re-runs needed (all corrections sourced from the committed audit entries); no
+  sandbox git credential — published via the web editor, batch byte-verified (md5) against raw
+  at the new HEAD.
 
 - 2026-08-02 (scheduled run, sixth session — **CLOSEOUT session 2/4**) — **B7/B8/B9 FIRST
   AUDITS COMPLETE — ALL THREE CONFIRMED; provenance ledger CLOSED again.** Worked queue
