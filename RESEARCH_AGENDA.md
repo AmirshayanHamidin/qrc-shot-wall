@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-08-02, fifth session — CLOSEOUT session 1/4 of the bounded closeout: `PREREG_B3_GEN` reconstruction EXECUTED and published (generator `src/qrc_taskshape_gen.py`, raw `results/task_shape_recon.json`, figure `figures/qrc_task_shape_recon.png`) — retention headline RESTORED on committed code (B1/B3 passed; 99.6% retention at 40k), stored curve + ESN reference NOT reproduced (A1/A2 failed, all on the high side), ESN-crossing claim DISCREPANCY (B2: a feature-matched tuned ESN solves parity-3 outright). README B3 + PREREG results synced. REMAINING CLOSEOUT QUEUE: (2) first audits of B7/B8/B9; (3) final doc-fix batch (fourth session's four B3 flags + this session's TASKSHAPE crossing flag + reader-hygiene items); (4) stop procedure. See AUDITS.md)
+## State (updated 2026-08-02, sixth session — CLOSEOUT session 2/4 of the bounded closeout: first audits of B7/B8/B9 COMPLETE — ALL THREE CONFIRMED. B7 (`pn_part0/1.json` + `pernode_law.json`) and B8 (all three `bn_*.json` + `beyond_noise_law.json`) regenerate BYTE-IDENTICALLY from committed code — B8 including its seeded noisy-readout sampling; B9's 60 rows regenerate float-exact and `marginest_law.json`'s summary metadata recomputes from the rows. Provenance ledger CLOSED again: every benchmark now has a first audit, and every raw file of record either regenerates from committed code or carries a permanent provenance annotation. Three wording flags queued, no number challenged — B9 "+18% on arch 0" (it is the across-arch parity-3 mean; arch 0 itself +2.7%), B9 "≤0.8% on every config" (holds 53/60; worst +1.80%, the +41% case itself; budget-averaged table correct), B8 dephasing "cos ≥ 0.98" (actual min 0.9762). Checker `audits/audit_b7b8b9_rerun.py` + `audits/b7b8b9_rerun_check.json`. REMAINING CLOSEOUT QUEUE: (3) final doc-fix batch (fourth session's four B3 flags + fifth session's TASKSHAPE crossing flag + this session's three flags + reader-hygiene items); (4) stop procedure. See AUDITS.md)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -892,6 +892,30 @@ adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
 
+- 2026-08-02 (scheduled run, sixth session — **CLOSEOUT session 2/4**) — **B7/B8/B9 FIRST
+  AUDITS COMPLETE — ALL THREE CONFIRMED; provenance ledger CLOSED again.** Worked queue
+  item 2 of the bounded closeout in one batch. B7: `src/qrc_pernode.py {0,1,agg}` regenerates
+  `pn_part0/1.json` + `pernode_law.json` **byte-identically** (md5s in the check file); the
+  four-predictor table, the 2.5%/2.4% reductions against the pre-registered 30% bar, the
+  per-γ biases (−0.92/−1.53/−3.92 pp), node-spread 0.039→0.173 and σ² rise all re-derived
+  (obs accuracies inherited from B6's audited `gate_noise_law.json` by design). B8:
+  `src/qrc_beyondnoise.py {coherent,amp_damping,dephasing,agg}` regenerates all four files
+  **byte-identically including the seeded noisy-readout sampling**; channel table, the
+  all-channels-below-R²=0.9 falsification, and "c → 0.65" (mean 0.649 at η=0.15) re-derived.
+  B9: `src/qrc_marginest.py` regenerates all 60 rows **float-exact** (run one arch per
+  invocation for the 45-s limit — exactly equivalent by the seed structure
+  `1000·arch+37·s+S_pilot`); summary/worst metadata recomputes exactly from the rows. Three
+  wording flags queued for the final doc-fix batch, no number challenged: B9 "+18% on arch 0"
+  (arch 0 = +2.7%; +18.3% is the across-arch parity-3 mean), B9 "≤0.8% on every config"
+  (53/60; seven configs 1.04–1.80%, worst = the +41% case itself; budget-averaged table
+  correct as published), B8 dephasing "cos ≥ 0.98" (actual min 0.9762, as the table prints).
+  Committed: `audits/audit_b7b8b9_rerun.py` (staged checker, every stage PASS) +
+  `audits/b7b8b9_rerun_check.json` + AUDITS.md entry + this log/state. Session mechanics:
+  fresh shallow clone at HEAD `b1c3113`, freshness via the commits API, no same-day twin in
+  the feed (session 1/4's batch had closed ~45 min prior); worked in /tmp (pip --target
+  /tmp/pylibs: numpy 2.2.6 / sklearn 1.7.2, CPU; qiskit not needed); no sandbox git
+  credential — published via the web editor; batch byte-verified (md5) against raw at the
+  new HEAD.
 - 2026-08-02 (scheduled run, fifth session — **CLOSEOUT session 1/4**) — **PREREG_B3_GEN
   EXECUTED: retention headline RESTORED on committed code; stored curve + ESN reference NOT
   reproduced; ESN-crossing claim DISCREPANCY.** First run under the bounded-closeout task file
