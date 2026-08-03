@@ -1,6 +1,6 @@
 # Standing Research Agenda — qrc-shot-wall overnight program
 
-## State (updated 2026-08-02, fourth session: B3 audited for the FIRST time — CONFIRMED on the code-backed portion (`design_sweep_40000.json` byte-identical from committed code, all derived claims recompute, checker `audits/audit_b3_rerun.py`); BUT `results/task_shape.json` + `figures/qrc_task_shape.png` — the ~86%-retention headline curve — have NO committed generator: provenance ledger REOPENED, `PREREG_B3_GEN` reconstruction queued as next target; B7/B8/B9 also never audited. See AUDITS.md)
+## State (updated 2026-08-02, fifth session — CLOSEOUT session 1/4 of the bounded closeout: `PREREG_B3_GEN` reconstruction EXECUTED and published (generator `src/qrc_taskshape_gen.py`, raw `results/task_shape_recon.json`, figure `figures/qrc_task_shape_recon.png`) — retention headline RESTORED on committed code (B1/B3 passed; 99.6% retention at 40k), stored curve + ESN reference NOT reproduced (A1/A2 failed, all on the high side), ESN-crossing claim DISCREPANCY (B2: a feature-matched tuned ESN solves parity-3 outright). README B3 + PREREG results synced. REMAINING CLOSEOUT QUEUE: (2) first audits of B7/B8/B9; (3) final doc-fix batch (fourth session's four B3 flags + this session's TASKSHAPE crossing flag + reader-hygiene items); (4) stop procedure. See AUDITS.md)
 
 Repo: github.com/AmirshayanHamidin/qrc-shot-wall. **The README is ground truth for what is done; where this file lags, trust the README.**
 
@@ -112,8 +112,11 @@ the README's B1–B13 numbering is canonical.
       audited. B3 audited this session (CONFIRMED on the code-backed portion, byte-identical;
       headline `task_shape.json` + figure generator-less — the write-up's "experiment blocks
       reproduced below" do not exist; see AUDITS.md). Provenance ledger REOPENED. NEXT
-      TARGETS, in order: (1) pre-registered reconstruction of the B3 parity curve + refs
-      (`PREREG_B3_GEN`, the B2-gen class); (2) first audits of B7, B8, B9.**
+      TARGETS, in order: (1) ~~pre-registered reconstruction of the B3 parity curve + refs
+      (`PREREG_B3_GEN`, the B2-gen class)~~ DONE 2026-08-02 fifth session (CLOSEOUT 1/4:
+      retention headline restored on committed code; stored curve/ESN reference not
+      reproduced; ESN-crossing claim DISCREPANCY — see AUDITS.md); (2) first audits of
+      B7, B8, B9.**
 - [ ] (Deferred, needs Amirshayan's sign-off: third task family for the within-task IPS
       confirmation; injection-scheme sweep; anything requiring hardware.)
 
@@ -889,6 +892,29 @@ adds a 2014-era library-demo claim reproduced across a decade of releases).
 
 ## Log
 
+- 2026-08-02 (scheduled run, fifth session — **CLOSEOUT session 1/4**) — **PREREG_B3_GEN
+  EXECUTED: retention headline RESTORED on committed code; stored curve + ESN reference NOT
+  reproduced; ESN-crossing claim DISCREPANCY.** First run under the bounded-closeout task file
+  (hard cap 4 sessions; queue: B3-gen → B7/B8/B9 first audits → final doc-fix batch → stop
+  procedure). Ran exactly the plan pinned in `audits/PREREG_B3_GEN.md` (registered 2026-08-02
+  with an empty results section; bars untouched): generator `src/qrc_taskshape_gen.py`
+  (committed qrc_design/qrc_benchmark/qrc_law machinery only; chunked CLI for the 45-s limit),
+  raw `results/task_shape_recon.json`, figure `figures/qrc_task_shape_recon.png`. Bars:
+  A3/A4/B1/B3 PASSED, A1/A2/B2 FAILED — reconstructed curve [0.660, 0.744, 0.888, 0.974,
+  0.998, 1.000] runs high of stored at every budget (five of six outside the ±0.05 band);
+  feature-matched tuned ESN = 1.000 vs stored 0.767, so no crossing exists; retention at
+  40k = 99.6% against the 0.80 bar. Published as registered, failures as failures; stored
+  files of record untouched, permanent provenance-lost annotation. Synced in the same batch:
+  PREREG results section, AUDITS.md entry (numbers side by side, scoped-discrepancy verdict),
+  README B3 paragraph + provenance paragraph (plain register per the closeout style rule).
+  Doc-fix flag added for RESULTS_TASKSHAPE.md's crossing sentence (final batch). The
+  weak-encoding alternative protocol (most plausible origin of the stored numbers) is NOT
+  run — new registrations are out of closeout scope; logged as deferred to human review.
+  Session mechanics: fresh shallow clone at HEAD `cff4c8b`, freshness via the commits API, no
+  same-day twin in the feed; /sessions disk full (worked in /tmp; pip --target /tmp/pylibs:
+  numpy 2.2.6 / sklearn 1.7.2 / qiskit 2.5.1 / matplotlib 3.10.9 — exactly the registered
+  environment); no sandbox git credential — published via the web editor (PNG via the upload
+  flow); batch byte-verified (md5) against raw at the new HEAD.
 - 2026-08-02 (scheduled run, fourth session) — **B3 AUDITED FOR THE FIRST TIME — CONFIRMED
   on the code-backed portion; provenance ledger REOPENED.** The scheduled task file still said
   "one new confirmatory audit toward n=30"; treated as stale per the discharged Program 2b
