@@ -105,5 +105,57 @@ matplotlib 3.10.9. No credentials, no network beyond the repo. 45 s bash chunks.
 
 ## Results
 
-(EMPTY at registration. This section is filled by a separate later commit, after the
-registration commit is raw-verified byte-identical on the remote.)
+(Filled 2026-08-02, CLOSEOUT session 1/4, in a separate commit as registered. Generator
+`src/qrc_taskshape_gen.py` (chunked CLI for the 45 s limit; imports the committed
+`qrc_design` / `qrc_benchmark` / `qrc_law` machinery only); raw full-precision output
+`results/task_shape_recon.json` (per-seed cells, 25-cell ESN grid, sensitivity block);
+figure `figures/qrc_task_shape_recon.png`. Environment exactly as registered: numpy 2.2.6,
+scikit-learn 1.7.2, qiskit 2.5.1, matplotlib 3.10.9, CPU.)
+
+**Bar A — strict landing: FAILED (A1, A2); A3, A4 passed.**
+
+- A1 **FAILED**: reconstructed acc_mean = [0.660, 0.744, 0.888, 0.974, 0.998, 1.000] vs
+  stored [0.546, 0.595, 0.699, 0.800, 0.932, 0.988]; |delta| = [0.114, 0.150, 0.189,
+  0.173, 0.066, 0.012] — five of six budgets outside the 0.05 band, all on the high side.
+- A2 **FAILED**: esn_tuned reconstructs to 1.000 (best cell rho_sr=0.5, leak=0.5; 9 of the
+  25 grid cells reach >= 0.99) vs stored 0.767; |delta| = 0.233. The pinned 84-node
+  feature-matched ESN solves parity-3 outright under the same logistic readout.
+- A3 passed: linear = 0.5091 vs stored 0.51 (|delta| = 0.0009 <= 0.04).
+- A4 passed: qrc_exact = 1.000 and poly3_classical = 1.000 (both >= 0.995).
+
+**Bar B — claim survival: B1, B3 passed; B2 FAILED.**
+
+- B1 passed: retention at 40k = (0.9980 − 0.5091) / (1.0000 − 0.5091) = **0.9959** >= 0.80.
+  The task-shape headline (classification retains most of the quantum benefit where
+  regression retains ~4%) is supported on committed code — more strongly than stored
+  (99.6% vs 86%).
+- B2 **FAILED**: acc_mean(4k) = 0.8879 < esn = 1.0000, but esn > acc_mean(40k) = 0.9980.
+  No crossing exists: the tuned ESN sits at the exact-readout ceiling at every budget. The
+  published "crosses the tuned classical ESN near ~12k shots/step" claim is NOT supported
+  under the registered protocol.
+- B3 passed: acc_mean(120k) = 1.0000 >= 0.97.
+
+**Sensitivity (bit-stream seed 6; labeled, no bar):** same picture — acc(40k) = 0.997/0.997/0.997
+across the three noise seeds, esn_tuned = 1.000, linear = 0.4788, qrc_exact = poly3 = 1.000.
+
+**Reading (per the interpretation rule registered above).** Bar A failed, so the stored
+numbers' exact provenance stays lost: the registered protocol is not the one that produced
+them. Within Bar B the retention headline (B1) and the ceiling claim (B3) survive, but B2
+fails in a way that CHALLENGES a published claim — under every convention pinned here, a
+feature-matched tuned ESN solves temporal parity-3, so the stored esn_tuned = 0.767 and the
+crossing story built on it do not reconstruct. Escalated to AUDITS.md as a scoped
+discrepancy; README B3 synced in the same batch. The stored `results/task_shape.json` and
+`figures/qrc_task_shape.png` remain files of record, unmodified, with a permanent
+provenance-lost annotation.
+
+**Stated limitations.** (i) This is a reconstruction under declared conventions, not a
+bit-reproduction; the unrecoverable free choices were pinned and disclosed above. (ii) The
+systematic high offset (all six curve deltas positive, and the ESN at ceiling) suggests the
+original run used a weaker input encoding than the full-range bits-to-poles reading pinned
+here — e.g. the committed `qrc_law.make_inputs` convention u = 0.05 + 0.10·b, which would
+depress both the reservoir curve and a tanh ESN driven by the same u — but testing that
+variant would be a new registration, out of scope under the closeout. (iii) The ESN result
+depends on the feature-count-matched 84-node reading of "tuned ESN"; a smaller reservoir
+could land near 0.767, but the write-up states no size and 84 is the committed
+feature-matched convention. (iv) One reservoir seed (7), one task, 3 noise seeds per point,
+as registered.
