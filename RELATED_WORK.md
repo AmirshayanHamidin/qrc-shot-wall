@@ -1,6 +1,6 @@
 # Related work — literature pass for the shot-wall program
 
-*Compiled 2026-07-04 (scheduled autonomous session). Purpose: position benchmarks B1–B13 against prior QRC, finite-sampling, and noise-modeling literature, and feed the Related-work section of `PREPRINT.md`. Method and honesty notes at the end — this is a targeted web pass, not a systematic review.*
+*Compiled 2026-07-04. Purpose: position benchmarks B1–B13 against prior QRC, finite-sampling, and noise-modeling literature, and feed the Related-work section of `PREPRINT.md`. Method and limitation notes at the end — this is a targeted web pass, not a systematic review.*
 
 ## 1. Quantum reservoir computing: foundations and hardware
 
@@ -41,9 +41,9 @@ Schreiber, Eisert & Meyer showed large classes of quantum learning models admit 
 | B10 (retraining) | surrogates (Schreiber 2023) | classical post-hoc models can match QML | law scores fixed readout; retraining worth up to 24.5 pp |
 | B12–B13 (IPS design) | Innocenti 2023 (effective measurement); Krylov/expressivity engineering (arXiv:2409.12079) | reservoir design affects expressivity | IPS as noiseless design objective; within-task only; avoid all-to-all |
 
-## Honesty section
+## Limitations
 
-- **Search scope.** One session, ~8 targeted web queries (July 2026), snowballing only through result snippets. A systematic review (backward/forward citation chasing on Mujal 2023 and Ahmed 2025) would likely surface more; in particular I could not rule out prior art for the B3 task-shape observation or for probit-style accuracy forecasts in QML — the components are standard enough that a close cousin may exist. Flagged, not resolved.
-- **Citation confidence.** All bracketed venue/volume details above were verified against search results this session except: Mujal et al. 2021 review (Adv. Quantum Technol., arXiv:2102.11831 — cited from memory, not independently verified this run, therefore *not* used in the preprint section); Suzuki et al. 2022 author list (title/venue verified, authors not). Author lists were omitted wherever unverified.
+- **Search scope.** A single targeted pass of ~8 web queries (July 2026), snowballing only through result snippets. A systematic review (backward/forward citation chasing on Mujal 2023 and Ahmed 2025) would likely surface more; in particular I could not rule out prior art for the B3 task-shape observation or for probit-style accuracy forecasts in QML — the components are standard enough that a close cousin may exist. Flagged, not resolved.
+- **Citation confidence.** All bracketed venue/volume details above were verified against search results during the pass except: Mujal et al. 2021 review (Adv. Quantum Technol., arXiv:2102.11831 — cited from memory, not independently verified in this pass, therefore *not* used in the preprint section); Suzuki et al. 2022 author list (title/venue verified, authors not). Author lists were omitted wherever unverified.
 - **Post-audit numbers.** This document quotes B5 at its audited precision (R² ≈ 0.92–0.94, MAE ≈ 3.6 pp; `AUDITS.md` 2026-07-04), not the originally published R² = 0.991 / 1.3 pp, which the audit found unreproducible from committed code. The positioning claims here do not depend on which of the two precisions holds.
 - **What this pass changes about our claims.** Ahmed et al. 2025 propose SVD truncation as a mitigation; B2 tested that family and found the plateau — the write-ups do not conflict (different tasks, recurrence structure, and baselines), but RESULTS_GAP.md's "eight strategies" should be read as *including* the current literature's main proposal, which strengthens the wall claim. Nothing found contradicts B5–B13; nothing found anticipates them either, within the stated search limits.
