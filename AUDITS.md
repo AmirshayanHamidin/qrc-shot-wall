@@ -2,6 +2,19 @@
 
 Verification-only entries: independent re-runs of published benchmarks against their written claims. Format per entry: what was re-run, how independently, verdict (CONFIRMED / DISCREPANCY), numbers side by side.
 
+## 2026-08-02 (seventh session; CLOSEOUT 3/4) — Final doc-fix batch: every queued wording/labeling flag applied — **no number of record touched**
+
+Applied in one batch, closing the flag queue accumulated by the fourth–sixth sessions:
+
+1. `results/RESULTS_TASKSHAPE.md` (fourth session's four flags + fifth session's reconstruction flag): "6% of the available dynamic range" corrected to 20% of the rotation range (θ_max = 0.314 rad = 18.0°/90°; 9.5% of the sin² probability range); the `g=base(0.09rad max)` key-label mislabel noted in-text; the ~15% design-sweep claim re-attributed (full-range best 0.133 = −15.1%; the printed 0.130 is the g=2.5×/depth-1 cell); the ~4% regression retention stated with its rounding convention (4.1 stored from 3-dp roundings vs 4.54 full-precision); the ESN-crossing sentence and tuned-ESN comparison now state the reconstruction outcome (no crossing on committed code; retention restored at 99.6%); the header code line corrected (the cited "experiment blocks" do not exist in the file); a Provenance-note section added pointing at `PREREG_B3_GEN` and the untouched files of record.
+2. `results/RESULTS_MARGINEST.md` (sixth session's two flags): "+18% on arch 0" → +18% is the across-arch parity-3 mean (arch 0 +2.7%, arch 1 +10.9%, arch 2 +41.4%); "≤0.8% on *every* config" → ≤1.8% worst-config (the +41% case), 53 of 60 configs at ≤0.8%, budget-averaged ≤0.2%; the headline sentence aligned to the budget-averaged form. The JSON's prose `outcome` strings keep the old phrasings as file of record (flagged in the sixth-session entry, not edited).
+3. `results/RESULTS_BEYONDNOISE.md` (sixth session's flag): dephasing "cos ≥ 0.98" → "cos ≥ 0.976", matching the file's own table.
+4. Reader hygiene (closeout task items, not audit flags): RESEARCH_AGENDA.md retitled with a one-line preamble and its stale B5 highlight corrected to the restored headline; RELATED_WORK.md's scheduled-session framing removed ("Honesty section" retitled "Limitations"), the ~8-query search-scope statement kept as a limitation; README/PREPRINT/PROTOCOL checked for process language — none found, not edited.
+
+No raw file, figure, or historical log entry was modified. This empties the doc-fix flag queue; the bounded closeout's audit work is complete.
+
+---
+
 ## 2026-08-02 (sixth session; CLOSEOUT 2/4) — B7 (RESULTS_PERNODE.md), B8 (RESULTS_BEYONDNOISE.md), B9 (RESULTS_MARGINEST.md): first audits — **ALL THREE CONFIRMED — B7/B8 byte-identical, B9 float-exact; provenance ledger CLOSED again; three wording flags queued, no number challenged**
 
 **What was re-run.** The complete committed pipelines of all three benchmarks, from a fresh clone at HEAD `b1c3113` (numpy 2.2.6, sklearn 1.7.2, CPU; qiskit not required by these three). Checker committed as `audits/audit_b7b8b9_rerun.py` (staged so each piece fits the sandbox's 45-s limit; `all` runs everything; every stage PASSED); side-by-side md5s and key recomputations in `audits/b7b8b9_rerun_check.json`. Files of record untouched.
